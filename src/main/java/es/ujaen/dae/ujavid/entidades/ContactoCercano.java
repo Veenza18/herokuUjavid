@@ -4,10 +4,19 @@
  */
 package es.ujaen.dae.ujavid.entidades;
 
+
+import java.time.LocalDateTime;
+
 /**
  *
  * @author admin
  */
 public class ContactoCercano {
-    
+    LocalDateTime fecha_contacto;
+    Usuario contacto;
+
+    public ContactoCercano(LocalDateTime fecha_contacto, Usuario contacto) {
+        this.fecha_contacto = fecha_contacto;
+        this.contacto = contacto;
+    }
 }

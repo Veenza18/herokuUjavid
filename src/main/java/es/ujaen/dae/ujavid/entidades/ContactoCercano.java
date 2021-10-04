@@ -19,4 +19,13 @@ public class ContactoCercano {
         this.fecha_contacto = fecha_contacto;
         this.contacto = contacto;
     }
+
+    public LocalDateTime getFecha_contacto() {
+        return fecha_contacto;
+    }
+
+    public Usuario getContacto() {
+        return contacto;
+    }
+    
 }

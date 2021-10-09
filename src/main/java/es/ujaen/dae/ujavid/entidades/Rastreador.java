@@ -4,6 +4,8 @@
  */
 package es.ujaen.dae.ujavid.entidades;
 
+import es.ujaen.dae.ujavid.util.CodificadorMd5;
+
 /**
  *
  * @author admin
@@ -73,4 +75,13 @@ public class Rastreador {
         return contraseña;
     }
 
+    /**
+     * Compara la contraseña con la del usuario, codificándola en Md5
+     *
+     * @param password Contraseña a comprobar
+     * @return True si las contrasñeas son iguales o False si son distintas
+     */
+    public boolean passwordValida(String password) {
+        return this.contraseña.equals(CodificadorMd5.codificar(password));
+    }
 }

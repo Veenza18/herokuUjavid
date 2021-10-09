@@ -4,6 +4,7 @@
  */
 package es.ujaen.dae.ujavid.entidades;
 
+import es.ujaen.dae.ujavid.util.CodificadorMd5;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class Usuario {
      * Constructor parametrizado de al clase Usuario
      *
      * @param numTelefono Nº de teléfono
+     * @param password Contraseña del usuario
      * @param f_alta Fecha en la que se registra el usuario
      */
     public Usuario(String numTelefono, String password, LocalDate f_alta) {
@@ -103,5 +105,13 @@ public class Usuario {
         return listadoContactos;
     }
 
-    
+    /**
+     * Compara la contraseña con la del usuario, codificándola en Md5
+     *
+     * @param password Contraseña a comprobar
+     * @return True si las contrasñeas son iguales o False si son distintas
+     */
+    public boolean passwordValida(String password) {
+        return this.password.equals(CodificadorMd5.codificar(password));
+    }
 }

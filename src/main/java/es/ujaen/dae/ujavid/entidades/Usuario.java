@@ -8,6 +8,7 @@ import es.ujaen.dae.ujavid.util.CodificadorMd5;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -105,6 +106,15 @@ public class Usuario {
         return listadoContactos;
     }
 
+    /**
+     * Devolver contactos cercanos del usuario
+     * 
+     * @return Lista de contactos cercanos
+     */
+    public List<ContactoCercano> verContactosCercanos() {
+        return Collections.unmodifiableList(this.listadoContactos);
+    }
+    
     /**
      * Compara la contraseña con la del usuario, codificándola en Md5
      *

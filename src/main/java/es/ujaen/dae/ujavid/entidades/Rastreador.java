@@ -9,17 +9,35 @@ package es.ujaen.dae.ujavid.entidades;
  * @author admin
  */
 public class Rastreador {
-    /**Dni del rastreador**/
+
+    /**
+     * Dni del rastreador*
+     */
     String dni;
-    /**Nombre del rastreador**/
+    
+    /**
+     * Nombre del rastreador*
+     */
     String nombre;
-    /**Primer apellido del rastreador**/
+    
+    /**
+     * Primer apellido del rastreador*
+     */
     String apellido_1;
-    /**Segundo apellido del rastreador**/
+    
+    /**
+     * Segundo apellido del rastreador*
+     */
     String apellido_2;
-    /**Número de teléfono del rastreador**/
+    
+    /**
+     * Número de teléfono del rastreador*
+     */
     String numTelefono;
-    /**Contraseña del rastreador**/
+    
+    /**
+     * Contraseña del rastreador*
+     */
     String contraseña;
 
     public Rastreador(String dni, String nombre, String apellido_1, String apellido_2, String numTelefono, String contraseña) {
@@ -54,6 +72,5 @@ public class Rastreador {
     public String getContraseña() {
         return contraseña;
     }
-    
-    
+
 }

@@ -4,8 +4,11 @@
  */
 package es.ujaen.dae.ujavid.entidades;
 
+import es.ujaen.dae.ujavid.util.CodificadorMd5;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,31 +17,65 @@ import java.util.UUID;
  * @author admin
  */
 public class Usuario {
-    /**UUID del usuario**/ 
+
+    /**
+     * UUID del usuario*
+     */
     UUID uuid;
-    /**Número de teléfono**/
+
+    /**
+     * Número de teléfono*
+     */
     String numTelefono;
-    /**Fecha de alta**/
+
+    /**
+     * Fecha de alta*
+     */
     LocalDate f_alta;
-    /**Fecha de positivo **/
+
+    /**
+     * Fecha de positivo *
+     */
     LocalDateTime f_positivo;
-    /**¿Es Positivo?**/
+
+    /**
+     * ¿Es Positivo?*
+     */
     boolean positivo;
-    
-    /**Listado de Contactos Cercanos**/
+
+    /**
+     * Cotraseña del usuario
+     */
+    private String password;
+
+    /**
+     * Listado de Contactos Cercanos*
+     */
     List<ContactoCercano> listadoContactos;
 
-    public Usuario(String numTelefono, LocalDate f_alta, LocalDateTime f_positivo, boolean positivo, List<ContactoCercano> listadoContactos) {
+    /**
+     * Constructor parametrizado de al clase Usuario
+     *
+     * @param numTelefono Nº de teléfono
+     * @param password Contraseña del usuario
+     * @param f_alta Fecha en la que se registra el usuario
+     */
+    public Usuario(String numTelefono, String password, LocalDate f_alta) {
         this.uuid = UUID.randomUUID();
+        this.password = password;
         this.numTelefono = numTelefono;
         this.f_alta = f_alta;
-        this.f_positivo = f_positivo;
-        this.positivo = positivo;
-        this.listadoContactos = listadoContactos;
+        this.f_positivo = null;
+        this.positivo = false;
+        this.listadoContactos = new ArrayList<>();
     }
 
     public UUID getUuid() {
         return uuid;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getNumTelefono() {
@@ -53,15 +90,38 @@ public class Usuario {
         return f_positivo;
     }
 
+    public void setF_positivo(LocalDateTime f_positivo) {
+        this.f_positivo = f_positivo;
+    }
+
     public boolean isPositivo() {
         return positivo;
+    }
+
+    public void setPositivo(boolean positivo) {
+        this.positivo = positivo;
     }
 
     public List<ContactoCercano> getListadoContactos() {
         return listadoContactos;
     }
+
+    /**
+     * Devolver contactos cercanos del usuario
+     * 
+     * @return Lista de contactos cercanos
+     */
+    public List<ContactoCercano> verContactosCercanos() {
+        return Collections.unmodifiableList(this.listadoContactos);
+    }
     
-    
-    
-    
+    /**
+     * Compara la contraseña con la del usuario, codificándola en Md5
+     *
+     * @param password Contraseña a comprobar
+     * @return True si las contrasñeas son iguales o False si son distintas
+     */
+    public boolean passwordValida(String password) {
+        return this.password.equals(CodificadorMd5.codificar(password));
+    }
 }

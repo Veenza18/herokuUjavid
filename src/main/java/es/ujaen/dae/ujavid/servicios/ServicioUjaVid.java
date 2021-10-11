@@ -11,6 +11,7 @@ import es.ujaen.dae.ujavid.excepciones.UsuarioYaRegistrado;
 import es.ujaen.dae.ujavid.excepciones.UsuarioNoRegistrado;
 import es.ujaen.dae.ujavid.excepciones.RastreadorYaRegistrado;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -192,6 +193,28 @@ public class ServicioUjaVid {
                 positivos++;
             }
         }
+        return positivos;
+    }
+    
+    /**
+     * Método para obtener el nº de positivos los últimos 15 días
+     * 
+     * @return Nº de positivos
+     */
+    public int positivos15Dias(){
+        int positivos = 0;
+        Iterator<Usuario> it = usuarios.values().iterator();
+        DateTimeFormatter formateador = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss");
+        LocalDateTime fecha15dias = LocalDateTime.now().minusDays(15);
+        while (it.hasNext()) {
+            Usuario usuario = it.next();
+            
+            // Probar testing
+            if (usuario.isPositivo() && usuario.getF_positivo().isAfter(fecha15dias) ) {
+                positivos++;
+            }
+        }
+        
         return positivos;
     }
 }

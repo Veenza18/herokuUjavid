@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
@@ -110,11 +111,20 @@ public class ServicioUjaVid {
     /**
      * Devolver los contactos cercanos de un usuario dado
      *
-     * @param numTelefono Nº de teléfono del Usuario
+     * @param uuid Id del usuario a buscar
      * @return Lista de Contactos Cercanos al Usuario
      */
-    public List<ContactoCercano> verContactosCercanos(String numTelefono) {
-        Usuario usuario = Optional.ofNullable(usuarios.get(numTelefono)).orElseThrow(UsuarioNoRegistrado::new);
+    public List<ContactoCercano> verContactosCercanos(UUID uuid) {
+        Iterator<Usuario> it = usuarios.values().iterator();
+        Usuario usuario_aux = null;
+        boolean encontrado = false;
+        while (it.hasNext() || encontrado) {
+            usuario_aux = it.next();
+            if (usuario_aux.getUuid().equals(uuid)) {
+                encontrado = true;
+            }
+        }
+        Usuario usuario = Optional.ofNullable(usuarios.get(usuario_aux.getNumTelefono())).orElseThrow(UsuarioNoRegistrado::new);
         return usuario.verContactosCercanos();
     }
     
@@ -124,8 +134,17 @@ public class ServicioUjaVid {
      * @param numTelefono Nº de teléfono del Usuario
      * @param f_positivo Fecha y hora del positivo
      */
-    public void notificarPos(String numTelefono, LocalDateTime f_positivo) {
-        Usuario usuario = Optional.ofNullable(usuarios.get(numTelefono)).orElseThrow(UsuarioNoRegistrado::new);
+    public void notificarPos(UUID uuid, LocalDateTime f_positivo) {
+        Iterator<Usuario> it = usuarios.values().iterator();
+        Usuario usuario_aux = null;
+        boolean encontrado = false;
+        while (it.hasNext() || encontrado) {
+            usuario_aux = it.next();
+            if (usuario_aux.getUuid().equals(uuid)) {
+                encontrado = true;
+            }
+        }
+        Usuario usuario = Optional.ofNullable(usuarios.get(usuario_aux.getNumTelefono())).orElseThrow(UsuarioNoRegistrado::new);
         usuario.setPositivo(true);
         usuario.setF_positivo(f_positivo);
         NUM_TOTAL_INF++;
@@ -136,8 +155,17 @@ public class ServicioUjaVid {
      * 
      * @param numTelefono Nº de teléfono del Usuario 
      */
-    public void notificarCuracion(String numTelefono) {
-        Usuario usuario = Optional.ofNullable(usuarios.get(numTelefono)).orElseThrow(UsuarioNoRegistrado::new);
+    public void notificarCuracion(UUID uuid) {
+        Iterator<Usuario> it = usuarios.values().iterator();
+        Usuario usuario_aux = null;
+        boolean encontrado = false;
+        while (it.hasNext() || encontrado) {
+            usuario_aux = it.next();
+            if (usuario_aux.getUuid().equals(uuid)) {
+                encontrado = true;
+            }
+        }
+        Usuario usuario = Optional.ofNullable(usuarios.get(usuario_aux.getNumTelefono())).orElseThrow(UsuarioNoRegistrado::new);
         usuario.setPositivo(false);
     }
 

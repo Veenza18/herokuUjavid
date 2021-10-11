@@ -4,13 +4,13 @@
  */
 package es.ujaen.dae.ujavid.excepciones;
 
-
 /**
  * Excepcion producida por intento de registro de usuario ya existentes
+ *
  * @author venza
  */
 public class UsuarioYaRegistrado extends RuntimeException {
-    
+
     public UsuarioYaRegistrado() {
-    }  
+    }
 }

@@ -10,8 +10,10 @@ import es.ujaen.dae.ujavid.entidades.Usuario;
 import es.ujaen.dae.ujavid.excepciones.UsuarioYaRegistrado;
 import es.ujaen.dae.ujavid.excepciones.UsuarioNoRegistrado;
 import es.ujaen.dae.ujavid.excepciones.RastreadorYaRegistrado;
+import es.ujaen.dae.ujavid.excepciones.RastreadorNoRegistrado;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import org.springframework.format.datetime.joda.LocalDateTimeParser;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -132,10 +135,11 @@ public class ServicioUjaVid {
     /**
      * Método para notificar el positivo a un Usuario
      * 
-     * @param numTelefono Nº de teléfono del Usuario
+     * @param uuid
      * @param f_positivo Fecha y hora del positivo
+     * @param dniRastreador
      */
-    public void notificarPos(UUID uuid, LocalDateTime f_positivo) {
+    public void notificarPos(UUID uuid, LocalDateTime f_positivo, String dniRastreador) {
         Iterator<Usuario> it = usuarios.values().iterator();
         Usuario usuario_aux = null;
         boolean encontrado = false;
@@ -146,6 +150,8 @@ public class ServicioUjaVid {
             }
         }
         Usuario usuario = Optional.ofNullable(usuarios.get(usuario_aux.getNumTelefono())).orElseThrow(UsuarioNoRegistrado::new);
+        Rastreador rastreador = this.rastreadores.get(dniRastreador);
+        rastreador.aumentarNotificados();
         usuario.setPositivo(true);
         usuario.setF_positivo(f_positivo);
         NUM_TOTAL_INF++;
@@ -154,7 +160,7 @@ public class ServicioUjaVid {
     /**
      * Método para notificar la curación de un positivo
      * 
-     * @param numTelefono Nº de teléfono del Usuario 
+     * @param uuid
      */
     public void notificarCuracion(UUID uuid) {
         Iterator<Usuario> it = usuarios.values().iterator();
@@ -204,7 +210,7 @@ public class ServicioUjaVid {
     public int positivos15Dias(){
         int positivos = 0;
         Iterator<Usuario> it = usuarios.values().iterator();
-        DateTimeFormatter formateador = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss");
+
         LocalDateTime fecha15dias = LocalDateTime.now().minusDays(15);
         while (it.hasNext()) {
             Usuario usuario = it.next();
@@ -216,5 +222,43 @@ public class ServicioUjaVid {
         }
         
         return positivos;
+    }
+    
+    /**
+     * FUNCIÓN NO RAYARSER
+     * @param uuidUsuario
+     * @return 
+     */
+//    private int contagiadosUsuario(UUID uuidUsuario){
+//        int contagiados = 0;
+//        // Obtenemos al usuario
+//        Usuario usuario = Optional.ofNullable(usuarios.get(uuidUsuario)).orElseThrow(UsuarioNoRegistrado::new);
+//        // Obtenemos sus contactos cercanos
+//        List<ContactoCercano> contactos = usuario.verContactosCercanos();
+//        // Obtenemos la fecha del positivo del usuario
+//        LocalDateTime fechaPositivo = usuario.getF_positivo().minusDays(15);
+//        // Obtenemos la fecha de curacion
+//        LocalDate fechaCuracion = usuario.getF_alta();
+////        LocalDate aux = new LocalDate(fechaPositivo.get)
+////        fechaPositivo.
+//                
+//        
+//        for (int i = 0; i < contactos.size(); i++) {
+//            // Comprobamos si el contacto es positivo
+//            if(contactos.get(i).getContacto().isPositivo()){
+//                if(contactos.get(i).getFecha_contacto().isAfter(fechaPositivo) && contactos.get(i).getFecha_contacto().isBefore(fechaCuracion)){
+//                    
+//                }
+//            }
+//            
+//        }
+//        
+//        return contagiados;
+//        
+//    }
+    
+    public int positivosRastreador(String dniRastreador){
+        Rastreador rastreador = Optional.ofNullable(this.rastreadores.get(dniRastreador)).orElseThrow(RastreadorNoRegistrado::new);;
+        return rastreador.getNUM_TOTAL_NOTIFICADOS();
     }
 }

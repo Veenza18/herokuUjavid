@@ -16,6 +16,7 @@ import javax.validation.constraints.Pattern;
  */
 public class Rastreador {
 
+    private int NUM_TOTAL_NOTIFICADOS;
     /**
      * Dni del rastreador*
      */
@@ -67,6 +68,7 @@ public class Rastreador {
         this.apellido_2 = apellido_2;
         this.numTelefono = numTelefono;
         this.contraseña = contraseña;
+        this.NUM_TOTAL_NOTIFICADOS = 0;
     }
 
     /**
@@ -121,6 +123,14 @@ public class Rastreador {
      */
     public String getContraseña() {
         return contraseña;
+    }
+
+    public int getNUM_TOTAL_NOTIFICADOS() {
+        return NUM_TOTAL_NOTIFICADOS;
+    }
+
+    public void aumentarNotificados() {
+        NUM_TOTAL_NOTIFICADOS++;
     }
 
     /**

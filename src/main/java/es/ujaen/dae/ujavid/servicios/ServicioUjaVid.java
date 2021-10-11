@@ -10,33 +10,46 @@ import es.ujaen.dae.ujavid.entidades.Usuario;
 import es.ujaen.dae.ujavid.excepciones.UsuarioYaRegistrado;
 import es.ujaen.dae.ujavid.excepciones.UsuarioNoRegistrado;
 import es.ujaen.dae.ujavid.excepciones.RastreadorYaRegistrado;
-import es.ujaen.dae.ujavid.excepciones.RastreadorNoRegistrado;
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.UUID;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 /**
+ * Clase con los servicios utilizados por los usuarios y rastreadores de la
+ * aplicación
  *
  * @author admin
  */
 @Service
+@Validated
 public class ServicioUjaVid {
 
-    static int NUM_TOTAL_INF = 0;
+    /**
+     * Nº total de infectados
+     */
+    private static int NUM_TOTAL_INF = 0;
+    
     /**
      * Mapa con la lista de rastreadores
      */
-    Map<String, Rastreador> rastreadores;
+    
+    private Map<String, Rastreador> rastreadores;
     /**
      * Mapa con la lista de usuarios
      */
-    Map<String, Usuario> usuarios;
+    
+    private Map<String, Usuario> usuarios;
 
+    /**
+     * Constructor de la clase ServicioUjavid
+     */
     public ServicioUjaVid() {
         rastreadores = new TreeMap<>();
         usuarios = new TreeMap<>();
@@ -48,7 +61,7 @@ public class ServicioUjaVid {
      * @param usuario el usuario a dar de alta
      * @return la cuenta asociada al usuario
      */
-    public Usuario altaUsuario(Usuario usuario) {
+    public Usuario altaUsuario(@NotNull @Valid Usuario usuario) {
         if (usuarios.containsKey(usuario.getNumTelefono())) {
             throw new UsuarioYaRegistrado();
         }
@@ -60,7 +73,7 @@ public class ServicioUjaVid {
     /**
      * Realiza un login de un cliente
      *
-     * @param dni el DNI del usuario
+     * @param numTelefono Nº de teléfono del usuario
      * @param clave la clave de acceso
      * @return el objeto de la clase Usuario asociado
      */
@@ -69,12 +82,12 @@ public class ServicioUjaVid {
     }
 
     /**
-     * Dar de alta usuario y crear una cuenta asociada
+     * Dar de alta un Rstreador en el sistema
      *
      * @param rastreador el rastredor a dar de alta
-     * @return la cuenta asociada al rastreador
+     * @return El rastreador registrado en el sistema
      */
-    public Rastreador altaRastreador(Rastreador rastreador) {
+    public Rastreador altaRastreador(@NotNull @Valid Rastreador rastreador) {
         if (usuarios.containsKey(rastreador.getNumTelefono())) {
             throw new RastreadorYaRegistrado();
         }
@@ -97,31 +110,52 @@ public class ServicioUjaVid {
     /**
      * Devolver los contactos cercanos de un usuario dado
      *
-     * @param dni el DNI del cliente
-     * @return la lista de cuentas
+     * @param numTelefono Nº de teléfono del Usuario
+     * @return Lista de Contactos Cercanos al Usuario
      */
     public List<ContactoCercano> verContactosCercanos(String numTelefono) {
         Usuario usuario = Optional.ofNullable(usuarios.get(numTelefono)).orElseThrow(UsuarioNoRegistrado::new);
         return usuario.verContactosCercanos();
     }
-
-    void notificarPos(String numTelefono, LocalDateTime f_positivo) {
+    
+    /**
+     * Método para notificar el positivo a un Usuario
+     * 
+     * @param numTelefono Nº de teléfono del Usuario
+     * @param f_positivo Fecha y hora del positivo
+     */
+    public void notificarPos(String numTelefono, LocalDateTime f_positivo) {
         Usuario usuario = Optional.ofNullable(usuarios.get(numTelefono)).orElseThrow(UsuarioNoRegistrado::new);
         usuario.setPositivo(true);
         usuario.setF_positivo(f_positivo);
         NUM_TOTAL_INF++;
     }
 
-    void notificarCuracion(String numTelefono) {
+    /**
+     * Método para notificar la curación de un positivo
+     * 
+     * @param numTelefono Nº de teléfono del Usuario 
+     */
+    public void notificarCuracion(String numTelefono) {
         Usuario usuario = Optional.ofNullable(usuarios.get(numTelefono)).orElseThrow(UsuarioNoRegistrado::new);
         usuario.setPositivo(false);
     }
 
-    int totalInfectados() {
+    /**
+     * Método para obtener el Nº total de infectados
+     * 
+     * @return Nº total de infectados 
+     */
+    public int totalInfectados() {
         return NUM_TOTAL_INF;
     }
 
-    int positivos_actual() {
+    /**
+     * Método para obtener el Nº total de positivos que hay actualmente
+     * 
+     * @return Nº de positivos actualmente 
+     */
+    public int positivos_actual() {
         int positivos = 0;
 
         Iterator<Usuario> it = usuarios.values().iterator();

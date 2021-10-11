@@ -5,11 +5,13 @@
 package es.ujaen.dae.ujavid.excepciones;
 
 /**
+ * Excepción provocada por intento de un acceso de un usuario no registrado en
+ * el sistema
  *
  * @author Venza
  */
 public class UsuarioNoRegistrado extends RuntimeException {
-    
+
     public UsuarioNoRegistrado() {
-    }  
+    }
 }

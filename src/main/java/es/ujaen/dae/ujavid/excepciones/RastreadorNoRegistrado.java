@@ -6,11 +6,13 @@
 package es.ujaen.dae.ujavid.excepciones;
 
 /**
+ * Excepción provocada por intento de un acceso al sistema de un usuario no
+ * registrado
  *
  * @author Juan José
  */
-public class RastreadorNoRegistrado extends RuntimeException  {
-    
+public class RastreadorNoRegistrado extends RuntimeException {
+
     public RastreadorNoRegistrado() {
-    }  
+    }
 }

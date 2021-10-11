@@ -6,12 +6,14 @@
 package es.ujaen.dae.ujavid.excepciones;
 
 /**
+ * Excepción provocada por el intento de registrar un rastreador en el sistema que
+ * ya ha sido registrado anteriormente
  *
  * @author Juan José
  */
-public class RastreadorYaRegistrado extends RuntimeException  {
-    
+public class RastreadorYaRegistrado extends RuntimeException {
+
     public RastreadorYaRegistrado() {
-    }  
-    
+    }
+
 }

@@ -13,7 +13,6 @@ import es.ujaen.dae.ujavid.excepciones.RastreadorYaRegistrado;
 import es.ujaen.dae.ujavid.excepciones.RastreadorNoRegistrado;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,6 @@ import java.util.TreeMap;
 import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import org.springframework.format.datetime.joda.LocalDateTimeParser;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -40,16 +38,15 @@ public class ServicioUjaVid {
      * Nº total de infectados
      */
     private static int NUM_TOTAL_INF = 0;
-    
+
     /**
      * Mapa con la lista de rastreadores
      */
-    
     private Map<String, Rastreador> rastreadores;
     /**
      * Mapa con la lista de usuarios
      */
-    
+
     private Map<String, Usuario> usuarios;
 
     /**
@@ -131,13 +128,13 @@ public class ServicioUjaVid {
         Usuario usuario = Optional.ofNullable(usuarios.get(usuario_aux.getNumTelefono())).orElseThrow(UsuarioNoRegistrado::new);
         return usuario.verContactosCercanos();
     }
-    
+
     /**
      * Método para notificar el positivo a un Usuario
-     * 
-     * @param uuid
+     *
+     * @param uuid UUID del usuario a notificar el positivo
      * @param f_positivo Fecha y hora del positivo
-     * @param dniRastreador
+     * @param dniRastreador DNI del rastreador que notifica el positivo
      */
     public void notificarPos(UUID uuid, LocalDateTime f_positivo, String dniRastreador) {
         Iterator<Usuario> it = usuarios.values().iterator();
@@ -159,8 +156,8 @@ public class ServicioUjaVid {
 
     /**
      * Método para notificar la curación de un positivo
-     * 
-     * @param uuid
+     *
+     * @param uuid UUID del usuario a notificar la curación
      */
     public void notificarCuracion(UUID uuid) {
         Iterator<Usuario> it = usuarios.values().iterator();
@@ -178,8 +175,8 @@ public class ServicioUjaVid {
 
     /**
      * Método para obtener el Nº total de infectados
-     * 
-     * @return Nº total de infectados 
+     *
+     * @return Nº total de infectados
      */
     public int totalInfectados() {
         return NUM_TOTAL_INF;
@@ -187,8 +184,8 @@ public class ServicioUjaVid {
 
     /**
      * Método para obtener el Nº total de positivos que hay actualmente
-     * 
-     * @return Nº de positivos actualmente 
+     *
+     * @return Nº de positivos actualmente
      */
     public int positivos_actual() {
         int positivos = 0;
@@ -201,64 +198,101 @@ public class ServicioUjaVid {
         }
         return positivos;
     }
-    
+
     /**
      * Método para obtener el nº de positivos los últimos 15 días
-     * 
+     *
      * @return Nº de positivos
      */
-    public int positivos15Dias(){
+    public int positivos15Dias() {
         int positivos = 0;
         Iterator<Usuario> it = usuarios.values().iterator();
 
         LocalDateTime fecha15dias = LocalDateTime.now().minusDays(15);
         while (it.hasNext()) {
             Usuario usuario = it.next();
-            
+
             // Probar testing
-            if (usuario.isPositivo() && usuario.getF_positivo().isAfter(fecha15dias) ) {
+            if (usuario.isPositivo() && usuario.getF_positivo().isAfter(fecha15dias)) {
                 positivos++;
             }
         }
-        
+
         return positivos;
     }
-    
+
     /**
-     * FUNCIÓN NO RAYARSER
-     * @param uuidUsuario
-     * @return 
+     * Método para obtener el nº personas que ha contagiado un usuario
+     *
+     * @param uuidUsuario UUID del usuario a comprobar
+     * @return El número de contagiados que ha (generado) el usuario
      */
-//    private int contagiadosUsuario(UUID uuidUsuario){
-//        int contagiados = 0;
-//        // Obtenemos al usuario
-//        Usuario usuario = Optional.ofNullable(usuarios.get(uuidUsuario)).orElseThrow(UsuarioNoRegistrado::new);
-//        // Obtenemos sus contactos cercanos
-//        List<ContactoCercano> contactos = usuario.verContactosCercanos();
-//        // Obtenemos la fecha del positivo del usuario
-//        LocalDateTime fechaPositivo = usuario.getF_positivo().minusDays(15);
-//        // Obtenemos la fecha de curacion
-//        LocalDate fechaCuracion = usuario.getF_alta();
-////        LocalDate aux = new LocalDate(fechaPositivo.get)
-////        fechaPositivo.
-//                
-//        
-//        for (int i = 0; i < contactos.size(); i++) {
-//            // Comprobamos si el contacto es positivo
-//            if(contactos.get(i).getContacto().isPositivo()){
-//                if(contactos.get(i).getFecha_contacto().isAfter(fechaPositivo) && contactos.get(i).getFecha_contacto().isBefore(fechaCuracion)){
-//                    
-//                }
-//            }
-//            
-//        }
-//        
-//        return contagiados;
-//        
-//    }
-    
-    public int positivosRastreador(String dniRastreador){
-        Rastreador rastreador = Optional.ofNullable(this.rastreadores.get(dniRastreador)).orElseThrow(RastreadorNoRegistrado::new);;
+    private int contagiadosUsuario(UUID uuidUsuario) {
+        int contagiados = 0;
+        // Obtenemos al usuario
+        Usuario usuario = Optional.ofNullable(usuarios.get(uuidUsuario)).orElseThrow(UsuarioNoRegistrado::new);
+        // Obtenemos sus contactos cercanos
+        List<ContactoCercano> contactos = usuario.verContactosCercanos();
+        // Obtenemos la fecha del positivo del usuario y la pasamos a LocalDate
+        LocalDate fechaPositivo = usuario.getF_positivo().minusDays(15).toLocalDate();
+        // Obtenemos la fecha de curacion
+        LocalDate fechaCuracion = usuario.getF_alta();
+
+        // Recorremos todos los contactos del usuario
+        for (int i = 0; i < contactos.size(); i++) {
+            // Comprobamos si el contacto es positivo
+            if (contactos.get(i).getContacto().isPositivo()) {
+                // Obtenemos la fecha de contacto y la pasamos  LocalDate
+                LocalDate fechaPositivoContacto = contactos.get(i).getFecha_contacto().toLocalDate();
+                if (fechaPositivoContacto.isAfter(fechaPositivo) && fechaPositivoContacto.isBefore(fechaCuracion)) {
+                    contagiados++;
+                }
+            }
+
+        }
+
+        return contagiados;
+
+    }
+
+    /**
+     * Método para obtener uns estadística de contagiados / usuarios positivos
+     *
+     * @return La estadistica de contagiados por usuarios positivos
+     */
+    public double contagiadosXusuario() {
+        int n_positivos_actual = 0;
+        int contagiados = 0;
+
+        // Recorremos todos los usuarios 
+        Iterator<Usuario> it = usuarios.values().iterator();
+
+        while (it.hasNext()) {
+            Usuario usuario = it.next();
+
+            // Comprobamos que usuarios son positivos
+            if (usuario.isPositivo()) {
+                n_positivos_actual++;
+                // Calculamos los contagiados producidos por el usuario
+                contagiados += this.contagiadosUsuario(usuario.getUuid());
+            }
+        }
+
+        // Comprobamos que hay almenos una persona que es positivo
+        if (n_positivos_actual > 0) {
+            return contagiados / n_positivos_actual;
+        }
+        return 0;
+    }
+
+    /**
+     * Método pata obtener los positivos notificados por un rastreador
+     *
+     * @param dniRastreador DNI del rastreador
+     * @return El nº de positivos notificados por el rastreador
+     */
+    public int positivosRastreador(String dniRastreador) {
+        Rastreador rastreador = Optional.ofNullable(this.rastreadores.get(dniRastreador)).orElseThrow(RastreadorNoRegistrado::new);
         return rastreador.getNUM_TOTAL_NOTIFICADOS();
     }
 }

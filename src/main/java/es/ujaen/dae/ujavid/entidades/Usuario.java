@@ -69,13 +69,15 @@ public class Usuario {
      */
     public Usuario(String numTelefono, String password, LocalDate f_alta) {
         this.uuid = UUID.randomUUID();
-        this.password = password;
+        this.password = CodificadorMd5.codificar(password);
         this.numTelefono = numTelefono;
         this.f_alta = f_alta;
         this.f_positivo = null;
         this.positivo = false;
         this.listadoContactos = new ArrayList<>();
     }
+
+    
 
     /**
      * Método para obtener el UUID del usuario

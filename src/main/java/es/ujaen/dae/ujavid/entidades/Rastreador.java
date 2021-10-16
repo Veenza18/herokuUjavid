@@ -6,6 +6,7 @@ package es.ujaen.dae.ujavid.entidades;
 
 import es.ujaen.dae.ujavid.util.CodificadorMd5;
 import es.ujaen.dae.ujavid.util.ExprReg;
+import java.time.LocalDate;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
@@ -67,9 +68,11 @@ public class Rastreador {
         this.apellido_1 = apellido_1;
         this.apellido_2 = apellido_2;
         this.numTelefono = numTelefono;
-        this.contraseña = contraseña;
+        this.contraseña = CodificadorMd5.codificar(contraseña);
         this.NUM_TOTAL_NOTIFICADOS = 0;
     }
+
+    
 
     /**
      * Método para obtener el DNI del rastreador

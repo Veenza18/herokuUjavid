@@ -90,7 +90,7 @@ public class ServicioUjaVid {
      * @return El rastreador registrado en el sistema
      */
     public Rastreador altaRastreador(@NotNull @Valid Rastreador rastreador) {
-        if (usuarios.containsKey(rastreador.getNumTelefono())) {
+        if (rastreadores.containsKey(rastreador.getNumTelefono())) {
             throw new RastreadorYaRegistrado();
         }
         // Registrar Rastreador
@@ -127,6 +127,16 @@ public class ServicioUjaVid {
         }
         Usuario usuario = Optional.ofNullable(usuarios.get(usuario_aux.getNumTelefono())).orElseThrow(UsuarioNoRegistrado::new);
         return usuario.verContactosCercanos();
+    }
+
+    /**
+     * Método para añadir un Contacto cercano a un usuario
+     * 
+     * @param contacto Contacto cercano que se va a añadir
+     * @param usuario Usuario que ha tenido el contacto cercano
+     */
+    public void addContactoCercano(@NotNull @Valid ContactoCercano contacto, @NotNull @Valid Usuario usuario) {
+        usuario.addContactoCercano(contacto);
     }
 
     /**
@@ -236,7 +246,7 @@ public class ServicioUjaVid {
         // Obtenemos la fecha del positivo del usuario y la pasamos a LocalDate
         LocalDate fechaPositivo = usuario.getF_positivo().minusDays(15).toLocalDate();
         // Obtenemos la fecha de curacion
-        LocalDate fechaCuracion = usuario.getF_alta();
+        LocalDate fechaCuracion = usuario.getF_curacion();
 
         // Recorremos todos los contactos del usuario
         for (int i = 0; i < contactos.size(); i++) {

@@ -25,7 +25,7 @@ public class Usuario {
     /**
      * UUID del usuario*
      */
-    private UUID uuid;
+    private final UUID uuid;
 
     /**
      * Número de teléfono*
@@ -34,10 +34,10 @@ public class Usuario {
     private String numTelefono;
 
     /**
-     * Fecha de alta*
+     * Fecha de curación*
      */
     @PastOrPresent
-    private LocalDate f_alta;
+    private LocalDate f_curacion;
 
     /**
      * Fecha de positivo *
@@ -71,7 +71,7 @@ public class Usuario {
         this.uuid = UUID.randomUUID();
         this.password = CodificadorMd5.codificar(password);
         this.numTelefono = numTelefono;
-        this.f_alta = f_alta;
+        this.f_curacion = f_alta;
         this.f_positivo = null;
         this.positivo = false;
         this.listadoContactos = new ArrayList<>();
@@ -111,8 +111,8 @@ public class Usuario {
      *
      * @return Fecha de registro del Usuario en el Sistema
      */
-    public LocalDate getF_alta() {
-        return f_alta;
+    public LocalDate getF_curacion() {
+        return f_curacion;
     }
 
     /**
@@ -160,6 +160,15 @@ public class Usuario {
         return listadoContactos;
     }
 
+    /**
+     * Método para añadir un Contacto al usuario
+     * 
+     * @param contacto Contacto cercano al usuario
+     */
+    public void addContactoCercano(ContactoCercano contacto){
+        this.listadoContactos.add(contacto);
+    }
+    
     /**
      * Devolver contactos cercanos del usuario
      *

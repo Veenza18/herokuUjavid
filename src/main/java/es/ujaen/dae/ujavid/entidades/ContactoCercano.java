@@ -5,6 +5,7 @@
 package es.ujaen.dae.ujavid.entidades;
 
 import java.time.LocalDateTime;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
@@ -30,7 +31,8 @@ public class ContactoCercano {
     /**
      * Distancia al otro dispositivo en metros
      */
-    @Size(min = 0, max = 4)
+    @Min(0)
+    @Max(4)
     private final double distancia;
 
     /**

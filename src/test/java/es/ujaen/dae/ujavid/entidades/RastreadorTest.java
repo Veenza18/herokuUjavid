@@ -5,7 +5,6 @@
  */
 package es.ujaen.dae.ujavid.entidades;
 
-import java.time.LocalDate;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;

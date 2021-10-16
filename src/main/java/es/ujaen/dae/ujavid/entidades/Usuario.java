@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.UUID;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * Clase que representa un Usuario
@@ -53,6 +55,7 @@ public class Usuario {
     /**
      * Cotraseña del usuario
      */
+
     private String password;
 
     /**
@@ -65,13 +68,12 @@ public class Usuario {
      *
      * @param numTelefono Nº de teléfono
      * @param password Contraseña del usuario
-     * @param f_alta Fecha en la que se registra el usuario
      */
-    public Usuario(String numTelefono, String password, LocalDate f_alta) {
+    public Usuario(String numTelefono, String password) {
         this.uuid = UUID.randomUUID();
         this.password = CodificadorMd5.codificar(password);
         this.numTelefono = numTelefono;
-        this.f_curacion = f_alta;
+        this.f_curacion = null;
         this.f_positivo = null;
         this.positivo = false;
         this.listadoContactos = new ArrayList<>();

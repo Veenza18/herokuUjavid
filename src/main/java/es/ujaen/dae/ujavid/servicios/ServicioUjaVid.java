@@ -90,11 +90,11 @@ public class ServicioUjaVid {
      * @return El rastreador registrado en el sistema
      */
     public Rastreador altaRastreador(@NotNull @Valid Rastreador rastreador) {
-        if (rastreadores.containsKey(rastreador.getNumTelefono())) {
+        if (rastreadores.containsKey(rastreador.getDni())) {
             throw new RastreadorYaRegistrado();
         }
         // Registrar Rastreador
-        rastreadores.put(rastreador.getNumTelefono(), rastreador);
+        rastreadores.put(rastreador.getDni(), rastreador);
         return rastreador;
     }
 
@@ -115,6 +115,17 @@ public class ServicioUjaVid {
      * @param uuid Id del usuario a buscar
      * @return Lista de Contactos Cercanos al Usuario
      */
+    /**
+     * Método para añadir un Contacto cercano a un usuario
+     * 
+     * @param contacto Contacto cercano que se va a añadir
+     * @param usuario Usuario que ha tenido el contacto cercano
+     */
+    public void addContactoCercano(@NotNull @Valid ContactoCercano contacto, @NotNull @Valid Usuario usuario) {
+        usuario.addContactoCercano(contacto);
+    }
+    
+    
     public List<ContactoCercano> verContactosCercanos(UUID uuid) {
         Iterator<Usuario> it = usuarios.values().iterator();
         Usuario usuario_aux = null;
@@ -129,15 +140,7 @@ public class ServicioUjaVid {
         return usuario.verContactosCercanos();
     }
 
-    /**
-     * Método para añadir un Contacto cercano a un usuario
-     * 
-     * @param contacto Contacto cercano que se va a añadir
-     * @param usuario Usuario que ha tenido el contacto cercano
-     */
-    public void addContactoCercano(@NotNull @Valid ContactoCercano contacto, @NotNull @Valid Usuario usuario) {
-        usuario.addContactoCercano(contacto);
-    }
+    
 
     /**
      * Método para notificar el positivo a un Usuario

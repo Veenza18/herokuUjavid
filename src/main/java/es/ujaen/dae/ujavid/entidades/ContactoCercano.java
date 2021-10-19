@@ -8,14 +8,13 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Size;
 
 /**
  * Clase que representa un Contacto Cercano por parte de un Usuario
  *
  * @author admin
  */
-public class ContactoCercano {
+public class ContactoCercano implements Comparable<ContactoCercano>{
 
     /**
      * Fecha y Hora en ka que se produjo el contacto
@@ -41,6 +40,7 @@ public class ContactoCercano {
     @Min(0)
     private final int duracion;
 
+    private final double riesgo;
     /**
      * Constructor de la clase ContactoCercano
      *
@@ -54,6 +54,7 @@ public class ContactoCercano {
         this.contacto = contacto;
         this.distancia = distancia;
         this.duracion = duracion;
+        this.riesgo = duracion / distancia;
     }
 
     /**
@@ -92,4 +93,25 @@ public class ContactoCercano {
         return duracion;
     }
 
+    public double getRiesgo() {
+        return riesgo;
+    }
+
+    
+    
+    @Override
+    public int compareTo(ContactoCercano o) {
+        if(this.riesgo < o.getRiesgo()){
+            return -1;
+        }
+        
+        if(this.riesgo > o.getRiesgo()){
+            return 1;
+        }
+        
+        // Los riesgos son iguales
+        return 0;   
+    }
+
+    
 }

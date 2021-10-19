@@ -177,6 +177,7 @@ public class Usuario {
      * @return Lista de contactos cercanos
      */
     public List<ContactoCercano> verContactosCercanos() {
+        Collections.sort(this.listadoContactos);
         return Collections.unmodifiableList(this.listadoContactos);
     }
 

@@ -67,6 +67,12 @@ public class Usuario {
     private String password;
 
     /**
+     * Fecha de alta/registro*
+     */
+    @PastOrPresent
+    private LocalDate f_alta;
+    
+    /**
      * Listado de Contactos Cercanos*
      */
     private List<ContactoCercano> listadoContactos;
@@ -84,6 +90,7 @@ public class Usuario {
         this.f_curacion = null;
         this.f_positivo = null;
         this.positivo = false;
+        this.f_alta = LocalDate.now();
         this.listadoContactos = new ArrayList<>();
     }
 
@@ -121,6 +128,15 @@ public class Usuario {
      */
     public LocalDate getF_curacion() {
         return f_curacion;
+    }
+    
+    /**
+     * Método para obtener el UUID del usuario
+     *
+     * @return Uuid del usuario
+     */
+    public LocalDate getF_alta() {
+        return f_alta;
     }
 
     /**

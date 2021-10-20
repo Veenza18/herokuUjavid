@@ -78,6 +78,7 @@ public class ServicioUjaVidTest {
         Optional<Usuario> usuarioLogin = servicioUjaVid.loginUsuario(usuario.getNumTelefono(), "nuevaclave");
 
         Assertions.assertThat(usuarioLogin.isPresent()).isTrue();
+        Assertions.assertThat(usuario.getF_alta()).isEqualTo(LocalDate.now());
         Assertions.assertThat(usuarioLogin.get()).isEqualTo(usuario);
     }
 

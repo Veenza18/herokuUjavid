@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.UUID;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-import org.hibernate.validator.constraints.Length;
 
 /**
  * Clase que representa un Usuario
@@ -23,6 +21,17 @@ import org.hibernate.validator.constraints.Length;
  * @author admin
  */
 public class Usuario {
+
+    /**
+     * Días máximos que puede estar un contacto cercano en el sistema
+     */
+    private static final int DIAS_BORRADO = 31;
+
+    /**
+     * Nº de diás transucrridos para que un contacto Cercano pueda ser obtenido
+     * por un rastreador
+     */
+    public static final int DIAS_TRANSCURRIDOS = 14;
 
     /**
      * UUID del usuario*
@@ -55,7 +64,6 @@ public class Usuario {
     /**
      * Cotraseña del usuario
      */
-
     private String password;
 
     /**
@@ -78,8 +86,6 @@ public class Usuario {
         this.positivo = false;
         this.listadoContactos = new ArrayList<>();
     }
-
-    
 
     /**
      * Método para obtener el UUID del usuario
@@ -111,16 +117,26 @@ public class Usuario {
     /**
      * Método para obtener la fecha en la que se registro el Usuario
      *
-     * @return Fecha de registro del Usuario en el Sistema
+     * @return Fecha de curación del usuario o null si nunca se ha contagiado
      */
     public LocalDate getF_curacion() {
         return f_curacion;
     }
 
     /**
+     * Método para modificar la fecha de curación del usuario
+     *
+     * @param f_curacion Nueva Fecha en la que se ha curado el usuario
+     */
+    public void setF_curacion(LocalDate f_curacion) {
+        this.f_curacion = f_curacion;
+    }
+
+    /**
      * Método para obtener la fecha del último positivo del Usuario
      *
-     * @return Fecha del último positivo del usuario
+     * @return Fecha del último positivo del usuario o null si nunca ha dado
+     * positivo
      */
     public LocalDateTime getF_positivo() {
         return f_positivo;
@@ -164,20 +180,60 @@ public class Usuario {
 
     /**
      * Método para añadir un Contacto al usuario
-     * 
+     *
      * @param contacto Contacto cercano al usuario
      */
-    public void addContactoCercano(ContactoCercano contacto){
+    public void addContactoCercano(ContactoCercano contacto) {
         this.listadoContactos.add(contacto);
     }
-    
+
     /**
      * Devolver contactos cercanos del usuario
      *
      * @return Lista de contactos cercanos
      */
     public List<ContactoCercano> verContactosCercanos() {
-        return Collections.unmodifiableList(this.listadoContactos);
+        // Ordenamos la lista de contactos
+        Collections.sort(this.listadoContactos);
+        // Creamos una nueva lista de contactos en las que solo aparezcan los contactos de las 2 últimas semanas
+        List<ContactoCercano> listaDefinitiva = new ArrayList<>();
+        // Obtenemos la fecha de hace 2 semanas
+        LocalDate fecha2Semanas = LocalDate.now().minusDays(DIAS_TRANSCURRIDOS);
+
+        // Recorremos la lista
+        for (ContactoCercano contacto : this.listadoContactos) {
+            if (contacto.getFecha_contacto().toLocalDate().isAfter(fecha2Semanas)) {
+                // Añadimos el contacto a la lista
+                listaDefinitiva.add(contacto);
+            }
+        }
+        return Collections.unmodifiableList(listaDefinitiva);
+    }
+
+    /**
+     * Método para calcular los riesgos de los contactos del Usuario
+     */
+    public void calcularRiesgoContactos() {
+        // Calculamos todos los riesgos de los contactos del Usuario
+        for (ContactoCercano contacto : this.listadoContactos) {
+            contacto.calcularRiesgo(this.f_positivo.toLocalDate());
+        }
+    }
+
+    /**
+     * Método para borrar contactos cercanos al usuario pasados 31 diás
+     */
+    public void limpiarContactosCercanos() {
+        // Obtenemos la fecha de hace 1 mes(suponemos un mes equivale a 31 diás)
+        LocalDate fechaTope = LocalDate.now().minusDays(DIAS_BORRADO);
+        // Recorremos todos los contactos cercanos y eliminamos los que tengan más de 1 mes
+        for (ContactoCercano contacto : this.listadoContactos) {
+            // Comprobamos las fechas
+            if (contacto.getFecha_contacto().toLocalDate().isBefore(fechaTope)) {
+                // Eliminamos el contacto
+                this.listadoContactos.remove(contacto);
+            }
+        }
     }
 
     /**

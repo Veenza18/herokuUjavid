@@ -90,11 +90,11 @@ public class ServicioUjaVid {
      * @return El rastreador registrado en el sistema
      */
     public Rastreador altaRastreador(@NotNull @Valid Rastreador rastreador) {
-        if (rastreadores.containsKey(rastreador.getNumTelefono())) {
+        if (rastreadores.containsKey(rastreador.getDni())) {
             throw new RastreadorYaRegistrado();
         }
         // Registrar Rastreador
-        rastreadores.put(rastreador.getNumTelefono(), rastreador);
+        rastreadores.put(rastreador.getDni(), rastreador);
         return rastreador;
     }
 
@@ -115,28 +115,40 @@ public class ServicioUjaVid {
      * @param uuid Id del usuario a buscar
      * @return Lista de Contactos Cercanos al Usuario
      */
+    /**
+     * Método para añadir un Contacto cercano a un usuario
+     *
+     * @param contacto Contacto cercano que se va a añadir
+     * @param usuario Usuario que ha tenido el contacto cercano
+     */
+    public void addContactoCercano(@NotNull @Valid ContactoCercano contacto, @NotNull @Valid Usuario usuario) {
+        if (usuario.getListadoContactos().contains(contacto)) {
+            usuario.getListadoContactos().remove(contacto);
+        }
+        usuario.addContactoCercano(contacto);
+
+    }
+
+    /**
+     * Método para ver los contactos cercanos de un Usuario
+     *
+     * @param uuid UUID del usuario
+     *
+     * @return Lista de contactos cercanos al usuario
+     */
     public List<ContactoCercano> verContactosCercanos(UUID uuid) {
         Iterator<Usuario> it = usuarios.values().iterator();
         Usuario usuario_aux = null;
         boolean encontrado = false;
-        while (it.hasNext() || encontrado) {
+        while (it.hasNext() && !encontrado) {
             usuario_aux = it.next();
             if (usuario_aux.getUuid().equals(uuid)) {
                 encontrado = true;
             }
         }
+        
         Usuario usuario = Optional.ofNullable(usuarios.get(usuario_aux.getNumTelefono())).orElseThrow(UsuarioNoRegistrado::new);
         return usuario.verContactosCercanos();
-    }
-
-    /**
-     * Método para añadir un Contacto cercano a un usuario
-     * 
-     * @param contacto Contacto cercano que se va a añadir
-     * @param usuario Usuario que ha tenido el contacto cercano
-     */
-    public void addContactoCercano(@NotNull @Valid ContactoCercano contacto, @NotNull @Valid Usuario usuario) {
-        usuario.addContactoCercano(contacto);
     }
 
     /**
@@ -150,18 +162,21 @@ public class ServicioUjaVid {
         Iterator<Usuario> it = usuarios.values().iterator();
         Usuario usuario_aux = null;
         boolean encontrado = false;
-        while (it.hasNext() || encontrado) {
+        while (it.hasNext() && !encontrado) {
             usuario_aux = it.next();
             if (usuario_aux.getUuid().equals(uuid)) {
                 encontrado = true;
             }
         }
-        Usuario usuario = Optional.ofNullable(usuarios.get(usuario_aux.getNumTelefono())).orElseThrow(UsuarioNoRegistrado::new);
-        Rastreador rastreador = this.rastreadores.get(dniRastreador);
-        rastreador.aumentarNotificados();
-        usuario.setPositivo(true);
-        usuario.setF_positivo(f_positivo);
-        NUM_TOTAL_INF++;
+        if (encontrado) {
+            Usuario usuario = Optional.ofNullable(usuarios.get(usuario_aux.getNumTelefono())).orElseThrow(UsuarioNoRegistrado::new);
+            Rastreador rastreador = this.rastreadores.get(dniRastreador);
+            rastreador.aumentarNotificados();
+            usuario.setPositivo(true);
+            usuario.setF_positivo(f_positivo);
+            usuario.calcularRiesgoContactos();
+            NUM_TOTAL_INF++;
+        }
     }
 
     /**
@@ -173,14 +188,18 @@ public class ServicioUjaVid {
         Iterator<Usuario> it = usuarios.values().iterator();
         Usuario usuario_aux = null;
         boolean encontrado = false;
-        while (it.hasNext() || encontrado) {
+        while (it.hasNext() && !encontrado) {
             usuario_aux = it.next();
             if (usuario_aux.getUuid().equals(uuid)) {
                 encontrado = true;
             }
         }
-        Usuario usuario = Optional.ofNullable(usuarios.get(usuario_aux.getNumTelefono())).orElseThrow(UsuarioNoRegistrado::new);
-        usuario.setPositivo(false);
+
+        if (encontrado) {
+            Usuario usuario = Optional.ofNullable(usuarios.get(usuario_aux.getNumTelefono())).orElseThrow(UsuarioNoRegistrado::new);
+            usuario.setPositivo(false);
+            usuario.setF_curacion(LocalDate.now());
+        }
     }
 
     /**

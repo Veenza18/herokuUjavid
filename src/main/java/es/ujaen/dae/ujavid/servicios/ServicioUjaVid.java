@@ -125,7 +125,12 @@ public class ServicioUjaVid {
         usuario.addContactoCercano(contacto);
     }
     
-    
+    /**
+     * Método para ver los contactos cercanos de un Usuario
+     * @param uuid UUID del usuario 
+     * 
+     * @return Lista de contactos cercanos al usuario
+     */
     public List<ContactoCercano> verContactosCercanos(UUID uuid) {
         Iterator<Usuario> it = usuarios.values().iterator();
         Usuario usuario_aux = null;
@@ -164,6 +169,7 @@ public class ServicioUjaVid {
         rastreador.aumentarNotificados();
         usuario.setPositivo(true);
         usuario.setF_positivo(f_positivo);
+        usuario.calcularRiesgoContactos();
         NUM_TOTAL_INF++;
     }
 

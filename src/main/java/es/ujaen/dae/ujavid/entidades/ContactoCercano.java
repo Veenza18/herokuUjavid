@@ -4,7 +4,9 @@
  */
 package es.ujaen.dae.ujavid.entidades;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import static java.time.temporal.ChronoUnit.DAYS;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.PastOrPresent;
@@ -14,7 +16,7 @@ import javax.validation.constraints.PastOrPresent;
  *
  * @author admin
  */
-public class ContactoCercano implements Comparable<ContactoCercano>{
+public class ContactoCercano implements Comparable<ContactoCercano> {
 
     /**
      * Fecha y Hora en ka que se produjo el contacto
@@ -40,7 +42,12 @@ public class ContactoCercano implements Comparable<ContactoCercano>{
     @Min(0)
     private final int duracion;
 
-    private final double riesgo;
+    /**
+     * Riesgo de contagio del contacto en función de: 1 - La duración del
+     * contacto 2 - La distancia del contacto 3 - Nº de diás transcurridos ???
+     */
+    private double riesgo;
+
     /**
      * Constructor de la clase ContactoCercano
      *
@@ -54,7 +61,7 @@ public class ContactoCercano implements Comparable<ContactoCercano>{
         this.contacto = contacto;
         this.distancia = distancia;
         this.duracion = duracion;
-        this.riesgo = duracion / distancia;
+        this.riesgo = 0;
     }
 
     /**
@@ -93,25 +100,53 @@ public class ContactoCercano implements Comparable<ContactoCercano>{
         return duracion;
     }
 
+    /**
+     * Método para obtener el riesgo del contacto
+     *
+     * @return Riesgo del contacto
+     */
     public double getRiesgo() {
         return riesgo;
     }
 
-    
-    
-    @Override
-    public int compareTo(ContactoCercano o) {
-        if(this.riesgo < o.getRiesgo()){
-            return -1;
+    /**
+     * Método para calcular el riesgo del contacto cercano dado un positivo
+     * 
+     * @param fechaPositivo Fecha del positvo del Usuario que tiene registrado este contacto
+     */
+    public void calcularRiesgo(LocalDate fechaPositivo) {
+        // Comprobamos que el usuario es positivo
+        if (fechaPositivo != null) {
+            // Comprobamos los diás que han transcurrido desde el contacto y la fecha de positivo
+            long diasTranscurridos = DAYS.between(fechaPositivo, LocalDate.now());
+            // Si han pasado más de 14 días "suponemos que ya no hay riesgo de contagio"
+            if (diasTranscurridos > Usuario.DIAS_TRANSCURRIDOS) {
+                this.riesgo = 0;
+            } else {
+                this.riesgo = (this.duracion / this.distancia) * (Usuario.DIAS_TRANSCURRIDOS - diasTranscurridos);
+            }
         }
-        
-        if(this.riesgo > o.getRiesgo()){
-            return 1;
-        }
-        
-        // Los riesgos son iguales
-        return 0;   
     }
 
-    
+    /**
+     * Comparador de objetos ContactoCercano según el riesgo
+     *
+     * @param o ContactoCercano con el que se quiere comparar
+     * @return -1 si el objeto original es menor 1 si el objeto original es
+     * mayor 0 si los 2 objetos son iguales
+     */
+    @Override
+    public int compareTo(ContactoCercano o) {
+        if (this.riesgo < o.getRiesgo()) {
+            return -1;
+        }
+
+        if (this.riesgo > o.getRiesgo()) {
+            return 1;
+        }
+
+        // Los riesgos son iguales
+        return 0;
+    }
+
 }

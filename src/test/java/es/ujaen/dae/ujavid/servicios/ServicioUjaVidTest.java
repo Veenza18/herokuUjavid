@@ -7,6 +7,7 @@ package es.ujaen.dae.ujavid.servicios;
 import es.ujaen.dae.ujavid.entidades.Rastreador;
 import es.ujaen.dae.ujavid.entidades.Usuario;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import javax.validation.ConstraintViolationException;
 import org.assertj.core.api.Assertions;
@@ -76,7 +77,7 @@ public class ServicioUjaVidTest {
     
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    public void testAltaYLoginRastreaddor() {
+    public void testAltaYLoginRastreador() {
         Rastreador rastreador = new Rastreador(
                 "77434825N",
                 "Antonio",
@@ -92,6 +93,25 @@ public class ServicioUjaVidTest {
         Assertions.assertThat(rastreadorLogin.get()).isEqualTo(rastreador);
     }
     
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void testNotificarPos(){
+        Usuario usuario = new Usuario(
+                "660376093",
+                "nuevaclave");
+        Rastreador rastreador = new Rastreador(
+                "77434825N",
+                "Antonio",
+                "Venzala",
+                "Campaña",
+                "660376093",
+                "contraseña1");
+    servicioUjaVid.altaUsuario(usuario);
+    servicioUjaVid.altaRastreador(rastreador);
     
+    servicioUjaVid.notificarPos(usuario.getUuid(), LocalDateTime.now(), rastreador.getDni());
+    Assertions.assertThat(usuario.isPositivo()).isTrue();
+    Assertions.assertThat(rastreador.getNUM_TOTAL_NOTIFICADOS()).isEqualTo(1);
     
+    }
 }

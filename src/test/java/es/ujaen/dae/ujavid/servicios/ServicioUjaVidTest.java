@@ -138,8 +138,11 @@ public class ServicioUjaVidTest {
 
         ContactoCercano contacto0 = new ContactoCercano(LocalDateTime.now(),
                 usuario2, 4, 2);
-
+        ContactoCercano contacto1 = new ContactoCercano(LocalDateTime.now(),
+                usuario2, 4, 2);
+        //Si creamos 2 contactos iguales pero con horas diferentes, se sobreescriben
         usuario1.addContactoCercano(contacto0);
+        usuario1.addContactoCercano(contacto1);
         Assertions.assertThat(usuario1.getListadoContactos().size()).isEqualTo(1);
     }
 

@@ -122,9 +122,7 @@ public class ServicioUjaVid {
      * @param usuario Usuario que ha tenido el contacto cercano
      */
     public void addContactoCercano(@NotNull @Valid ContactoCercano contacto, @NotNull @Valid Usuario usuario) {
-        if (usuario.getListadoContactos().contains(contacto)) {
-            usuario.getListadoContactos().remove(contacto);
-        }
+        
         usuario.addContactoCercano(contacto);
 
     }

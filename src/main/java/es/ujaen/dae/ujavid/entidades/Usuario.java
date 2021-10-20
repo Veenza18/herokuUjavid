@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import javax.validation.constraints.PastOrPresent;
@@ -199,7 +200,18 @@ public class Usuario {
      *
      * @param contacto Contacto cercano al usuario
      */
+    
+    //Hay que mirar como ordenamos la lista para no iterar ya que puede ser muy lento y costoso
     public void addContactoCercano(ContactoCercano contacto) {
+        Iterator<ContactoCercano> it = listadoContactos.iterator();
+        boolean encontrado = false;
+        while(it.hasNext() && !encontrado){
+          ContactoCercano con_aux = it.next();
+            if(con_aux.getContacto().equals(contacto.getContacto())){
+                listadoContactos.remove(con_aux);
+                encontrado = true;
+            }
+        }
         this.listadoContactos.add(contacto);
     }
 

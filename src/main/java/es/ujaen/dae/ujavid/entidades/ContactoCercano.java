@@ -138,11 +138,11 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
     @Override
     public int compareTo(ContactoCercano o) {
         if (this.riesgo < o.getRiesgo()) {
-            return -1;
+            return 1;
         }
 
         if (this.riesgo > o.getRiesgo()) {
-            return 1;
+            return -1;
         }
 
         // Los riesgos son iguales

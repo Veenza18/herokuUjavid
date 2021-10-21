@@ -7,6 +7,7 @@ package es.ujaen.dae.ujavid.entidades;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import static java.time.temporal.ChronoUnit.DAYS;
+import java.util.Objects;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.PastOrPresent;
@@ -149,4 +150,37 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
         return 0;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        return hash;
+    }
+
+    /**
+     * Comparador de la clase ContactoCercano
+     * 
+     * @param obj Contacto cercano a comparar
+     * @return True si los 2 contactos tienen el mismo UUID o False en caso contrario
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ContactoCercano other = (ContactoCercano) obj;
+        // Comprobamos si tienen el mismo UUID
+        if (this.contacto.getUuid().equals(other.contacto.getUuid())) {
+            return true;
+        }
+        return false;
+    }
+
+    
+    
 }

@@ -122,12 +122,15 @@ public class ServicioUjaVid {
     /**
      * Método para añadir un Contacto cercano a un usuario
      *
-     * @param contacto Contacto cercano que se va a añadir
+     * @param contactos Contactos que se van a añadir a la lista
      * @param uuidUsuario UUID del usuario al que se le añadirá el contacto
      */
-    public void addContactoCercano(@NotNull @Valid ContactoCercano contacto, UUID uuidUsuario) {
+    public void addContactoCercano(List<ContactoCercano> contactos, UUID uuidUsuario) {
         Usuario usuario = Optional.ofNullable(usuarios.get(uuidUsuario)).orElseThrow(UsuarioNoRegistrado::new);
-        usuario.addContactoCercano(contacto);
+        for (ContactoCercano contacto : contactos) {
+            usuario.addContactoCercano(contacto);
+        }
+
     }
 
     /**

@@ -7,7 +7,6 @@ package es.ujaen.dae.ujavid.entidades;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import static java.time.temporal.ChronoUnit.DAYS;
-import java.util.Objects;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.PastOrPresent;

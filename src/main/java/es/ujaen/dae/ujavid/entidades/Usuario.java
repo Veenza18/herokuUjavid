@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 
@@ -201,19 +203,7 @@ public class Usuario {
      * @todo Hay que mirar como ordenamos la lista para no iterar ya que puede
      * ser muy lento y costoso
      */
-    public void addContactoCercano(ContactoCercano contacto) {
-//        Iterator<ContactoCercano> it = listadoContactos.iterator();
-//        boolean encontrado = false;
-//        // Recorremos la lista de contactos cercanos
-//        while (it.hasNext() && !encontrado) {
-//            ContactoCercano con_aux = it.next();
-//            // Comprobamos si ya está el contacto cercano en la lista
-//            if (con_aux.getContacto().equals(contacto.getContacto())) {
-//                listadoContactos.remove(con_aux);
-//                encontrado = true;
-//            }
-//        }
-
+    public void addContactoCercano(@NotNull @Valid ContactoCercano contacto) {
         // Comprobamos si está el contacto guardado en la lista
         if (this.listadoContactos.contains(contacto)) {
             this.listadoContactos.remove(contacto);

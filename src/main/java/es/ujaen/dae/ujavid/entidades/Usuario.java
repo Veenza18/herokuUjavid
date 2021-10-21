@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import javax.validation.constraints.PastOrPresent;
@@ -71,8 +70,8 @@ public class Usuario {
      * Fecha de alta/registro*
      */
     @PastOrPresent
-    private LocalDate f_alta;
-    
+    private final LocalDate f_alta;
+
     /**
      * Listado de Contactos Cercanos*
      */
@@ -130,15 +129,6 @@ public class Usuario {
     public LocalDate getF_curacion() {
         return f_curacion;
     }
-    
-    /**
-     * Método para obtener el UUID del usuario
-     *
-     * @return Uuid del usuario
-     */
-    public LocalDate getF_alta() {
-        return f_alta;
-    }
 
     /**
      * Método para modificar la fecha de curación del usuario
@@ -147,6 +137,15 @@ public class Usuario {
      */
     public void setF_curacion(LocalDate f_curacion) {
         this.f_curacion = f_curacion;
+    }
+
+    /**
+     * Método para obtener el UUID del usuario
+     *
+     * @return Uuid del usuario
+     */
+    public LocalDate getF_alta() {
+        return f_alta;
     }
 
     /**
@@ -199,20 +198,29 @@ public class Usuario {
      * Método para añadir un Contacto al usuario
      *
      * @param contacto Contacto cercano al usuario
+     * @todo Hay que mirar como ordenamos la lista para no iterar ya que puede
+     * ser muy lento y costoso
      */
-    
-    //Hay que mirar como ordenamos la lista para no iterar ya que puede ser muy lento y costoso
     public void addContactoCercano(ContactoCercano contacto) {
-        Iterator<ContactoCercano> it = listadoContactos.iterator();
-        boolean encontrado = false;
-        while(it.hasNext() && !encontrado){
-          ContactoCercano con_aux = it.next();
-            if(con_aux.getContacto().equals(contacto.getContacto())){
-                listadoContactos.remove(con_aux);
-                encontrado = true;
-            }
+//        Iterator<ContactoCercano> it = listadoContactos.iterator();
+//        boolean encontrado = false;
+//        // Recorremos la lista de contactos cercanos
+//        while (it.hasNext() && !encontrado) {
+//            ContactoCercano con_aux = it.next();
+//            // Comprobamos si ya está el contacto cercano en la lista
+//            if (con_aux.getContacto().equals(contacto.getContacto())) {
+//                listadoContactos.remove(con_aux);
+//                encontrado = true;
+//            }
+//        }
+
+        // Comprobamos si está el contacto guardado en la lista
+        if (this.listadoContactos.contains(contacto)) {
+            this.listadoContactos.remove(contacto);
         }
+        // Añadimos el contacto
         this.listadoContactos.add(contacto);
+
     }
 
     /**

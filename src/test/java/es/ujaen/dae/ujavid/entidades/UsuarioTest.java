@@ -19,7 +19,9 @@ import org.junit.jupiter.api.Test;
 public class UsuarioTest {
       public UsuarioTest() {
     }
-
+     /**
+     * Valida la creación de un usuario
+     */
      @Test
     void testValidacionUsuario() {
 
@@ -33,6 +35,9 @@ public class UsuarioTest {
                 
         Assertions.assertThat(violations).isEmpty();}
     
+     /**
+     * Valida la comprobación de la clave en un usuario
+     */
      @Test
     void testComprobacionClave() {
         String clave = "jjpg0006";

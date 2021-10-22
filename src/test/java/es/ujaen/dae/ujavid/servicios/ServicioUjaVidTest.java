@@ -34,6 +34,9 @@ public class ServicioUjaVidTest {
         Assertions.assertThat(servicioUjaVid).isNotNull();
     }
 
+    /**
+     * Comprueba que no podemos dar de alta a un usuario en nuestro servicio usando un email incorrecto
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testAltaUsuarioInvalido() {
@@ -51,8 +54,11 @@ public class ServicioUjaVidTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
 
+      /**
+     * Comprueba que no podemos dar de alta a un rastreador en nuestro servicio usando un email incorrecto
+     */
     public void testAltaRastreadorInvalido() {
-        // Cliente con e-mail incorrecto!!!
+        // Rastreador con e-mail incorrecto!!!
         Rastreador rastreador = new Rastreador(
                 "77434825N",
                 "Antonio",
@@ -67,6 +73,9 @@ public class ServicioUjaVidTest {
                 .isInstanceOf(ConstraintViolationException.class);
     }
 
+     /**
+     * Comprueba que  podemos dar de alta a un usuario en nuestro servicio usando credenciales correctas
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testAltaYLoginUsuario() {
@@ -82,6 +91,9 @@ public class ServicioUjaVidTest {
         Assertions.assertThat(usuarioLogin.get()).isEqualTo(usuario);
     }
 
+     /**
+     * Comprueba que  podemos dar de alta a un rastreador en nuestro servicio usando credenciales correctas
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testAltaYLoginRastreador() {
@@ -100,6 +112,9 @@ public class ServicioUjaVidTest {
         Assertions.assertThat(rastreadorLogin.get()).isEqualTo(rastreador);
     }
 
+     /**
+     * Valida que podemos notificar como positivo a un usuario registrado
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testNotificarPos() {
@@ -122,6 +137,9 @@ public class ServicioUjaVidTest {
 
     }
 
+     /**
+     * Valida que podemos añadir a los usuarios un contacto con otra persona
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testContactoCercano() {
@@ -146,6 +164,10 @@ public class ServicioUjaVidTest {
         Assertions.assertThat(usuario1.getListadoContactos().size()).isEqualTo(1);
     }
 
+     /**
+     * Valida nuestra función metaheurística, donde se comprueba que se obtiene una lista ordenada para una determinada persona
+     * de los contactos que ha tenido recientemente
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testMetaheuristica() {

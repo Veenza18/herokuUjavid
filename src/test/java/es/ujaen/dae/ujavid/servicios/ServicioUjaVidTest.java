@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import javax.validation.ConstraintViolationException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -106,10 +107,10 @@ public class ServicioUjaVidTest {
                 "contraseña1");
 
         servicioUjaVid.altaRastreador(rastreador);
-        Optional<Rastreador> rastreadorLogin = servicioUjaVid.loginRastreador(rastreador.getDni(), "contraseña1");
+        UUID rastreadorLogin = servicioUjaVid.loginRastreador(rastreador.getDni(), "contraseña1");
 
-        Assertions.assertThat(rastreadorLogin.isPresent()).isTrue();
-        Assertions.assertThat(rastreadorLogin.get()).isEqualTo(rastreador);
+        Assertions.assertThat(rastreadorLogin).isNotNull();
+        Assertions.assertThat(rastreadorLogin).isEqualTo(rastreador.getUuid());
     }
 
      /**
@@ -131,7 +132,7 @@ public class ServicioUjaVidTest {
         servicioUjaVid.altaUsuario(usuario);
         servicioUjaVid.altaRastreador(rastreador);
 
-        servicioUjaVid.notificarPos(usuario.getUuid(), LocalDateTime.now(), rastreador.getDni());
+        servicioUjaVid.notificarPos(usuario.getUuid(), LocalDateTime.now(), rastreador.getDni(),rastreador.getContraseña());
         Assertions.assertThat(usuario.isPositivo()).isTrue();
         Assertions.assertThat(rastreador.getNUM_TOTAL_NOTIFICADOS()).isEqualTo(1);
 
@@ -150,18 +151,28 @@ public class ServicioUjaVidTest {
         Usuario usuario2 = new Usuario(
                 "699699699",
                 "nuevaclave");
+        Usuario usuario3 = new Usuario(
+                "699699692",
+                "nuevaclave3");
 
         servicioUjaVid.altaUsuario(usuario1);
         servicioUjaVid.altaUsuario(usuario2);
-
+        servicioUjaVid.altaUsuario(usuario3);
+        //Si creamos 2 contactos iguales pero con horas diferentes, se sobreescriben
         ContactoCercano contacto0 = new ContactoCercano(LocalDateTime.now(),
                 usuario2, 4, 2);
         ContactoCercano contacto1 = new ContactoCercano(LocalDateTime.now(),
                 usuario2, 4, 2);
-        //Si creamos 2 contactos iguales pero con horas diferentes, se sobreescriben
-        usuario1.addContactoCercano(contacto0);
-        usuario1.addContactoCercano(contacto1);
-        Assertions.assertThat(usuario1.getListadoContactos().size()).isEqualTo(1);
+        ContactoCercano contacto2 = new ContactoCercano(LocalDateTime.now(),
+                usuario3, 4, 2);
+        
+        List<ContactoCercano> contactos = new ArrayList<>();
+        contactos.add(contacto0);
+        contactos.add(contacto1);
+        contactos.add(contacto2);
+                
+        servicioUjaVid.addContactoCercano(contactos, usuario1.getUuid());
+        Assertions.assertThat(usuario1.getListadoContactos().size()).isEqualTo(2);
     }
 
      /**
@@ -214,7 +225,7 @@ public class ServicioUjaVidTest {
         usuario1.addContactoCercano(contacto1);
         usuario1.addContactoCercano(contacto2);
 
-        servicioUjaVid.notificarPos(usuario1.getUuid(), LocalDateTime.now(), rastreador.getDni());
+        servicioUjaVid.notificarPos(usuario1.getUuid(), LocalDateTime.now(), rastreador.getDni(),rastreador.getContraseña());
 
         List<ContactoCercano> lista = servicioUjaVid.verContactosCercanos(usuario1.getUuid());
                 

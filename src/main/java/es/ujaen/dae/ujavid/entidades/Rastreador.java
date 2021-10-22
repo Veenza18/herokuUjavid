@@ -7,6 +7,7 @@ package es.ujaen.dae.ujavid.entidades;
 import es.ujaen.dae.ujavid.util.CodificadorMd5;
 import es.ujaen.dae.ujavid.util.ExprReg;
 import java.time.LocalDate;
+import java.util.UUID;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
@@ -21,6 +22,12 @@ public class Rastreador {
     /**
      * Dni del rastreador*
      */
+    
+    /**
+     * UUID del rastreador*
+     */
+    private final UUID uuid;
+    
     @Pattern(regexp = ExprReg.DNI)
     private String dni;
 
@@ -63,6 +70,7 @@ public class Rastreador {
      * @param contraseña Contraseña del Rastreador
      */
     public Rastreador(String dni, String nombre, String apellido_1, String apellido_2, String numTelefono, String contraseña) {
+        this.uuid = UUID.randomUUID();
         this.dni = dni;
         this.nombre = nombre;
         this.apellido_1 = apellido_1;
@@ -70,6 +78,16 @@ public class Rastreador {
         this.numTelefono = numTelefono;
         this.contraseña = CodificadorMd5.codificar(contraseña);
         this.NUM_TOTAL_NOTIFICADOS = 0;
+    }
+
+    
+     /**
+     * Método para obtener el UUID del rastreador
+     *
+     * @return UUID del rastreador
+     */
+    public UUID getUuid() {
+        return uuid;
     }
 
     

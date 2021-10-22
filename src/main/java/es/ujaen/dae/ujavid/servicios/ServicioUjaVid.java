@@ -115,8 +115,9 @@ public class ServicioUjaVid {
      * @param clave la clave de acceso
      * @return el objeto de la clase Rastreador asociado
      */
-    public Optional<Rastreador> loginRastreador(String dni, String clave) {
-        return Optional.ofNullable(rastreadores.get(dni)).filter((rastreador) -> rastreador.passwordValida(clave));
+    public UUID loginRastreador(String dni, String clave) {
+        Optional<Rastreador> op =  Optional.ofNullable(rastreadores.get(dni)).filter((rastreador) -> rastreador.passwordValida(clave));
+        return op.get().getUuid();
     }
 
     /**
@@ -128,7 +129,9 @@ public class ServicioUjaVid {
     public void addContactoCercano(List<ContactoCercano> contactos, UUID uuidUsuario) {
         Usuario usuario = Optional.ofNullable(usuarios.get(uuidUsuario)).orElseThrow(UsuarioNoRegistrado::new);
         for (ContactoCercano contacto : contactos) {
-            usuario.addContactoCercano(contacto);
+            if(!usuario.getUuid().equals(contacto.getContacto().getUuid())){
+                usuario.addContactoCercano(contacto);
+            }
         }
 
     }
@@ -151,17 +154,25 @@ public class ServicioUjaVid {
      * @param f_positivo Fecha y hora del positivo
      * @param dniRastreador DNI del rastreador que notifica el positivo
      */
-    public void notificarPos(UUID uuid, LocalDateTime f_positivo, String dniRastreador) {
+    public void notificarPos(UUID uuid, LocalDateTime f_positivo, String dniRastreador,String contraseña ) {
+        
         // Obtenemos el usuario
         Usuario usuario = Optional.ofNullable(usuarios.get(uuid)).orElseThrow(UsuarioNoRegistrado::new);
         // Obtnemos el Rstreador
         Rastreador rastreador = Optional.ofNullable(this.rastreadores.get(dniRastreador)).orElseThrow(RastreadorNoRegistrado::new);
-        // Realizamos las operaciones
-        rastreador.aumentarNotificados();
-        usuario.setPositivo(true);
-        usuario.setF_positivo(f_positivo);
-        usuario.calcularRiesgoContactos();
-        NUM_TOTAL_INF++;
+        System.err.println(rastreador.getUuid());
+        System.err.println(this.loginRastreador(dniRastreador, contraseña));
+        System.err.println("ENTROOOOOO");
+       if(rastreador.getUuid().equals(this.loginRastreador(dniRastreador, contraseña))){
+           
+            // Realizamos las operaciones
+            rastreador.aumentarNotificados();
+            usuario.setPositivo(true);
+            usuario.setF_positivo(f_positivo);
+            usuario.calcularRiesgoContactos();
+            NUM_TOTAL_INF++;
+       }
+        
     }
 
     /**

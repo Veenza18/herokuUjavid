@@ -36,7 +36,8 @@ public class ServicioUjaVidTest {
     }
 
     /**
-     * Comprueba que no podemos dar de alta a un usuario en nuestro servicio usando un email incorrecto
+     * Comprueba que no podemos dar de alta a un usuario en nuestro servicio
+     * usando un email incorrecto
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
@@ -55,8 +56,9 @@ public class ServicioUjaVidTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
 
-      /**
-     * Comprueba que no podemos dar de alta a un rastreador en nuestro servicio usando un email incorrecto
+    /**
+     * Comprueba que no podemos dar de alta a un rastreador en nuestro servicio
+     * usando un email incorrecto
      */
     public void testAltaRastreadorInvalido() {
         // Rastreador con e-mail incorrecto!!!
@@ -74,8 +76,9 @@ public class ServicioUjaVidTest {
                 .isInstanceOf(ConstraintViolationException.class);
     }
 
-     /**
-     * Comprueba que  podemos dar de alta a un usuario en nuestro servicio usando credenciales correctas
+    /**
+     * Comprueba que podemos dar de alta a un usuario en nuestro servicio usando
+     * credenciales correctas
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
@@ -92,8 +95,9 @@ public class ServicioUjaVidTest {
         Assertions.assertThat(usuarioLogin.get()).isEqualTo(usuario);
     }
 
-     /**
-     * Comprueba que  podemos dar de alta a un rastreador en nuestro servicio usando credenciales correctas
+    /**
+     * Comprueba que podemos dar de alta a un rastreador en nuestro servicio
+     * usando credenciales correctas
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
@@ -113,12 +117,15 @@ public class ServicioUjaVidTest {
         Assertions.assertThat(rastreadorLogin).isEqualTo(rastreador.getUuid());
     }
 
-     /**
+    /**
      * Valida que podemos notificar como positivo a un usuario registrado
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testNotificarPos() {
+
+        String contrasena = "contraseña1";
+
         Usuario usuario = new Usuario(
                 "660376093",
                 "nuevaclave");
@@ -128,17 +135,17 @@ public class ServicioUjaVidTest {
                 "Venzala",
                 "Campaña",
                 "660376093",
-                "contraseña1");
+                contrasena);
         servicioUjaVid.altaUsuario(usuario);
         servicioUjaVid.altaRastreador(rastreador);
 
-        servicioUjaVid.notificarPos(usuario.getUuid(), LocalDateTime.now(), rastreador.getDni(),rastreador.getContraseña());
+        servicioUjaVid.notificarPos(usuario.getUuid(), LocalDateTime.now(), rastreador.getDni(), contrasena);
         Assertions.assertThat(usuario.isPositivo()).isTrue();
         Assertions.assertThat(rastreador.getNUM_TOTAL_NOTIFICADOS()).isEqualTo(1);
 
     }
 
-     /**
+    /**
      * Valida que podemos añadir a los usuarios un contacto con otra persona
      */
     @Test
@@ -165,30 +172,34 @@ public class ServicioUjaVidTest {
                 usuario2, 4, 2);
         ContactoCercano contacto2 = new ContactoCercano(LocalDateTime.now(),
                 usuario3, 4, 2);
-        
+
         List<ContactoCercano> contactos = new ArrayList<>();
         contactos.add(contacto0);
         contactos.add(contacto1);
         contactos.add(contacto2);
-                
+
         servicioUjaVid.addContactoCercano(contactos, usuario1.getUuid());
         Assertions.assertThat(usuario1.getListadoContactos().size()).isEqualTo(2);
     }
 
-     /**
-     * Valida nuestra función metaheurística, donde se comprueba que se obtiene una lista ordenada para una determinada persona
-     * de los contactos que ha tenido recientemente
+    /**
+     * Valida nuestra función metaheurística, donde se comprueba que se obtiene
+     * una lista ordenada para una determinada persona de los contactos que ha
+     * tenido recientemente
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testMetaheuristica() {
+
+        String contrasena = "contraseña1";
+
         Rastreador rastreador = new Rastreador(
                 "77434825N",
                 "Juan Jose",
                 "Peiro",
                 "Garrido",
                 "612121211",
-                "contraseña1");
+                contrasena);
 
         Usuario usuario1 = new Usuario(
                 "656764549",
@@ -225,12 +236,164 @@ public class ServicioUjaVidTest {
         usuario1.addContactoCercano(contacto1);
         usuario1.addContactoCercano(contacto2);
 
-        servicioUjaVid.notificarPos(usuario1.getUuid(), LocalDateTime.now(), rastreador.getDni(),rastreador.getContraseña());
+        servicioUjaVid.notificarPos(usuario1.getUuid(), LocalDateTime.now(), rastreador.getDni(), contrasena);
 
         List<ContactoCercano> lista = servicioUjaVid.verContactosCercanos(usuario1.getUuid());
-                
-        for (int i = 0; i < lista.size()-1; i++) {
-            Assertions.assertThat(lista.get(i).getRiesgo()).isGreaterThanOrEqualTo(lista.get(i+1).getRiesgo());
+
+        for (int i = 0; i < lista.size() - 1; i++) {
+            Assertions.assertThat(lista.get(i).getRiesgo()).isGreaterThanOrEqualTo(lista.get(i + 1).getRiesgo());
         }
     }
+
+    /**
+     * Validación de que el estadístico de positivos actualmente y la función
+     * notificar curación trabajan correctamente
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void testNotificacionyPositivosActualmente() {
+        String contrasena = "contraseña1";
+
+        Rastreador rastreador = new Rastreador(
+                "77434825N",
+                "Juan Jose",
+                "Peiro",
+                "Garrido",
+                "612121211",
+                contrasena);
+
+        Usuario usuario1 = new Usuario(
+                "656764549",
+                "nuerrrfve");
+
+        Usuario usuario2 = new Usuario(
+                "699699699",
+                "nrerfre");
+
+        Usuario usuario3 = new Usuario(
+                "670670670",
+                "nurfrerfeve");
+
+        servicioUjaVid.altaRastreador(rastreador);
+        servicioUjaVid.altaUsuario(usuario1);
+        servicioUjaVid.altaUsuario(usuario2);
+        servicioUjaVid.altaUsuario(usuario3);
+
+        servicioUjaVid.notificarPos(usuario1.getUuid(), LocalDateTime.now(), rastreador.getDni(), contrasena);
+        servicioUjaVid.notificarPos(usuario2.getUuid(), LocalDateTime.now(), rastreador.getDni(), contrasena);
+        servicioUjaVid.notificarPos(usuario3.getUuid(), LocalDateTime.now(), rastreador.getDni(), contrasena);
+
+        Assertions.assertThat(servicioUjaVid.positivos_actual()).isEqualTo(3);
+        servicioUjaVid.notificarCuracion(usuario1.getUuid());
+        Assertions.assertThat(servicioUjaVid.positivos_actual()).isEqualTo(2);
+    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void testPositivos15Dias() {
+        String contrasena = "contraseña1";
+
+        Rastreador rastreador = new Rastreador(
+                "77434825N",
+                "Juan Jose",
+                "Peiro",
+                "Garrido",
+                "612121211",
+                contrasena);
+
+        Usuario usuario1 = new Usuario(
+                "656764549",
+                "nuerrrfve");
+
+        Usuario usuario2 = new Usuario(
+                "699699699",
+                "nrerfre");
+
+        Usuario usuario3 = new Usuario(
+                "670670670",
+                "nurfrerfeve");
+
+        servicioUjaVid.altaRastreador(rastreador);
+        servicioUjaVid.altaUsuario(usuario1);
+        servicioUjaVid.altaUsuario(usuario2);
+        servicioUjaVid.altaUsuario(usuario3);
+
+        servicioUjaVid.notificarPos(usuario1.getUuid(), LocalDateTime.now().minusDays(5), rastreador.getDni(), contrasena);
+        servicioUjaVid.notificarPos(usuario2.getUuid(), LocalDateTime.now().minusDays(40), rastreador.getDni(), contrasena);
+        servicioUjaVid.notificarPos(usuario3.getUuid(), LocalDateTime.now().minusDays(60), rastreador.getDni(), contrasena);
+
+        Assertions.assertThat(servicioUjaVid.positivos15Dias()).isEqualTo(1);
+    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void testFechasInvalidas() {
+        String contrasena = "contraseña1";
+
+        Rastreador rastreador = new Rastreador(
+                "77434825N",
+                "Juan Jose",
+                "Peiro",
+                "Garrido",
+                "612121211",
+                contrasena);
+
+        Usuario usuario1 = new Usuario(
+                "656764549",
+                "nuerrrfve");
+
+        servicioUjaVid.altaRastreador(rastreador);
+        servicioUjaVid.altaUsuario(usuario1);
+
+        Assertions.assertThatThrownBy(() -> {
+            servicioUjaVid.notificarPos(usuario1.getUuid(), LocalDateTime.now().plusDays(5), rastreador.getDni(), contrasena);
+        })
+                .isInstanceOf(ConstraintViolationException.class);
+
+    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void testReportadosRastreador() {
+        String contrasena="a";
+        String dniRastreador="77434825N";
+        Rastreador rastreador = new Rastreador(
+                dniRastreador,
+                "Juan Jose",
+                "Peiro",
+                "Garrido",
+                "612121211",
+                contrasena);
+
+        Usuario usuario1 = new Usuario(
+                "656764549",
+                "nuerrrfve");
+
+        Usuario usuario2 = new Usuario(
+                "699699699",
+                "nrerfre");
+
+        Usuario usuario3 = new Usuario(
+                "670670670",
+                "nurfrerfeve");
+
+
+        servicioUjaVid.altaRastreador(rastreador);
+        servicioUjaVid.altaUsuario(usuario1);
+        servicioUjaVid.altaUsuario(usuario2);
+        servicioUjaVid.altaUsuario(usuario3);
+
+        servicioUjaVid.notificarPos(usuario1.getUuid(), LocalDateTime.now().minusDays(60), rastreador.getDni(), contrasena);
+
+        servicioUjaVid.notificarPos(usuario2.getUuid(), LocalDateTime.now().minusDays(40), rastreador.getDni(), contrasena);
+        servicioUjaVid.notificarPos(usuario3.getUuid(), LocalDateTime.now().minusDays(5), rastreador.getDni(), contrasena);
+        servicioUjaVid.notificarCuracion(usuario1.getUuid());
+        servicioUjaVid.notificarCuracion(usuario2.getUuid());
+        servicioUjaVid.notificarPos(usuario1.getUuid(), LocalDateTime.now(), rastreador.getDni(), contrasena);
+        servicioUjaVid.notificarPos(usuario2.getUuid(), LocalDateTime.now(), rastreador.getDni(), contrasena);
+        
+        Assertions.assertThat(servicioUjaVid.positivosRastreador(dniRastreador)).isEqualTo(5);
+
+    }
+    
 }

@@ -21,6 +21,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -154,15 +155,12 @@ public class ServicioUjaVid {
      * @param f_positivo Fecha y hora del positivo
      * @param dniRastreador DNI del rastreador que notifica el positivo
      */
-    public void notificarPos(UUID uuid, LocalDateTime f_positivo, String dniRastreador,String contraseña ) {
+    public void notificarPos(UUID uuid, @PastOrPresent LocalDateTime f_positivo, String dniRastreador,String contraseña ) {
         
         // Obtenemos el usuario
         Usuario usuario = Optional.ofNullable(usuarios.get(uuid)).orElseThrow(UsuarioNoRegistrado::new);
         // Obtnemos el Rstreador
         Rastreador rastreador = Optional.ofNullable(this.rastreadores.get(dniRastreador)).orElseThrow(RastreadorNoRegistrado::new);
-        System.err.println(rastreador.getUuid());
-        System.err.println(this.loginRastreador(dniRastreador, contraseña));
-        System.err.println("ENTROOOOOO");
        if(rastreador.getUuid().equals(this.loginRastreador(dniRastreador, contraseña))){
            
             // Realizamos las operaciones

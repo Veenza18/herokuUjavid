@@ -21,6 +21,9 @@ public class RastreadorTest {
      public RastreadorTest() {
     }
 
+     /**
+     * Valida la creación de un rastreador
+     */
      @Test
     void testValidacionRastreador() {
         
@@ -38,7 +41,9 @@ public class RastreadorTest {
         Assertions.assertThat(violations).isEmpty();}
 
     
-    
+     /**
+     * Valida la comprobación de la clave en un rastreador
+     */
      @Test
     void testComprobacionClave() {
         String clave = "jjpg0006";

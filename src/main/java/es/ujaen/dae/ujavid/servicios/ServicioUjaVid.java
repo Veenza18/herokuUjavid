@@ -38,7 +38,7 @@ public class ServicioUjaVid {
     /**
      * Nº total de infectados
      */
-    private static int NUM_TOTAL_INF = 0;
+    private int NUM_TOTAL_INF = 0;
 
     /**
      * Mapa con la lista de rastreadores
@@ -248,7 +248,8 @@ public class ServicioUjaVid {
         LocalDate fechaPositivo = usuario.getF_positivo().minusDays(15).toLocalDate();
         // Obtenemos la fecha de curacion
         LocalDate fechaCuracion = usuario.getF_curacion();
-
+        if(fechaCuracion==null){fechaCuracion=LocalDate.now();}
+System.out.println("Tdssadsadsadsae"+usuario.getF_curacion()+"S"+usuario.getNumTelefono());
         // Recorremos todos los contactos del usuario
         for (int i = 0; i < contactos.size(); i++) {
             // Comprobamos si el contacto es positivo
@@ -272,26 +273,27 @@ public class ServicioUjaVid {
      * @return La estadistica de contagiados por usuarios positivos
      */
     public double contagiadosXusuario() {
-        int n_positivos_actual = 0;
-        int contagiados = 0;
+        double n_positivos_total = 0;
+        double contagiados_total = 0;
 
         // Recorremos todos los usuarios 
         Iterator<Usuario> it = usuarios.values().iterator();
 
+        System.out.println("WARRIORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
         while (it.hasNext()) {
             Usuario usuario = it.next();
-
             // Comprobamos que usuarios son positivos
-            if (usuario.isPositivo()) {
-                n_positivos_actual++;
+            if (usuario.getF_positivo()!=null) {              
+                n_positivos_total++;
                 // Calculamos los contagiados producidos por el usuario
-                contagiados += this.contagiadosUsuario(usuario.getUuid());
+                contagiados_total += this.contagiadosUsuario(usuario.getUuid());
             }
         }
 
+        System.out.println("TIMEEEEEEEEEEEEEe"+n_positivos_total+"S"+contagiados_total);
         // Comprobamos que hay almenos una persona que es positivo
-        if (n_positivos_actual > 0) {
-            return contagiados / n_positivos_actual;
+        if (n_positivos_total > 0) {
+            return contagiados_total / n_positivos_total;
         }
         return 0;
     }

@@ -30,7 +30,7 @@ public class Usuario {
     private static final int DIAS_BORRADO = 31;
 
     /**
-     * Nº de diás transucrridos para que un contacto Cercano pueda ser obtenido
+     * Nº de diás transcurridos para que un contacto Cercano pueda ser obtenido
      * por un rastreador
      */
     public static final int DIAS_TRANSCURRIDOS = 14;
@@ -69,18 +69,18 @@ public class Usuario {
     private String password;
 
     /**
-     * Fecha de alta/registro*
+     * Fecha de alta/registro
      */
     @PastOrPresent
     private final LocalDate f_alta;
 
     /**
-     * Listado de Contactos Cercanos*
+     * Listado de Contactos Cercanos
      */
     private List<ContactoCercano> listadoContactos;
 
     /**
-     * Constructor parametrizado de al clase Usuario
+     * Constructor parametrizado de la clase Usuario
      *
      * @param numTelefono Nº de teléfono
      * @param password Contraseña del usuario
@@ -106,7 +106,7 @@ public class Usuario {
     }
 
     /**
-     * Método para obtener la contraseñ del Usuario
+     * Método para obtener la contraseña del Usuario
      *
      * @return Contraseña del Usuario
      */
@@ -142,9 +142,9 @@ public class Usuario {
     }
 
     /**
-     * Método para obtener el UUID del usuario
+     * Método para obtener la fecha en la que se registro el usuario
      *
-     * @return Uuid del usuario
+     * @return Fecha de Alta del usuario en el sistema
      */
     public LocalDate getF_alta() {
         return f_alta;
@@ -200,8 +200,6 @@ public class Usuario {
      * Método para añadir un Contacto al usuario
      *
      * @param contacto Contacto cercano al usuario
-     * @todo Hay que mirar como ordenamos la lista para no iterar ya que puede
-     * ser muy lento y costoso
      */
     public void addContactoCercano(@NotNull @Valid ContactoCercano contacto) {
         // Comprobamos si está el contacto guardado en la lista

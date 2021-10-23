@@ -25,7 +25,7 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
     private final LocalDateTime fecha_contacto;
 
     /**
-     * Usuario con el que re produjo el contacto
+     * Usuario con el que se produjo el contacto
      */
     private final Usuario contacto;
 
@@ -44,7 +44,7 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
 
     /**
      * Riesgo de contagio del contacto en función de: 1 - La duración del
-     * contacto 2 - La distancia del contacto 3 - Nº de diás transcurridos ???
+     * contacto 2 - La distancia del contacto 3 - Nº de diás transcurridos
      */
     private double riesgo;
 
@@ -74,7 +74,7 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
     }
 
     /**
-     * Método para obtener del Usuario con el que se produjo el contacto
+     * Método para obtener el Usuario con el que se produjo el contacto
      *
      * @return Usuario con el que se produjo el contacto
      */
@@ -111,8 +111,9 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
 
     /**
      * Método para calcular el riesgo del contacto cercano dado un positivo
-     * 
-     * @param fechaPositivo Fecha del positvo del Usuario que tiene registrado este contacto
+     *
+     * @param fechaPositivo Fecha del positvo del Usuario que tiene registrado
+     * este contacto
      */
     public void calcularRiesgo(LocalDate fechaPositivo) {
         // Comprobamos que el usuario es positivo
@@ -157,9 +158,10 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
 
     /**
      * Comparador de la clase ContactoCercano
-     * 
+     *
      * @param obj Contacto cercano a comparar
-     * @return True si los 2 contactos tienen el mismo UUID o False en caso contrario
+     * @return True si los 2 contactos tienen el mismo UUID o False en caso
+     * contrario
      */
     @Override
     public boolean equals(Object obj) {
@@ -180,6 +182,4 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
         return false;
     }
 
-    
-    
 }

@@ -6,7 +6,6 @@ package es.ujaen.dae.ujavid.entidades;
 
 import es.ujaen.dae.ujavid.util.CodificadorMd5;
 import es.ujaen.dae.ujavid.util.ExprReg;
-import java.time.LocalDate;
 import java.util.UUID;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;

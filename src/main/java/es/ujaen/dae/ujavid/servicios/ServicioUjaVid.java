@@ -249,7 +249,6 @@ public class ServicioUjaVid {
         // Obtenemos la fecha de curacion
         LocalDate fechaCuracion = usuario.getF_curacion();
         if(fechaCuracion==null){fechaCuracion=LocalDate.now();}
-System.out.println("Tdssadsadsadsae"+usuario.getF_curacion()+"S"+usuario.getNumTelefono());
         // Recorremos todos los contactos del usuario
         for (int i = 0; i < contactos.size(); i++) {
             // Comprobamos si el contacto es positivo
@@ -279,7 +278,6 @@ System.out.println("Tdssadsadsadsae"+usuario.getF_curacion()+"S"+usuario.getNumT
         // Recorremos todos los usuarios 
         Iterator<Usuario> it = usuarios.values().iterator();
 
-        System.out.println("WARRIORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
         while (it.hasNext()) {
             Usuario usuario = it.next();
             // Comprobamos que usuarios son positivos

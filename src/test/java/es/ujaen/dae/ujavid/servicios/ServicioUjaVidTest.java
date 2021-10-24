@@ -251,7 +251,7 @@ public class ServicioUjaVidTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    public void testNotificacionyPositivosActualmente() {
+    public void testNotificacionCuracionyPositivosActualmente() {
         String contrasena = "contraseña1";
 
         Rastreador rastreador = new Rastreador(
@@ -288,6 +288,10 @@ public class ServicioUjaVidTest {
         Assertions.assertThat(servicioUjaVid.positivos_actual()).isEqualTo(2);
     }
 
+      /**
+     * Validación de que el estadístico de que el estadístico de
+     * positivos en los ultimos 15 dias funciona correctamente
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testPositivos15Dias() {
@@ -325,6 +329,10 @@ public class ServicioUjaVidTest {
         Assertions.assertThat(servicioUjaVid.positivos15Dias()).isEqualTo(1);
     }
 
+      /**
+     * Validación de que se pueden introducir fechas invalidas,
+     * como por ejemplo fechas futuras a la hora de notificar un positivo
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testFechasInvalidas() {
@@ -352,6 +360,11 @@ public class ServicioUjaVidTest {
 
     }
 
+    
+     /**
+     * Validación de que el contador de los reportados por rastreador funciona correctamente
+     * y del estadístico de total infectados
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testReportadosRastreador_totalinfectados() {
@@ -407,12 +420,19 @@ public class ServicioUjaVidTest {
         Assertions.assertThat(servicioUjaVid.totalInfectados()).isEqualTo(5);
     }
     
+     /**
+     * Validación de que el estadístico de que el estadístico de
+     * contagiadosXUsuario funciona correctamente (Si dos personas tienen contacto entre si y dan positivo
+     * en el periodo que puede contagiar, se contará dos veces)
+     */
      @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testContagiadosXUsuario() {
     
-     String contrasena="a";
+        String contrasena="a";
+        
         String dniRastreador="77434825N";
+        
         Rastreador rastreador = new Rastreador(
                 dniRastreador,
                 "Juan Jose",
@@ -449,7 +469,9 @@ public class ServicioUjaVidTest {
         servicioUjaVid.altaUsuario(usuario4);
         servicioUjaVid.altaUsuario(usuario5);
     
-           
+        //Los contactosCercanos entre usuario 1 y usuario 3 sucedieron hace 90 días, por lo que el programa no lo contará para el estadístico
+        //El contacto entre usuario 1 y usuario 2 fue en el periodo de contagio y se contará en el estadístico como 2 contagios, es decir
+        //que el usuario 1 contagió al usuario 2 y el usuario 2 contagió al usuario 1
         ContactoCercano contacto0 = new ContactoCercano(LocalDateTime.now().minusDays(10),
                 usuario2, 4, 2);
         ContactoCercano contacto1 = new ContactoCercano(LocalDateTime.now().minusDays(90),
@@ -484,12 +506,65 @@ public class ServicioUjaVidTest {
         servicioUjaVid.notificarPos(usuario5.getUuid(), LocalDateTime.now(), rastreador.getDni(), contrasena);
     
         servicioUjaVid.notificarCuracion(usuario4.getUuid());
+
         
      
        
         servicioUjaVid.notificarPos(usuario1.getUuid(), LocalDateTime.now(), rastreador.getDni(), contrasena);
-        System.out.println("FFFFFFFFFFFFFFFFFFFFFFF"+servicioUjaVid.contagiadosXusuario());
-        Assertions.assertThat(servicioUjaVid.contagiadosXusuario()).isEqualTo(0.6);
+        Assertions.assertThat(servicioUjaVid.contagiadosXusuario()).isEqualTo(0.8);
     }
     
+    /**
+     * Comprobación de que el método ver contactos funciona correctamente, haciendo test al número
+     * de contactos que ha tenido ese usuario
+     */
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void testVercontactos() {
+
+        String contrasena = "contraseña1";
+
+        Rastreador rastreador = new Rastreador(
+                "77434825N",
+                "Juan Jose",
+                "Peiro",
+                "Garrido",
+                "612121211",
+                contrasena);
+
+        Usuario usuario1 = new Usuario(
+                "656764549",
+                "nuerrrfve");
+
+        Usuario usuario2 = new Usuario(
+                "699699699",
+                "nrerfre");
+
+        Usuario usuario3 = new Usuario(
+                "670670670",
+                "nurfrerfeve");
+
+        Usuario usuario4 = new Usuario(
+                "660376093",
+                "efrerfree");
+
+        servicioUjaVid.altaRastreador(rastreador);
+        servicioUjaVid.altaUsuario(usuario1);
+        servicioUjaVid.altaUsuario(usuario2);
+        servicioUjaVid.altaUsuario(usuario3);
+        servicioUjaVid.altaUsuario(usuario4);
+
+        ContactoCercano contacto0 = new ContactoCercano(LocalDateTime.now(),
+                usuario2, 4, 2);
+
+        ContactoCercano contacto1 = new ContactoCercano(LocalDateTime.now(),
+                usuario3, 2, 4);
+
+        ContactoCercano contacto2 = new ContactoCercano(LocalDateTime.now(),
+                usuario4, 1, 3);
+
+        usuario1.addContactoCercano(contacto0);
+        usuario1.addContactoCercano(contacto1);
+        usuario1.addContactoCercano(contacto2);
+        Assertions.assertThat(servicioUjaVid.verContactosCercanos(usuario1.getUuid())).isEqualTo(3);
+    }
 }

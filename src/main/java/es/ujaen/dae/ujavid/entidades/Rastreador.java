@@ -17,16 +17,19 @@ import javax.validation.constraints.Pattern;
  */
 public class Rastreador {
 
-    private int NUM_TOTAL_NOTIFICADOS;
     /**
-     * Dni del rastreador*
+     * Nº total de infectados
      */
-    
+    private int numTotalNotificados;
+
     /**
      * UUID del rastreador*
      */
     private final UUID uuid;
-    
+
+    /**
+     * Dni del rastreador*
+     */
     @Pattern(regexp = ExprReg.DNI)
     private String dni;
 
@@ -40,12 +43,12 @@ public class Rastreador {
      * Primer apellido del rastreador*
      */
     @NotBlank
-    private String apellido_1;
+    private String apellido1;
 
     /**
      * Segundo apellido del rastreador*
      */
-    private String apellido_2;
+    private String apellido2;
 
     /**
      * Número de teléfono del rastreador*
@@ -56,31 +59,30 @@ public class Rastreador {
     /**
      * Contraseña del rastreador*
      */
-    private String contraseña;
+    private String password;
 
     /**
      * Contructor parametrizado del Rastreador
      *
      * @param dni DNI del rastreador
      * @param nombre Nombre del Rastreador
-     * @param apellido_1 Primer Apellido del rastreador
-     * @param apellido_2 Segundo apellido del rastreador
+     * @param apellido1 Primer Apellido del rastreador
+     * @param apellido2 Segundo apellido del rastreador
      * @param numTelefono Nº de teléfono del rastreador
-     * @param contraseña Contraseña del Rastreador
+     * @param password Contraseña del Rastreador
      */
-    public Rastreador(String dni, String nombre, String apellido_1, String apellido_2, String numTelefono, String contraseña) {
+    public Rastreador(String dni, String nombre, String apellido1, String apellido2, String numTelefono, String password) {
         this.uuid = UUID.randomUUID();
         this.dni = dni;
         this.nombre = nombre;
-        this.apellido_1 = apellido_1;
-        this.apellido_2 = apellido_2;
+        this.apellido1 = apellido1;
+        this.apellido2 = apellido2;
         this.numTelefono = numTelefono;
-        this.contraseña = CodificadorMd5.codificar(contraseña);
-        this.NUM_TOTAL_NOTIFICADOS = 0;
+        this.password = CodificadorMd5.codificar(password);
+        this.numTotalNotificados = 0;
     }
 
-    
-     /**
+    /**
      * Método para obtener el UUID del rastreador
      *
      * @return UUID del rastreador
@@ -88,8 +90,6 @@ public class Rastreador {
     public UUID getUuid() {
         return uuid;
     }
-
-    
 
     /**
      * Método para obtener el DNI del rastreador
@@ -114,8 +114,8 @@ public class Rastreador {
      *
      * @return Primer apellido del rastreador
      */
-    public String getApellido_1() {
-        return apellido_1;
+    public String getApellido1() {
+        return apellido1;
     }
 
     /**
@@ -123,8 +123,8 @@ public class Rastreador {
      *
      * @return Segundo apellido del rastreador
      */
-    public String getApellido_2() {
-        return apellido_2;
+    public String getApellido2() {
+        return apellido2;
     }
 
     /**
@@ -141,25 +141,25 @@ public class Rastreador {
      *
      * @return Contraseña del rastreador
      */
-    public String getContraseña() {
-        return contraseña;
+    public String getPassword() {
+        return password;
     }
 
-    public int getNUM_TOTAL_NOTIFICADOS() {
-        return NUM_TOTAL_NOTIFICADOS;
+    public int getNumTotalNotificados() {
+        return numTotalNotificados;
     }
 
     public void aumentarNotificados() {
-        NUM_TOTAL_NOTIFICADOS++;
+        numTotalNotificados++;
     }
 
     /**
-     * Compara la contraseña con la del usuario, codificándola en Md5
+     * Compara la password con la del usuario, codificándola en Md5
      *
      * @param password Contraseña a comprobar
      * @return True si las contrasñeas son iguales o False si son distintas
      */
     public boolean passwordValida(String password) {
-        return this.contraseña.equals(CodificadorMd5.codificar(password));
+        return this.password.equals(CodificadorMd5.codificar(password));
     }
 }

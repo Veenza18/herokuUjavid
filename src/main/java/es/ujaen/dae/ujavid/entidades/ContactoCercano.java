@@ -22,7 +22,7 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
      * Fecha y Hora en ka que se produjo el contacto
      */
     @PastOrPresent
-    private final LocalDateTime fecha_contacto;
+    private final LocalDateTime fechaContacto;
 
     /**
      * Usuario con el que se produjo el contacto
@@ -51,13 +51,13 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
     /**
      * Constructor de la clase ContactoCercano
      *
-     * @param fecha_contacto Fecha y Hora
+     * @param fechaContacto Fecha y Hora
      * @param contacto Usuario con el que se produjo el contacto
      * @param distancia Distancia a la que se produce el contacto
      * @param duracion Duración del contacto
      */
-    public ContactoCercano(LocalDateTime fecha_contacto, Usuario contacto, double distancia, int duracion) {
-        this.fecha_contacto = fecha_contacto;
+    public ContactoCercano(LocalDateTime fechaContacto, Usuario contacto, double distancia, int duracion) {
+        this.fechaContacto = fechaContacto;
         this.contacto = contacto;
         this.distancia = distancia;
         this.duracion = duracion;
@@ -69,8 +69,8 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
      *
      * @return Fecha y Hora del contacto
      */
-    public LocalDateTime getFecha_contacto() {
-        return fecha_contacto;
+    public LocalDateTime getFechaContacto() {
+        return fechaContacto;
     }
 
     /**

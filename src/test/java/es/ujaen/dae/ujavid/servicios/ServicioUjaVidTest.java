@@ -75,24 +75,7 @@ public class ServicioUjaVidTest {
                 .isInstanceOf(ConstraintViolationException.class);
     }
 
-    /**
-     * Comprueba que podemos dar de alta a un usuario en nuestro servicio usando
-     * credenciales correctas
-     */
-    @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    public void testAltaYLoginUsuario() {
-        Usuario usuario = new Usuario(
-                "660376093",
-                "nuevaclave");
-
-        servicioUjaVid.altaUsuario(usuario);
-        Optional<Usuario> usuarioLogin = servicioUjaVid.loginUsuario(usuario.getNumTelefono(), "nuevaclave");
-
-        Assertions.assertThat(usuarioLogin.isPresent()).isTrue();
-        Assertions.assertThat(usuario.getF_alta()).isEqualTo(LocalDate.now());
-        Assertions.assertThat(usuarioLogin.get()).isEqualTo(usuario);
-    }
+    
 
     /**
      * Comprueba que podemos dar de alta a un rastreador en nuestro servicio
@@ -142,7 +125,7 @@ public class ServicioUjaVidTest {
         UUID uuid_rastreador = servicioUjaVid.loginRastreador(rastreador.getDni(), contrasena);
         servicioUjaVid.notificarPos(usuario.getUuid(), LocalDateTime.now(), rastreador.getDni(), uuid_rastreador);
         Assertions.assertThat(usuario.isPositivo()).isTrue();
-        Assertions.assertThat(rastreador.getNUM_TOTAL_NOTIFICADOS()).isEqualTo(1);
+        Assertions.assertThat(rastreador.getNumTotalNotificados()).isEqualTo(1);
 
     }
 

@@ -50,13 +50,13 @@ public class Usuario {
      * Fecha de curación*
      */
     @PastOrPresent
-    private LocalDate f_curacion;
+    private LocalDate fCuracion;
 
     /**
      * Fecha de positivo *
      */
     @PastOrPresent
-    private LocalDateTime f_positivo;
+    private LocalDateTime fPositivo;
 
     /**
      * ¿Es Positivo?*
@@ -72,7 +72,7 @@ public class Usuario {
      * Fecha de alta/registro
      */
     @PastOrPresent
-    private final LocalDate f_alta;
+    private final LocalDate fAlta;
 
     /**
      * Listado de Contactos Cercanos
@@ -89,10 +89,10 @@ public class Usuario {
         this.uuid = UUID.randomUUID();
         this.password = CodificadorMd5.codificar(password);
         this.numTelefono = numTelefono;
-        this.f_curacion = null;
-        this.f_positivo = null;
+        this.fCuracion = null;
+        this.fPositivo = null;
         this.positivo = false;
-        this.f_alta = LocalDate.now();
+        this.fAlta = LocalDate.now();
         this.listadoContactos = new ArrayList<>();
     }
 
@@ -103,15 +103,6 @@ public class Usuario {
      */
     public UUID getUuid() {
         return uuid;
-    }
-
-    /**
-     * Método para obtener la contraseña del Usuario
-     *
-     * @return Contraseña del Usuario
-     */
-    public String getPassword() {
-        return password;
     }
 
     /**
@@ -128,17 +119,17 @@ public class Usuario {
      *
      * @return Fecha de curación del usuario o null si nunca se ha contagiado
      */
-    public LocalDate getF_curacion() {
-        return f_curacion;
+    public LocalDate getfCuracion() {
+        return fCuracion;
     }
 
     /**
      * Método para modificar la fecha de curación del usuario
      *
-     * @param f_curacion Nueva Fecha en la que se ha curado el usuario
+     * @param fCuracion Nueva Fecha en la que se ha curado el usuario
      */
-    public void setF_curacion(LocalDate f_curacion) {
-        this.f_curacion = f_curacion;
+    public void setfCuracion(LocalDate fCuracion) {
+        this.fCuracion = fCuracion;
     }
 
     /**
@@ -146,8 +137,8 @@ public class Usuario {
      *
      * @return Fecha de Alta del usuario en el sistema
      */
-    public LocalDate getF_alta() {
-        return f_alta;
+    public LocalDate getfAlta() {
+        return fAlta;
     }
 
     /**
@@ -156,17 +147,17 @@ public class Usuario {
      * @return Fecha del último positivo del usuario o null si nunca ha dado
      * positivo
      */
-    public LocalDateTime getF_positivo() {
-        return f_positivo;
+    public LocalDateTime getfPositivo() {
+        return fPositivo;
     }
 
     /**
      * Método para modificar la fecha del último positivo del Usuario
      *
-     * @param f_positivo Fecha del último positivo
+     * @param fPositivo Fecha del último positivo
      */
-    public void setF_positivo(LocalDateTime f_positivo) {
-        this.f_positivo = f_positivo;
+    public void setfPositivo(LocalDateTime fPositivo) {
+        this.fPositivo = fPositivo;
     }
 
     /**
@@ -226,7 +217,7 @@ public class Usuario {
 
         // Recorremos la lista
         for (ContactoCercano contacto : this.listadoContactos) {
-            if (contacto.getFecha_contacto().toLocalDate().isAfter(fecha2Semanas)) {
+            if (contacto.getFechaContacto().toLocalDate().isAfter(fecha2Semanas)) {
                 // Añadimos el contacto a la lista
                 listaDefinitiva.add(contacto);
             }
@@ -240,7 +231,7 @@ public class Usuario {
     public void calcularRiesgoContactos() {
         // Calculamos todos los riesgos de los contactos del Usuario
         for (ContactoCercano contacto : this.listadoContactos) {
-            contacto.calcularRiesgo(this.f_positivo.toLocalDate());
+            contacto.calcularRiesgo(this.fPositivo.toLocalDate());
         }
     }
 
@@ -253,7 +244,7 @@ public class Usuario {
         // Recorremos todos los contactos cercanos y eliminamos los que tengan más de 1 mes
         for (ContactoCercano contacto : this.listadoContactos) {
             // Comprobamos las fechas
-            if (contacto.getFecha_contacto().toLocalDate().isBefore(fechaTope)) {
+            if (contacto.getFechaContacto().toLocalDate().isBefore(fechaTope)) {
                 // Eliminamos el contacto
                 this.listadoContactos.remove(contacto);
             }

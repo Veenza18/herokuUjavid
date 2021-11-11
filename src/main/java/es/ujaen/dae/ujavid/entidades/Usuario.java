@@ -6,6 +6,7 @@ package es.ujaen.dae.ujavid.entidades;
 
 import es.ujaen.dae.ujavid.util.CodificadorMd5;
 import es.ujaen.dae.ujavid.util.ExprReg;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,12 +18,19 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+
+
+
 /**
  * Clase que representa un Usuario
  *
  * @author admin
  */
-public class Usuario {
+@Entity
+public class Usuario implements Serializable{
 
     /**
      * Días máximos que puede estar un contacto cercano en el sistema
@@ -38,11 +46,13 @@ public class Usuario {
     /**
      * UUID del usuario*
      */
+    
     private final UUID uuid;
 
     /**
      * Número de teléfono*
      */
+    @Id
     @Pattern(regexp = ExprReg.TLF)
     private String numTelefono;
 
@@ -77,6 +87,7 @@ public class Usuario {
     /**
      * Listado de Contactos Cercanos*
      */
+    @Transient
     private List<ContactoCercano> listadoContactos;
 
     /**

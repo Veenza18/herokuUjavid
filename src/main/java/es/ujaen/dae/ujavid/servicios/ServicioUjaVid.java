@@ -11,6 +11,8 @@ import es.ujaen.dae.ujavid.excepciones.UsuarioYaRegistrado;
 import es.ujaen.dae.ujavid.excepciones.UsuarioNoRegistrado;
 import es.ujaen.dae.ujavid.excepciones.RastreadorYaRegistrado;
 import es.ujaen.dae.ujavid.excepciones.RastreadorNoRegistrado;
+import es.ujaen.dae.ujavid.repositorios.RepositorioRastreadores;
+import es.ujaen.dae.ujavid.repositorios.RepositorioUsuarios;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Iterator;
@@ -22,6 +24,7 @@ import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -34,6 +37,12 @@ import org.springframework.validation.annotation.Validated;
 @Service
 @Validated
 public class ServicioUjaVid {
+
+    @Autowired
+    RepositorioUsuarios repositorioUsuarios;
+
+    @Autowired
+    RepositorioRastreadores repositorioRastreadores;
 
     /**
      * Nº total de infectados
@@ -54,8 +63,6 @@ public class ServicioUjaVid {
      * Constructor de la clase ServicioUjavid
      */
     public ServicioUjaVid() {
-        rastreadores = new TreeMap<>();
-        usuarios = new TreeMap<>();
     }
 
     /**
@@ -66,11 +73,12 @@ public class ServicioUjaVid {
      * @throws UsuarioYaRegistrado en caso de que esté el Usuario registrado
      */
     public UUID altaUsuario(@NotNull @Valid Usuario usuario) {
-        if (usuarios.containsKey(usuario.getUuid())) {
+
+        if (repositorioUsuarios.buscar(usuario.getNumTelefono()).isPresent()) {
             throw new UsuarioYaRegistrado();
         }
-        // Registrar Usuario
-        usuarios.put(usuario.getUuid(), usuario);
+
+        repositorioUsuarios.guardar(usuario);
         return usuario.getUuid();
     }
 
@@ -98,7 +106,7 @@ public class ServicioUjaVid {
      */
     public UUID loginRastreador(String dni, String clave) {
         Optional<Rastreador> op = Optional.ofNullable(rastreadores.get(dni)).filter((rastreador) -> rastreador.passwordValida(clave));
-        if(op.isEmpty()){
+        if (op.isEmpty()) {
             throw new RastreadorNoRegistrado();
         }
         return op.get().getUuid();

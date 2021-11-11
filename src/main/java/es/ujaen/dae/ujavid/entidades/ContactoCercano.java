@@ -22,10 +22,10 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
      * Fecha y Hora en ka que se produjo el contacto
      */
     @PastOrPresent
-    private final LocalDateTime fecha_contacto;
+    private final LocalDateTime fechaContacto;
 
     /**
-     * Usuario con el que re produjo el contacto
+     * Usuario con el que se produjo el contacto
      */
     private final Usuario contacto;
 
@@ -44,20 +44,20 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
 
     /**
      * Riesgo de contagio del contacto en función de: 1 - La duración del
-     * contacto 2 - La distancia del contacto 3 - Nº de diás transcurridos ???
+     * contacto 2 - La distancia del contacto 3 - Nº de diás transcurridos
      */
     private double riesgo;
 
     /**
      * Constructor de la clase ContactoCercano
      *
-     * @param fecha_contacto Fecha y Hora
+     * @param fechaContacto Fecha y Hora
      * @param contacto Usuario con el que se produjo el contacto
      * @param distancia Distancia a la que se produce el contacto
      * @param duracion Duración del contacto
      */
-    public ContactoCercano(LocalDateTime fecha_contacto, Usuario contacto, double distancia, int duracion) {
-        this.fecha_contacto = fecha_contacto;
+    public ContactoCercano(LocalDateTime fechaContacto, Usuario contacto, double distancia, int duracion) {
+        this.fechaContacto = fechaContacto;
         this.contacto = contacto;
         this.distancia = distancia;
         this.duracion = duracion;
@@ -69,12 +69,12 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
      *
      * @return Fecha y Hora del contacto
      */
-    public LocalDateTime getFecha_contacto() {
-        return fecha_contacto;
+    public LocalDateTime getFechaContacto() {
+        return fechaContacto;
     }
 
     /**
-     * Método para obtener del Usuario con el que se produjo el contacto
+     * Método para obtener el Usuario con el que se produjo el contacto
      *
      * @return Usuario con el que se produjo el contacto
      */
@@ -111,8 +111,9 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
 
     /**
      * Método para calcular el riesgo del contacto cercano dado un positivo
-     * 
-     * @param fechaPositivo Fecha del positvo del Usuario que tiene registrado este contacto
+     *
+     * @param fechaPositivo Fecha del positvo del Usuario que tiene registrado
+     * este contacto
      */
     public void calcularRiesgo(LocalDate fechaPositivo) {
         // Comprobamos que el usuario es positivo
@@ -157,9 +158,10 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
 
     /**
      * Comparador de la clase ContactoCercano
-     * 
+     *
      * @param obj Contacto cercano a comparar
-     * @return True si los 2 contactos tienen el mismo UUID o False en caso contrario
+     * @return True si los 2 contactos tienen el mismo UUID o False en caso
+     * contrario
      */
     @Override
     public boolean equals(Object obj) {
@@ -180,6 +182,4 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
         return false;
     }
 
-    
-    
 }

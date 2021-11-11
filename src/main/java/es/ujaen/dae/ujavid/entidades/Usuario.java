@@ -38,7 +38,7 @@ public class Usuario implements Serializable{
     private static final int DIAS_BORRADO = 31;
 
     /**
-     * Nº de diás transucrridos para que un contacto Cercano pueda ser obtenido
+     * Nº de diás transcurridos para que un contacto Cercano pueda ser obtenido
      * por un rastreador
      */
     public static final int DIAS_TRANSCURRIDOS = 14;
@@ -60,13 +60,13 @@ public class Usuario implements Serializable{
      * Fecha de curación*
      */
     @PastOrPresent
-    private LocalDate f_curacion;
+    private LocalDate fCuracion;
 
     /**
      * Fecha de positivo *
      */
     @PastOrPresent
-    private LocalDateTime f_positivo;
+    private LocalDateTime fPositivo;
 
     /**
      * ¿Es Positivo?*
@@ -79,19 +79,19 @@ public class Usuario implements Serializable{
     private String password;
 
     /**
-     * Fecha de alta/registro*
+     * Fecha de alta/registro
      */
     @PastOrPresent
-    private final LocalDate f_alta;
+    private final LocalDate fAlta;
 
     /**
-     * Listado de Contactos Cercanos*
+     * Listado de Contactos Cercanos
      */
     @Transient
     private List<ContactoCercano> listadoContactos;
 
     /**
-     * Constructor parametrizado de al clase Usuario
+     * Constructor parametrizado de la clase Usuario
      *
      * @param numTelefono Nº de teléfono
      * @param password Contraseña del usuario
@@ -100,10 +100,10 @@ public class Usuario implements Serializable{
         this.uuid = UUID.randomUUID();
         this.password = CodificadorMd5.codificar(password);
         this.numTelefono = numTelefono;
-        this.f_curacion = null;
-        this.f_positivo = null;
+        this.fCuracion = null;
+        this.fPositivo = null;
         this.positivo = false;
-        this.f_alta = LocalDate.now();
+        this.fAlta = LocalDate.now();
         this.listadoContactos = new ArrayList<>();
     }
 
@@ -114,15 +114,6 @@ public class Usuario implements Serializable{
      */
     public UUID getUuid() {
         return uuid;
-    }
-
-    /**
-     * Método para obtener la contraseñ del Usuario
-     *
-     * @return Contraseña del Usuario
-     */
-    public String getPassword() {
-        return password;
     }
 
     /**
@@ -139,26 +130,26 @@ public class Usuario implements Serializable{
      *
      * @return Fecha de curación del usuario o null si nunca se ha contagiado
      */
-    public LocalDate getF_curacion() {
-        return f_curacion;
+    public LocalDate getfCuracion() {
+        return fCuracion;
     }
 
     /**
      * Método para modificar la fecha de curación del usuario
      *
-     * @param f_curacion Nueva Fecha en la que se ha curado el usuario
+     * @param fCuracion Nueva Fecha en la que se ha curado el usuario
      */
-    public void setF_curacion(LocalDate f_curacion) {
-        this.f_curacion = f_curacion;
+    public void setfCuracion(LocalDate fCuracion) {
+        this.fCuracion = fCuracion;
     }
 
     /**
-     * Método para obtener el UUID del usuario
+     * Método para obtener la fecha en la que se registro el usuario
      *
-     * @return Uuid del usuario
+     * @return Fecha de Alta del usuario en el sistema
      */
-    public LocalDate getF_alta() {
-        return f_alta;
+    public LocalDate getfAlta() {
+        return fAlta;
     }
 
     /**
@@ -167,17 +158,17 @@ public class Usuario implements Serializable{
      * @return Fecha del último positivo del usuario o null si nunca ha dado
      * positivo
      */
-    public LocalDateTime getF_positivo() {
-        return f_positivo;
+    public LocalDateTime getfPositivo() {
+        return fPositivo;
     }
 
     /**
      * Método para modificar la fecha del último positivo del Usuario
      *
-     * @param f_positivo Fecha del último positivo
+     * @param fPositivo Fecha del último positivo
      */
-    public void setF_positivo(LocalDateTime f_positivo) {
-        this.f_positivo = f_positivo;
+    public void setfPositivo(LocalDateTime fPositivo) {
+        this.fPositivo = fPositivo;
     }
 
     /**
@@ -211,8 +202,6 @@ public class Usuario implements Serializable{
      * Método para añadir un Contacto al usuario
      *
      * @param contacto Contacto cercano al usuario
-     * @todo Hay que mirar como ordenamos la lista para no iterar ya que puede
-     * ser muy lento y costoso
      */
     public void addContactoCercano(@NotNull @Valid ContactoCercano contacto) {
         // Comprobamos si está el contacto guardado en la lista
@@ -239,7 +228,7 @@ public class Usuario implements Serializable{
 
         // Recorremos la lista
         for (ContactoCercano contacto : this.listadoContactos) {
-            if (contacto.getFecha_contacto().toLocalDate().isAfter(fecha2Semanas)) {
+            if (contacto.getFechaContacto().toLocalDate().isAfter(fecha2Semanas)) {
                 // Añadimos el contacto a la lista
                 listaDefinitiva.add(contacto);
             }
@@ -253,7 +242,7 @@ public class Usuario implements Serializable{
     public void calcularRiesgoContactos() {
         // Calculamos todos los riesgos de los contactos del Usuario
         for (ContactoCercano contacto : this.listadoContactos) {
-            contacto.calcularRiesgo(this.f_positivo.toLocalDate());
+            contacto.calcularRiesgo(this.fPositivo.toLocalDate());
         }
     }
 
@@ -266,7 +255,7 @@ public class Usuario implements Serializable{
         // Recorremos todos los contactos cercanos y eliminamos los que tengan más de 1 mes
         for (ContactoCercano contacto : this.listadoContactos) {
             // Comprobamos las fechas
-            if (contacto.getFecha_contacto().toLocalDate().isBefore(fechaTope)) {
+            if (contacto.getFechaContacto().toLocalDate().isBefore(fechaTope)) {
                 // Eliminamos el contacto
                 this.listadoContactos.remove(contacto);
             }

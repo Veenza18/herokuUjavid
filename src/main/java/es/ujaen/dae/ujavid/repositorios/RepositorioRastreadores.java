@@ -23,8 +23,8 @@ public class RepositorioRastreadores {
     @PersistenceContext
     EntityManager em;
     
-    public Optional<Rastreador> buscar(String uuid){
-        return Optional.ofNullable(em.find(Rastreador.class,uuid));
+    public Optional<Rastreador> buscar(String dni){
+        return Optional.ofNullable(em.find(Rastreador.class,dni));
     }
     
     public void guardar(Rastreador rastreador) {

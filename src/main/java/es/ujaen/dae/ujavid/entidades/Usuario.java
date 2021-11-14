@@ -46,13 +46,13 @@ public class Usuario implements Serializable{
     /**
      * UUID del usuario*
      */
-    
-    private final UUID uuid;
+    @Id
+    private UUID uuid;
 
     /**
      * Número de teléfono*
      */
-    @Id
+    
     @Pattern(regexp = ExprReg.TLF)
     private String numTelefono;
 
@@ -82,13 +82,16 @@ public class Usuario implements Serializable{
      * Fecha de alta/registro
      */
     @PastOrPresent
-    private final LocalDate fAlta;
+    private LocalDate fAlta;
 
     /**
      * Listado de Contactos Cercanos
      */
     @Transient
     private List<ContactoCercano> listadoContactos;
+
+    public Usuario() {
+    }
 
     /**
      * Constructor parametrizado de la clase Usuario

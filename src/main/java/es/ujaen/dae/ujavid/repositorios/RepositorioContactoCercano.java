@@ -4,10 +4,9 @@
  */
 package es.ujaen.dae.ujavid.repositorios;
 
-import es.ujaen.dae.ujavid.entidades.Usuario;
-import java.util.Optional;
-import java.util.UUID;
 import javax.persistence.EntityManager;
+import es.ujaen.dae.ujavid.entidades.ContactoCercano;
+import java.util.Optional;
 import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -19,21 +18,20 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional(propagation = Propagation.REQUIRED)
-public class RepositorioUsuarios {
-
+public class RepositorioContactoCercano {
     @PersistenceContext
     EntityManager em;
-
-    public Optional<Usuario> buscar(UUID uuid) {
-        return Optional.ofNullable(em.find(Usuario.class, uuid));
+    
+    public Optional<ContactoCercano> buscar(String dni){
+        return Optional.ofNullable(em.find(ContactoCercano.class,dni));
     }
-
-    public void guardar(Usuario usuario) {
-        em.persist(usuario);
+    
+    public void guardar(ContactoCercano contacto) {
+        em.persist(contacto);
     }
-
-    public void actualizar(Usuario usuario) {
-        em.merge(usuario);
+    
+    public void actualizar(ContactoCercano contacto) {
+        em.merge(contacto);
     }
-
+    
 }

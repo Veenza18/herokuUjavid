@@ -20,17 +20,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional(propagation = Propagation.REQUIRED)
 public class RepositorioUsuarios {
-     @PersistenceContext
+
+    @PersistenceContext
     EntityManager em;
-    
-    public Optional<Usuario> buscar(UUID uuid){
-        return Optional.ofNullable(em.find(Usuario.class,uuid));
+
+    public Optional<Usuario> buscar(UUID uuid) {
+        return Optional.ofNullable(em.find(Usuario.class, uuid));
     }
-    
+
     public void guardar(Usuario usuario) {
         em.persist(usuario);
     }
-    
+
     public void actualizar(Usuario usuario) {
         em.merge(usuario);
     }

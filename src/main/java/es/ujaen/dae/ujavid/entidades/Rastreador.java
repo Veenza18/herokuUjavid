@@ -6,17 +6,22 @@ package es.ujaen.dae.ujavid.entidades;
 
 import es.ujaen.dae.ujavid.util.CodificadorMd5;
 import es.ujaen.dae.ujavid.util.ExprReg;
+import java.io.Serializable;
 import java.util.UUID;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
  * Clase qu representa un Rstreador
  *
  * @author admin
  */
-public class Rastreador {
+@Entity
+public class Rastreador implements Serializable{
 
     /**
      * Nº total de infectados
@@ -26,12 +31,14 @@ public class Rastreador {
     /**
      * UUID del rastreador*
      */
-    private final UUID uuid;
+    private UUID uuid;
 
     /**
      * Dni del rastreador*
      */
     @Id
+    @NotNull
+    @Size(min=9, max=9)
     @Pattern(regexp = ExprReg.DNI)
     private String dni;
 
@@ -62,6 +69,10 @@ public class Rastreador {
      * Contraseña del rastreador*
      */
     private String password;
+
+    public Rastreador() {
+        
+    }
 
     /**
      * Contructor parametrizado del Rastreador

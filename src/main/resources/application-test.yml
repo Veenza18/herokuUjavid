@@ -1,0 +1,11 @@
+## Fichero de configuración para UJAVID durante testing
+
+# spring.datasource.url: jdbc:mysql://localhost:33060/ujacoin_test
+spring.datasource.url: jdbc:h2:mem:ujavid_test;MODE=MYSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+
+spring.datasource.username: ujavid
+spring.datasource.password: secret
+
+spring.jpa.properties.javax.persistence.schema-generation.database.action: drop-and-create
+
+

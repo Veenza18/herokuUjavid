@@ -7,11 +7,9 @@ package es.ujaen.dae.ujavid.servicios;
 import es.ujaen.dae.ujavid.entidades.ContactoCercano;
 import es.ujaen.dae.ujavid.entidades.Rastreador;
 import es.ujaen.dae.ujavid.entidades.Usuario;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import javax.validation.ConstraintViolationException;
 import org.assertj.core.api.Assertions;
@@ -19,19 +17,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 
 /**
  *
  * @author Venza
  */
 @SpringBootTest(classes = es.ujaen.dae.ujavid.app.UjaVidApp.class)
+@ActiveProfiles(profiles = {"test"})
 public class ServicioUjaVidTest {
 
     @Autowired
     ServicioUjaVid servicioUjaVid;
 
     @Test
-    public void testAccesoServicioUjaCoin() {
+    public void testAccesoServicioUJAVID() {
         Assertions.assertThat(servicioUjaVid).isNotNull();
     }
 

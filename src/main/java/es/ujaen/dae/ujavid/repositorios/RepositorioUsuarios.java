@@ -6,6 +6,7 @@ package es.ujaen.dae.ujavid.repositorios;
 
 import es.ujaen.dae.ujavid.entidades.Usuario;
 import java.util.Optional;
+import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
@@ -22,7 +23,7 @@ public class RepositorioUsuarios {
      @PersistenceContext
     EntityManager em;
     
-    public Optional<Usuario> buscar(String uuid){
+    public Optional<Usuario> buscar(UUID uuid){
         return Optional.ofNullable(em.find(Usuario.class,uuid));
     }
     

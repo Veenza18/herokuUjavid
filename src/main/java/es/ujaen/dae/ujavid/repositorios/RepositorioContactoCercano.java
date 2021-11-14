@@ -4,14 +4,11 @@
  */
 package es.ujaen.dae.ujavid.repositorios;
 
-import es.ujaen.dae.ujavid.entidades.Rastreador;
-import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 
 /**
  *
@@ -19,22 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional(propagation = Propagation.REQUIRED)
-public class RepositorioRastreadores {
+public class RepositorioContactoCercano {
     @PersistenceContext
     EntityManager em;
     
-    public Optional<Rastreador> buscar(String dni){
-        return Optional.ofNullable(em.find(Rastreador.class,dni));
-    }
     
-    public void guardar(Rastreador rastreador) {
-        em.persist(rastreador);
-    }
-    
-    public void actualizar(Rastreador rastreador) {
-        em.merge(rastreador);
-    }
-
-
-
 }

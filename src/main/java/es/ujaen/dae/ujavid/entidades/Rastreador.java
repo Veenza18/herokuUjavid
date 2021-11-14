@@ -7,6 +7,7 @@ package es.ujaen.dae.ujavid.entidades;
 import es.ujaen.dae.ujavid.util.CodificadorMd5;
 import es.ujaen.dae.ujavid.util.ExprReg;
 import java.util.UUID;
+import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
@@ -30,6 +31,7 @@ public class Rastreador {
     /**
      * Dni del rastreador*
      */
+    @Id
     @Pattern(regexp = ExprReg.DNI)
     private String dni;
 

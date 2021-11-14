@@ -46,13 +46,13 @@ public class Usuario implements Serializable{
     /**
      * UUID del usuario*
      */
-    
+    @Id
     private final UUID uuid;
 
     /**
      * Número de teléfono*
      */
-    @Id
+    
     @Pattern(regexp = ExprReg.TLF)
     private String numTelefono;
 

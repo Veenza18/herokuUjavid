@@ -19,7 +19,11 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 
@@ -87,7 +91,8 @@ public class Usuario implements Serializable{
     /**
      * Listado de Contactos Cercanos
      */
-    @Transient
+    @OneToMany (fetch=FetchType.EAGER)
+    @JoinColumn
     private List<ContactoCercano> listadoContactos;
 
     public Usuario() {

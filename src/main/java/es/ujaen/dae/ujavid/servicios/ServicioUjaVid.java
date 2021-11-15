@@ -130,10 +130,11 @@ public class ServicioUjaVid {
             if (!usuario.getUuid().equals(contacto.getContacto().getUuid())) {
                 usuario.addContactoCercano(contacto);
                 //Hay que crear el repositorio para hacer esto
-                //repositorioContactosCercanos.guardar(contacto);
+                repositorioUsuarios.addContactoCercano(contacto);
+                
             }
         }
-
+        repositorioUsuarios.actualizar(usuario);
     }
 
     /**
@@ -164,7 +165,7 @@ public class ServicioUjaVid {
      * @param dniRastreador DNI del rastreador que notifica el positivo
      * @param uuidRastreador UUID del rastreador obtenido en el login
      */
-    public void notificarPos(UUID uuid, @PastOrPresent LocalDateTime f_positivo, String dniRastreador, UUID uuidRastreador) {
+    public int notificarPos(UUID uuid, @PastOrPresent LocalDateTime f_positivo, String dniRastreador, UUID uuidRastreador) {
         // Obtenemos el Rastreador
         Rastreador rastreador = repositorioRastreadores.buscar(dniRastreador).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que es un rastreador registrado
@@ -180,7 +181,7 @@ public class ServicioUjaVid {
             repositorioUsuarios.actualizar(usuario);
             repositorioRastreadores.actualizar(rastreador);
         }
-
+        return numTotalInf;
     }
 
     /**

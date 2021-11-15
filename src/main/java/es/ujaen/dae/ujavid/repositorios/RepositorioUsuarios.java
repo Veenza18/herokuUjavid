@@ -4,6 +4,7 @@
  */
 package es.ujaen.dae.ujavid.repositorios;
 
+import es.ujaen.dae.ujavid.entidades.ContactoCercano;
 import es.ujaen.dae.ujavid.entidades.Usuario;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,4 +37,12 @@ public class RepositorioUsuarios {
         em.merge(usuario);
     }
 
+    public void borrar(Usuario usuario) {
+        em.remove(em.merge(usuario));
+    }
+    
+     public void addContactoCercano(ContactoCercano contacto) {
+        em.persist(contacto);
+    }
+    
 }

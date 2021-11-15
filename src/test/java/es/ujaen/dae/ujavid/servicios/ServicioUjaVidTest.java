@@ -123,9 +123,11 @@ public class ServicioUjaVidTest {
         servicioUjaVid.altaRastreador(rastreador);
         // Logueamos el rastreador
         UUID uuid_rastreador = servicioUjaVid.loginRastreador(rastreador.getDni(), contrasena);
-        servicioUjaVid.notificarPos(usuario.getUuid(), LocalDateTime.now(), rastreador.getDni(), uuid_rastreador);
-        Assertions.assertThat(usuario.isPositivo()).isTrue();
-        Assertions.assertThat(rastreador.getNumTotalNotificados()).isEqualTo(1);
+        int valor= servicioUjaVid.notificarPos(usuario.getUuid(), LocalDateTime.now(), rastreador.getDni(), uuid_rastreador);
+
+        Assertions.assertThat(valor).isEqualTo(1);
+       // Assertions.assertThat(usuario.isPositivo()).isTrue();
+
 
     }
 
@@ -139,6 +141,15 @@ public class ServicioUjaVidTest {
                 "656764549",
                 "nuevaclave");
 
+         Rastreador rastreador = new Rastreador(
+                "77434825N",
+                "Antonio",
+                "Venzala",
+                "Campaña",
+                "660376093",
+                "redefine");
+        
+        
         Usuario usuario2 = new Usuario(
                 "699699699",
                 "nuevaclave");
@@ -149,6 +160,7 @@ public class ServicioUjaVidTest {
         servicioUjaVid.altaUsuario(usuario1);
         servicioUjaVid.altaUsuario(usuario2);
         servicioUjaVid.altaUsuario(usuario3);
+        servicioUjaVid.altaRastreador(rastreador);
         //Si creamos 2 contactos iguales pero con horas diferentes, se sobreescriben
         ContactoCercano contacto0 = new ContactoCercano(LocalDateTime.now(),
                 usuario2, 4, 2);
@@ -163,7 +175,8 @@ public class ServicioUjaVidTest {
         contactos.add(contacto2);
 
         servicioUjaVid.addContactoCercano(contactos, usuario1.getUuid());
-        Assertions.assertThat(usuario1.getListadoContactos().size()).isEqualTo(2);
+        //servicioUjaVid.verContactosCercanos(usuario1.getUuid(), rastreador.getDni(), rastreador.getUuid());
+        Assertions.assertThat( servicioUjaVid.verContactosCercanos(usuario1.getUuid(), rastreador.getDni(), rastreador.getUuid()).size()).isEqualTo(3);
     }
 
     /**

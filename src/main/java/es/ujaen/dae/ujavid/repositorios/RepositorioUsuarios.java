@@ -4,7 +4,10 @@
  */
 package es.ujaen.dae.ujavid.repositorios;
 
+import es.ujaen.dae.ujavid.entidades.ContactoCercano;
 import es.ujaen.dae.ujavid.entidades.Usuario;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.persistence.EntityManager;
@@ -36,4 +39,22 @@ public class RepositorioUsuarios {
         em.merge(usuario);
     }
 
+    public void borrar(Usuario usuario) {
+        em.remove(em.merge(usuario));
+    }
+    
+     public void addContactoCercano(ContactoCercano contacto) {
+        em.persist(contacto);
+    }
+     
+    public List<Usuario> obtenerUsuarios(){
+        List<Usuario> lista = em.createQuery("SELECT u FROM Usuario u",Usuario.class).getResultList();
+        return lista;
+    }
+    
+    public int positivos15Dias(){
+        LocalDateTime fecha15dias = LocalDateTime.now().minusDays(15);
+        List<Usuario> lista = em.createQuery("SELECT u FROM Usuario u WHERE u.positivo = TRUE AND u.fPositivo >= ?1 ",Usuario.class).setParameter(1, fecha15dias).getResultList();
+        return lista.size();
+    }
 }

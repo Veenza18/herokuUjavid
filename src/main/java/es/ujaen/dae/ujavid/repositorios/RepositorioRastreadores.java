@@ -35,6 +35,9 @@ public class RepositorioRastreadores {
         em.merge(rastreador);
     }
 
-
+    public void borrar(Rastreador rastreador) {
+        em.remove(em.merge(rastreador));
+    }
+    
 
 }

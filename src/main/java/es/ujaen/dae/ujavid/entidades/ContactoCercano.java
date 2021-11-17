@@ -7,6 +7,12 @@ package es.ujaen.dae.ujavid.entidades;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import static java.time.temporal.ChronoUnit.DAYS;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.PastOrPresent;
@@ -16,31 +22,40 @@ import javax.validation.constraints.PastOrPresent;
  *
  * @author admin
  */
+@Entity
 public class ContactoCercano implements Comparable<ContactoCercano> {
 
+    /**
+     * Identificador único de cada usuario
+     */
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    int id;
     /**
      * Fecha y Hora en ka que se produjo el contacto
      */
     @PastOrPresent
-    private final LocalDateTime fechaContacto;
+    private LocalDateTime fechaContacto;
 
     /**
      * Usuario con el que se produjo el contacto
      */
-    private final Usuario contacto;
+    @ManyToOne
+    @JoinColumn
+    private Usuario contacto;
 
     /**
      * Distancia al otro dispositivo en metros
      */
     @Min(0)
     @Max(4)
-    private final double distancia;
+    private double distancia;
 
     /**
      * Duración del contacto en segundos
      */
     @Min(0)
-    private final int duracion;
+    private int duracion;
 
     /**
      * Riesgo de contagio del contacto en función de: 1 - La duración del
@@ -48,6 +63,13 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
      */
     private double riesgo;
 
+    /**
+     * Constructor por defecto de la clase ContactoCercano
+     */
+    public ContactoCercano() {
+    }
+
+    
     /**
      * Constructor de la clase ContactoCercano
      *

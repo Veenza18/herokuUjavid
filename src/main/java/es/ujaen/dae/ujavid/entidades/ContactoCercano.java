@@ -25,8 +25,11 @@ import javax.validation.constraints.PastOrPresent;
 @Entity
 public class ContactoCercano implements Comparable<ContactoCercano> {
 
+    /**
+     * Identificador único de cada usuario
+     */
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     int id;
     /**
      * Fecha y Hora en ka que se produjo el contacto
@@ -60,6 +63,9 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
      */
     private double riesgo;
 
+    /**
+     * Constructor por defecto de la clase ContactoCercano
+     */
     public ContactoCercano() {
     }
 

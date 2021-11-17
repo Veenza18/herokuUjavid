@@ -95,6 +95,9 @@ public class Usuario implements Serializable{
     @JoinColumn
     private List<ContactoCercano> listadoContactos;
 
+    /**
+     * Constructor por defecto de la clase Usuario
+     */
     public Usuario() {
     }
 

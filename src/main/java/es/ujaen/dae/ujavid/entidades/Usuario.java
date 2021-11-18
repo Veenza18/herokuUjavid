@@ -26,15 +26,13 @@ import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-
-
 /**
  * Clase que representa un Usuario
  *
  * @author admin
  */
 @Entity
-public class Usuario implements Serializable{
+public class Usuario implements Serializable {
 
     /**
      * Días máximos que puede estar un contacto cercano en el sistema
@@ -54,26 +52,25 @@ public class Usuario implements Serializable{
     private UUID uuid;
 
     /**
-     * Número de teléfono*
+     * Número de teléfono
      */
-    
     @Pattern(regexp = ExprReg.TLF)
     private String numTelefono;
 
     /**
-     * Fecha de curación*
+     * Fecha de curación
      */
     @PastOrPresent
     private LocalDate fCuracion;
 
     /**
-     * Fecha de positivo *
+     * Fecha de positivo
      */
     @PastOrPresent
     private LocalDateTime fPositivo;
 
     /**
-     * ¿Es Positivo?*
+     * ¿Es Positivo?
      */
     boolean positivo;
 
@@ -91,7 +88,7 @@ public class Usuario implements Serializable{
     /**
      * Listado de Contactos Cercanos
      */
-    @OneToMany (fetch=FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn
     private List<ContactoCercano> listadoContactos;
 

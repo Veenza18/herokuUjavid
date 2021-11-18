@@ -5,6 +5,7 @@
 package es.ujaen.dae.ujavid.servicios;
 
 import es.ujaen.dae.ujavid.entidades.ContactoCercano;
+import es.ujaen.dae.ujavid.entidades.DTO.DTOContactoCercano;
 import es.ujaen.dae.ujavid.entidades.Rastreador;
 import es.ujaen.dae.ujavid.entidades.Usuario;
 import es.ujaen.dae.ujavid.excepciones.UsuarioYaRegistrado;
@@ -117,15 +118,17 @@ public class ServicioUjaVid {
      * @param uuidUsuario UUID del usuario al que se le añadirá el contacto
      */
     @Transactional
-    public void addContactoCercano(List<ContactoCercano> contactos, UUID uuidUsuario) {
+    public void addContactoCercano(List<DTOContactoCercano> contactos, UUID uuidUsuario) {
 
         Usuario usuario = repositorioUsuarios.buscar(uuidUsuario).orElseThrow(UsuarioNoRegistrado::new);
-
-        for (ContactoCercano contacto : contactos) {
-            if (!usuario.getUuid().equals(contacto.getContacto().getUuid())) {
-                usuario.addContactoCercano(contacto);
+        
+        for (DTOContactoCercano contacto : contactos) {
+            if (!usuario.getUuid().equals(contacto.getUuid2())) {
+                Usuario usuarioContacto = repositorioUsuarios.buscar(contacto.getUuid2()).orElseThrow(UsuarioNoRegistrado::new);
+                ContactoCercano c1 = new ContactoCercano(contacto.getFechaContacto(), usuarioContacto,contacto.getDistancia(),contacto.getDuracion());
+                usuario.addContactoCercano(c1);
                 //Hay que crear el repositorio para hacer esto
-                repositorioUsuarios.addContactoCercano(contacto);
+                repositorioUsuarios.addContactoCercano(c1);
 
             }
         }

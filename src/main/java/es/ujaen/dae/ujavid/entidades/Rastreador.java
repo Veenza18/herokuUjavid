@@ -21,7 +21,7 @@ import javax.validation.constraints.Size;
  * @author admin
  */
 @Entity
-public class Rastreador implements Serializable{
+public class Rastreador implements Serializable {
 
     /**
      * Nº total de infectados
@@ -29,49 +29,49 @@ public class Rastreador implements Serializable{
     private int numTotalNotificados;
 
     /**
-     * UUID del rastreador*
+     * UUID del rastreador
      */
     private UUID uuid;
 
     /**
-     * Dni del rastreador*
+     * Dni del rastreador
      */
     @Id
     @NotNull
-    @Size(min=9, max=9)
+    @Size(min = 9, max = 9)
     @Pattern(regexp = ExprReg.DNI)
     private String dni;
 
     /**
-     * Nombre del rastreador*
+     * Nombre del rastreador
      */
     @NotBlank
     private String nombre;
 
     /**
-     * Primer apellido del rastreador*
+     * Primer apellido del rastreador
      */
     @NotBlank
     private String apellido1;
 
     /**
-     * Segundo apellido del rastreador*
+     * Segundo apellido del rastreador
      */
     private String apellido2;
 
     /**
-     * Número de teléfono del rastreador*
+     * Número de teléfono del rastreador
      */
     @Pattern(regexp = ExprReg.TLF)
     private String numTelefono;
 
     /**
-     * Contraseña del rastreador*
+     * Contraseña del rastreador
      */
     private String password;
 
     public Rastreador() {
-        
+
     }
 
     /**

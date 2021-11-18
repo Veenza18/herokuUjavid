@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 /**
- *
+ * DAO de la clase Rsstreadores
  * @author Venza
  */
 @Repository

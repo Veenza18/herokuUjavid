@@ -172,7 +172,7 @@ public class ServicioUjaVidTest {
 
         servicioUjaVid.addContactoCercano(contactos, usuario1.getUuid());
         //servicioUjaVid.verContactosCercanos(usuario1.getUuid(), rastreador.getDni(), rastreador.getUuid());
-        Assertions.assertThat(servicioUjaVid.verContactosCercanos(usuario1.getUuid(), rastreador.getDni(), rastreador.getUuid()).size()).isEqualTo(3);
+        Assertions.assertThat(servicioUjaVid.verContactosCercanos(usuario1.getUuid(), rastreador.getDni(), rastreador.getUuid()).size()).isEqualTo(2);
     }
 
     /**
@@ -506,8 +506,10 @@ public class ServicioUjaVidTest {
         servicioUjaVid.notificarPos(usuario5.getUuid(), LocalDateTime.now(), rastreador.getDni(), uuid_rastreador);
 
         servicioUjaVid.notificarCuracion(usuario4.getUuid(), rastreador.getDni(), uuid_rastreador);
-
-        Assertions.assertThat(servicioUjaVid.contagiadosXusuario(rastreador.getDni(), uuid_rastreador)).isGreaterThan(0);
+       // servicioUjaVid.contagiadosXusuario(rastreador.getDni(), uuid_rastreador);
+        
+        
+        Assertions.assertThat(servicioUjaVid.contagiadosXusuario(rastreador.getDni(), uuid_rastreador)).isEqualTo(214);
     }
 
     /**

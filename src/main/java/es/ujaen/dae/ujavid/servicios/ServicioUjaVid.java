@@ -314,31 +314,33 @@ public class ServicioUjaVid {
      * @return La estadistica de contagiados por usuarios positivos
      */
     public double contagiadosXusuario(String dniRastreador, UUID uuidRastreador) {
-        Rastreador rastreador = Optional.ofNullable(this.rastreadores.get(dniRastreador)).orElseThrow(RastreadorNoRegistrado::new);
-        // Comprobamos que es un rastreador registrado
+          Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(dniRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
+          
+       //  Comprobamos que es un rastreador registrado
         if (rastreador.getUuid().equals(uuidRastreador)) {
             double n_positivos_total = 0;
             double contagiados_total = 0;
+           this.repositorioUsuarios.contagiadosXusuario();
 
             // Recorremos todos los usuarios 
-            Iterator<Usuario> it = usuarios.values().iterator();
-
-            while (it.hasNext()) {
-                Usuario usuario = it.next();
-                // Comprobamos que usuarios son positivos
-                if (usuario.getfPositivo() != null) {
-                    n_positivos_total++;
-                    // Calculamos los contagiados producidos por el usuario
-                    contagiados_total += this.contagiadosUsuario(usuario.getUuid());
-                }
-            }
-
-            // Comprobamos que hay almenos una persona que es positivo
-            if (n_positivos_total > 0) {
-                return contagiados_total / n_positivos_total;
-            }
+//            Iterator<Usuario> it = usuarios.values().iterator();
+//
+//            while (it.hasNext()) {
+//                Usuario usuario = it.next();
+//                // Comprobamos que usuarios son positivos
+//                if (usuario.getfPositivo() != null) {
+//                    n_positivos_total++;
+//                    // Calculamos los contagiados producidos por el usuario
+//                    contagiados_total += this.contagiadosUsuario(usuario.getUuid());
+//                }
+//            }
+//
+//            // Comprobamos que hay almenos una persona que es positivo
+//            if (n_positivos_total > 0) {
+//                return contagiados_total / n_positivos_total;
+//            }
         }
-        return 0;
+        return this.repositorioUsuarios.contagiadosXusuario();
     }
 
     /**

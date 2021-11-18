@@ -6,6 +6,7 @@ package es.ujaen.dae.ujavid.repositorios;
 
 import es.ujaen.dae.ujavid.entidades.ContactoCercano;
 import es.ujaen.dae.ujavid.entidades.Usuario;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -56,5 +57,27 @@ public class RepositorioUsuarios {
         LocalDateTime fecha15dias = LocalDateTime.now().minusDays(15);
         List<Usuario> lista = em.createQuery("SELECT u FROM Usuario u WHERE u.positivo = TRUE AND u.fPositivo >= ?1 ",Usuario.class).setParameter(1, fecha15dias).getResultList();
         return lista.size();
+    }
+    
+      public int contagiadosXusuario(){
+        LocalDateTime fecha15dias = LocalDateTime.now().minusDays(15);
+        List<Usuario> listaContagiados = em.createQuery("SELECT u FROM Usuario u WHERE u.positivo = TRUE  ",Usuario.class).getResultList();
+                       
+        LocalDate curacion;
+        LocalDateTime contagio;
+  
+        for (int i=0;i< listaContagiados.size();i++){
+        
+        contagio=listaContagiados.get(0).getfPositivo();
+        curacion=listaContagiados.get(0).getfCuracion();
+        if(listaContagiados.get(0).getfCuracion()==null)
+        {curacion=LocalDate.now();};
+        
+        //NECESITAMOS MIRAR SOLOS SUS CONTACTOS
+        List<Usuario> listaCausadoPorContagiados = em.createQuery("SELECT u FROM Usuario u WHERE u.positivo = TRUE AND u.fPositivo >= ?1 AND u.fPositivo >= ?2 ",Usuario.class).setParameter(1, fecha15dias).setParameter(2, curacion).getResultList();}
+     
+        
+        //cambiar el return esta hecho para pruebas
+        return listaContagiados.size();
     }
 }

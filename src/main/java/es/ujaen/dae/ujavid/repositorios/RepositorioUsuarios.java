@@ -80,4 +80,9 @@ public class RepositorioUsuarios {
         //cambiar el return esta hecho para pruebas
         return listaContagiados.size();
     }
+      
+      public int positivosActual(){
+          List<Usuario> listaContagiados = em.createQuery("SELECT u FROM Usuario u WHERE u.positivo = TRUE  ",Usuario.class).getResultList();
+          return listaContagiados.size();
+      }
 }

@@ -121,10 +121,11 @@ public class ServicioUjaVidTest {
         servicioUjaVid.altaRastreador(rastreador);
         // Logueamos el rastreador
         UUID uuid_rastreador = servicioUjaVid.loginRastreador(rastreador.getDni(), contrasena);
-        int valor = servicioUjaVid.notificarPos(usuario.getUuid(), LocalDateTime.now(), rastreador.getDni(), uuid_rastreador);
+        
+        servicioUjaVid.notificarPos(usuario.getUuid(), LocalDateTime.now(), rastreador.getDni(), uuid_rastreador);
 
-        Assertions.assertThat(valor).isEqualTo(1);
-        // Assertions.assertThat(usuario.isPositivo()).isTrue();
+        Usuario u = servicioUjaVid.devuelveUsuario(rastreador.getDni(), rastreador.getUuid(), usuario.getUuid()).get();
+         Assertions.assertThat(u.isPositivo()).isTrue();
 
     }
 
@@ -281,9 +282,9 @@ public class ServicioUjaVidTest {
         servicioUjaVid.notificarPos(usuario2.getUuid(), LocalDateTime.now(), rastreador.getDni(), uuid_rastreador);
         servicioUjaVid.notificarPos(usuario3.getUuid(), LocalDateTime.now(), rastreador.getDni(), uuid_rastreador);
 
-        Assertions.assertThat(servicioUjaVid.positivos_actual(rastreador.getDni(), uuid_rastreador)).isEqualTo(3);
+        Assertions.assertThat(servicioUjaVid.positivosActual(rastreador.getDni(), uuid_rastreador)).isEqualTo(3);
         servicioUjaVid.notificarCuracion(usuario1.getUuid(), rastreador.getDni(), uuid_rastreador);
-        Assertions.assertThat(servicioUjaVid.positivos_actual(rastreador.getDni(), uuid_rastreador)).isEqualTo(2);
+        Assertions.assertThat(servicioUjaVid.positivosActual(rastreador.getDni(), uuid_rastreador)).isEqualTo(2);
     }
 
     /**

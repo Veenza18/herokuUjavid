@@ -136,7 +136,7 @@ public class ServicioUjaVid {
         }
         repositorioUsuarios.actualizar(usuario);
     }
-
+    
     /**
      * Método para ver los contactos cercanos de un Usuario
      *
@@ -165,7 +165,7 @@ public class ServicioUjaVid {
      * @param dniRastreador DNI del rastreador que notifica el positivo
      * @param uuidRastreador UUID del rastreador obtenido en el login
      */
-    public int notificarPos(UUID uuid, @PastOrPresent LocalDateTime f_positivo, String dniRastreador, UUID uuidRastreador) {
+    public void notificarPos(UUID uuid, @PastOrPresent LocalDateTime f_positivo, String dniRastreador, UUID uuidRastreador) {
         // Obtenemos el Rastreador
         Rastreador rastreador = repositorioRastreadores.buscar(dniRastreador).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que es un rastreador registrado
@@ -181,7 +181,7 @@ public class ServicioUjaVid {
             repositorioUsuarios.actualizar(usuario);
             repositorioRastreadores.actualizar(rastreador);
         }
-        return numTotalInf;
+        
     }
 
     /**
@@ -226,16 +226,17 @@ public class ServicioUjaVid {
      * @param uuidRastreador UUID del rastreador obtenido en el login
      * @return Nº de positivos actualmente
      */
-    public int positivos_actual(String dniRastreador, UUID uuidRastreador) {
+    public int positivosActual(String dniRastreador, UUID uuidRastreador) {
         int positivos = 0;
         Rastreador rastreador = repositorioRastreadores.buscar(dniRastreador).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que es un rastreador registrado
         if (rastreador.getUuid().equals(uuidRastreador)) {
-            for (Usuario u : repositorioUsuarios.obtenerUsuarios()) {
-                if (u.isPositivo()) {
-                    positivos++;
-                }
-            }
+            positivos = repositorioUsuarios.positivosActual();
+//            for (Usuario u : repositorioUsuarios.obtenerUsuarios()) {
+//                if (u.isPositivo()) {
+//                    positivos++;
+//                }
+//            }
         }
 
         return positivos;
@@ -356,5 +357,23 @@ public class ServicioUjaVid {
             return rastreador.getNumTotalNotificados();
         }
         return 0;
+    }
+    
+    public Optional<Usuario> devuelveUsuario(String dni,UUID uuidRastreador,UUID uuidUsuario){
+         Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(dni).get()).orElseThrow(RastreadorNoRegistrado::new);
+         if(!rastreador.getUuid().equals(uuidRastreador)){
+            throw new RastreadorNoRegistrado();
+         } 
+         return repositorioUsuarios.buscar(uuidUsuario);
+         
+         
+    } 
+    
+    public Optional<Rastreador> devuelveRastreador(String dni,UUID uuidRastreador){
+        Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(dni).get()).orElseThrow(RastreadorNoRegistrado::new);
+        if(!rastreador.getUuid().equals(uuidRastreador)){
+            throw new RastreadorNoRegistrado();
+        } 
+        return repositorioRastreadores.buscar(dni);
     }
 }

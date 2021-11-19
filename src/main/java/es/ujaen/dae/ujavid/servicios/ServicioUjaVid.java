@@ -16,6 +16,7 @@ import es.ujaen.dae.ujavid.repositorios.RepositorioRastreadores;
 import es.ujaen.dae.ujavid.repositorios.RepositorioUsuarios;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -263,7 +264,8 @@ public class ServicioUjaVid {
         // Obtenemos al usuario
         Usuario usuario = Optional.ofNullable(repositorioUsuarios.buscar(uuidUsuario).get()).orElseThrow(UsuarioNoRegistrado::new);
         // Obtenemos sus contactos cercanos
-        List<ContactoCercano> contactos = usuario.verContactosCercanos();
+        List<ContactoCercano> contactos = new ArrayList<>();
+       
         // Obtenemos la fecha del positivo del usuario y la pasamos a LocalDate
         LocalDate fechaPositivo = usuario.getfPositivo().minusDays(15).toLocalDate();
         // Obtenemos la fecha de curacion
@@ -300,30 +302,25 @@ public class ServicioUjaVid {
         Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(dniRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
 
         //  Comprobamos que es un rastreador registrado
-        if (rastreador.getUuid().equals(uuidRastreador)) {
-            double n_positivos_total = 0;
+        if (rastreador.getUuid().equals(uuidRastreador)) {      
+            List<Usuario> it = repositorioUsuarios.obtenerUsuariosPositivos();
+         for (int i=0;i<10;i++){
+        System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"+it.size());}
+            double n_positivos_total = it.size();
             double contagiados_total = 0;
-            this.repositorioUsuarios.contagiadosXusuario();
 
-            // Recorremos todos los usuarios 
-//            Iterator<Usuario> it = usuarios.values().iterator();
-//
-//            while (it.hasNext()) {
-//                Usuario usuario = it.next();
-//                // Comprobamos que usuarios son positivos
-//                if (usuario.getfPositivo() != null) {
-//                    n_positivos_total++;
-//                    // Calculamos los contagiados producidos por el usuario
-//                    contagiados_total += this.contagiadosUsuario(usuario.getUuid());
-//                }
-//            }
-//
-//            // Comprobamos que hay almenos una persona que es positivo
-//            if (n_positivos_total > 0) {
-//                return contagiados_total / n_positivos_total;
-//            }
+            for (int i=0; i<it.size();i++){
+                Usuario usuario = it.get(i);
+                // Calculamos los contagiados producidos por el usuario
+                    contagiados_total += this.contagiadosUsuario(usuario.getUuid());
+            }
+
+            // Comprobamos que hay almenos una persona que es positivo
+            if (n_positivos_total > 0) {
+                return contagiados_total / n_positivos_total;
+            }
         }
-        return this.repositorioUsuarios.contagiadosXusuario();
+        return 0;
     }
 
     /**

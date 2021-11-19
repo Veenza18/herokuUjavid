@@ -52,6 +52,11 @@ public class RepositorioUsuarios {
         List<Usuario> lista = em.createQuery("SELECT u FROM Usuario u", Usuario.class).getResultList();
         return lista;
     }
+    
+    public List<Usuario> obtenerUsuariosPositivos() {
+        List<Usuario> lista = em.createQuery("SELECT u FROM Usuario u WHERE u.fPositivo IS NOT NULL ", Usuario.class).getResultList();
+        return lista;
+    }
 
     public int positivos15Dias() {
         LocalDateTime fecha15dias = LocalDateTime.now().minusDays(15);

@@ -7,6 +7,7 @@ package es.ujaen.dae.ujavid.entidades;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import static java.time.temporal.ChronoUnit.DAYS;
+import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,6 +32,7 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     int id;
+    
     /**
      * Fecha y Hora en ka que se produjo el contacto
      */

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO de la clase Usuarios
+ *
  * @author Venza
  */
 @Repository
@@ -59,31 +60,14 @@ public class RepositorioUsuarios {
         return positivos.intValue();
     }
 
-    public int contagiadosXusuario() {
-        LocalDateTime fecha15dias = LocalDateTime.now().minusDays(15);
-        List<Usuario> listaContagiados = em.createQuery("SELECT u FROM Usuario u WHERE u.positivo = TRUE  ", Usuario.class).getResultList();
-
-        LocalDate curacion;
-        LocalDateTime contagio;
-
-        for (int i = 0; i < listaContagiados.size(); i++) {
-
-            contagio = listaContagiados.get(0).getfPositivo();
-            curacion = listaContagiados.get(0).getfCuracion();
-            if (listaContagiados.get(0).getfCuracion() == null) {
-                curacion = LocalDate.now();
-            };
-
-            //NECESITAMOS MIRAR SOLOS SUS CONTACTOS
-            List<Usuario> listaCausadoPorContagiados = em.createQuery("SELECT u FROM Usuario u WHERE u.positivo = TRUE AND u.fPositivo >= ?1 AND u.fPositivo >= ?2 ", Usuario.class).setParameter(1, fecha15dias).setParameter(2, curacion).getResultList();
-        }
-
-        //cambiar el return esta hecho para pruebas
-        return listaContagiados.size();
-    }
-
     public int positivosActual() {
         Long positivos = em.createQuery("SELECT COUNT(u) FROM Usuario u WHERE u.positivo = TRUE  ", Long.class).getSingleResult();
         return positivos.intValue();
     }
+
+    public List<Usuario> positivosHistorial() {
+        List<Usuario> lista = em.createQuery("SELECT u FROM Usuario u WHERE u.positivo IS NOT NULL  ", Usuario.class).getResultList();
+        return lista;
+    }
+
 }

@@ -122,11 +122,11 @@ public class ServicioUjaVid {
     public void addContactoCercano(List<DTOContactoCercano> contactos, UUID uuidUsuario) {
 
         Usuario usuario = repositorioUsuarios.buscar(uuidUsuario).orElseThrow(UsuarioNoRegistrado::new);
-        
+
         for (DTOContactoCercano contacto : contactos) {
             if (!usuario.getUuid().equals(contacto.getUuid2())) {
                 Usuario usuarioContacto = repositorioUsuarios.buscar(contacto.getUuid2()).orElseThrow(UsuarioNoRegistrado::new);
-                ContactoCercano c1 = new ContactoCercano(contacto.getFechaContacto(), usuarioContacto,contacto.getDistancia(),contacto.getDuracion());
+                ContactoCercano c1 = new ContactoCercano(contacto.getFechaContacto(), usuarioContacto, contacto.getDistancia(), contacto.getDuracion());
                 usuario.addContactoCercano(c1);
                 //Hay que crear el repositorio para hacer esto
                 repositorioUsuarios.addContactoCercano(c1);
@@ -259,13 +259,13 @@ public class ServicioUjaVid {
      * @param uuidUsuario UUID del usuario a comprobar
      * @return El número de contagiados que ha (generado) el usuario
      */
+    @Transactional
     private int contagiadosUsuario(UUID uuidUsuario) {
         int contagiados = 0;
         // Obtenemos al usuario
         Usuario usuario = Optional.ofNullable(repositorioUsuarios.buscar(uuidUsuario).get()).orElseThrow(UsuarioNoRegistrado::new);
         // Obtenemos sus contactos cercanos
-        List<ContactoCercano> contactos = new ArrayList<>();
-       
+        List<ContactoCercano> contactos = usuario.verContactosCercanos();
         // Obtenemos la fecha del positivo del usuario y la pasamos a LocalDate
         LocalDate fechaPositivo = usuario.getfPositivo().minusDays(15).toLocalDate();
         // Obtenemos la fecha de curacion
@@ -298,21 +298,22 @@ public class ServicioUjaVid {
      * @param uuidRastreador UUID del rastreador obtenido en el login
      * @return La estadistica de contagiados por usuarios positivos
      */
+    @Transactional
     public double contagiadosXusuario(String dniRastreador, UUID uuidRastreador) {
         Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(dniRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
 
         //  Comprobamos que es un rastreador registrado
-        if (rastreador.getUuid().equals(uuidRastreador)) {      
-            List<Usuario> it = repositorioUsuarios.obtenerUsuariosPositivos();
-         for (int i=0;i<10;i++){
-        System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"+it.size());}
-            double n_positivos_total = it.size();
+        if (rastreador.getUuid().equals(uuidRastreador)) {
+            double n_positivos_total = 0;
             double contagiados_total = 0;
 
-            for (int i=0; i<it.size();i++){
-                Usuario usuario = it.get(i);
-                // Calculamos los contagiados producidos por el usuario
-                    contagiados_total += this.contagiadosUsuario(usuario.getUuid());
+            // Obtenemos los usuarios que alguna vez han dado positivo
+            List<Usuario> lista = this.repositorioUsuarios.positivosHistorial();
+            n_positivos_total = lista.size();
+
+            // Recorremos todos los usuarios  que alguna vez han dado positivo
+            for (Usuario u : lista) {
+                contagiados_total += this.contagiadosUsuario(u.getUuid());
             }
 
             // Comprobamos que hay almenos una persona que es positivo
@@ -340,11 +341,11 @@ public class ServicioUjaVid {
 
     /**
      * Método para obtener un usuario completo
-     * 
+     *
      * @param dni DNI del rastreador
      * @param uuidRastreador UUID del rastreador
      * @param uuidUsuario UUID del usuario
-     * @return Usuario 
+     * @return Usuario
      */
     public Optional<Usuario> devuelveUsuario(String dni, UUID uuidRastreador, UUID uuidUsuario) {
         Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(dni).get()).orElseThrow(RastreadorNoRegistrado::new);
@@ -357,10 +358,10 @@ public class ServicioUjaVid {
 
     /**
      * Método para obtener un Rastreador dado un dni
-     * 
+     *
      * @param dni DNI del rastreador
      * @param uuidRastreador UUID del rastreador
-     * @return Rastreador 
+     * @return Rastreador
      */
     public Optional<Rastreador> devuelveRastreador(String dni, UUID uuidRastreador) {
         Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(dni).get()).orElseThrow(RastreadorNoRegistrado::new);

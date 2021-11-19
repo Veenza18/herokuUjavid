@@ -12,25 +12,26 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-
 /**
  * DAO de la clase Rsstreadores
+ *
  * @author Venza
  */
 @Repository
 @Transactional(propagation = Propagation.REQUIRED)
 public class RepositorioRastreadores {
+
     @PersistenceContext
     EntityManager em;
-    
-    public Optional<Rastreador> buscar(String dni){
-        return Optional.ofNullable(em.find(Rastreador.class,dni));
+
+    public Optional<Rastreador> buscar(String dni) {
+        return Optional.ofNullable(em.find(Rastreador.class, dni));
     }
-    
+
     public void guardar(Rastreador rastreador) {
         em.persist(rastreador);
     }
-    
+
     public void actualizar(Rastreador rastreador) {
         em.merge(rastreador);
     }
@@ -38,6 +39,5 @@ public class RepositorioRastreadores {
     public void borrar(Rastreador rastreador) {
         em.remove(em.merge(rastreador));
     }
-    
 
 }

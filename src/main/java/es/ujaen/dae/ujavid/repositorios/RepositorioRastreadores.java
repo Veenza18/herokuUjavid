@@ -5,7 +5,9 @@
 package es.ujaen.dae.ujavid.repositorios;
 
 import es.ujaen.dae.ujavid.entidades.Rastreador;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
@@ -25,7 +27,20 @@ public class RepositorioRastreadores {
     EntityManager em;
 
     public Optional<Rastreador> buscar(String dni) {
-        return Optional.ofNullable(em.find(Rastreador.class, dni));
+        List<Rastreador> lista = em.createQuery("SELECT r FROM Rastreador r", Rastreador.class).getResultList();
+        Rastreador r = null;
+        if(!lista.isEmpty()){
+            for(Rastreador r1 : lista){
+                if(r1.getDni().equals(dni)){
+                    r = r1;
+                }
+            }
+        }
+        return Optional.ofNullable(r);
+    }
+
+    public Optional<Rastreador> buscar(UUID uuidRastreador) {
+        return Optional.ofNullable(em.find(Rastreador.class, uuidRastreador));
     }
 
     public void guardar(Rastreador rastreador) {

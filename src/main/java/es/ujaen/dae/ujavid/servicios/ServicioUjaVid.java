@@ -140,14 +140,13 @@ public class ServicioUjaVid {
      * Método para ver los contactos cercanos de un Usuario
      *
      * @param uuid UUID del usuario
-     * @param dniRastreador Dni del rastreador
      * @param uuidRastreador UUID del rastreador obtenido en el login
      * @return Lista de contactos cercanos al usuario
      */
     @Transactional
-    public List<ContactoCercano> verContactosCercanos(UUID uuid, String dniRastreador, UUID uuidRastreador) {
+    public List<ContactoCercano> verContactosCercanos(UUID uuid, UUID uuidRastreador) {
         // Obtenemos el Rastreador
-        Rastreador rastreador = repositorioRastreadores.buscar(dniRastreador).orElseThrow(RastreadorNoRegistrado::new);
+        Rastreador rastreador = repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que el rastreador está registrado
         if (!rastreador.getUuid().equals(uuidRastreador)) {
             throw new RastreadorNoRegistrado();
@@ -161,13 +160,12 @@ public class ServicioUjaVid {
      *
      * @param uuid UUID del usuario a notificar el positivo
      * @param f_positivo Fecha y hora del positivo
-     * @param dniRastreador DNI del rastreador que notifica el positivo
      * @param uuidRastreador UUID del rastreador obtenido en el login
      */
     @Transactional
-    public void notificarPos(UUID uuid, @PastOrPresent LocalDateTime f_positivo, String dniRastreador, UUID uuidRastreador) {
+    public void notificarPos(UUID uuid, @PastOrPresent LocalDateTime f_positivo, UUID uuidRastreador) {
         // Obtenemos el Rastreador
-        Rastreador rastreador = repositorioRastreadores.buscar(dniRastreador).orElseThrow(RastreadorNoRegistrado::new);
+        Rastreador rastreador = repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que es un rastreador registrado
         if (rastreador.getUuid().equals(uuidRastreador)) {
             // Obtenemos el usuario
@@ -188,11 +186,10 @@ public class ServicioUjaVid {
      * Método para notificar la curación de un positivo
      *
      * @param uuid UUID del usuario a notificar la curación
-     * @param dniRastreador DNI del rastreador
      * @param uuidRastreador UUID del rastreador obtenido en el login
      */
-    public void notificarCuracion(UUID uuid, String dniRastreador, UUID uuidRastreador) {
-        Rastreador rastreador = repositorioRastreadores.buscar(dniRastreador).orElseThrow(RastreadorNoRegistrado::new);
+    public void notificarCuracion(UUID uuid, UUID uuidRastreador) {
+        Rastreador rastreador = repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que es un rastreador registrado
         if (rastreador.getUuid().equals(uuidRastreador)) {
             Usuario usuario = repositorioUsuarios.buscar(uuid).orElseThrow(UsuarioNoRegistrado::new);
@@ -205,12 +202,11 @@ public class ServicioUjaVid {
     /**
      * Método para obtener el Nº total de infectados
      *
-     * @param dniRastreador DNI del rastreador
      * @param uuidRastreador UUID del rastreador obtenido en el login
      * @return Nº total de infectados
      */
-    public int totalInfectados(String dniRastreador, UUID uuidRastreador) {
-        Rastreador rastreador = repositorioRastreadores.buscar(dniRastreador).orElseThrow(RastreadorNoRegistrado::new);
+    public int totalInfectados(UUID uuidRastreador) {
+        Rastreador rastreador = repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que es un rastreador registrado
         if (!rastreador.getUuid().equals(uuidRastreador)) {
             throw new RastreadorNoRegistrado();
@@ -221,13 +217,12 @@ public class ServicioUjaVid {
     /**
      * Método para obtener el Nº total de positivos que hay actualmente
      *
-     * @param dniRastreador DNI del rastreador
      * @param uuidRastreador UUID del rastreador obtenido en el login
      * @return Nº de positivos actualmente
      */
-    public int positivosActual(String dniRastreador, UUID uuidRastreador) {
+    public int positivosActual(UUID uuidRastreador) {
         int positivos = 0;
-        Rastreador rastreador = repositorioRastreadores.buscar(dniRastreador).orElseThrow(RastreadorNoRegistrado::new);
+        Rastreador rastreador = repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que es un rastreador registrado
         if (rastreador.getUuid().equals(uuidRastreador)) {
             positivos = repositorioUsuarios.positivosActual();
@@ -239,13 +234,12 @@ public class ServicioUjaVid {
     /**
      * Método para obtener el nº de positivos los últimos 15 días
      *
-     * @param dniRastreador DNI del rastreador
      * @param uuidRastreador UUID del rastreador obtenido en el login
      * @return Nº de positivos
      */
-    public int positivos15Dias(String dniRastreador, UUID uuidRastreador) {
+    public int positivos15Dias(UUID uuidRastreador) {
         int positivos = 0;
-        Rastreador rastreador = Optional.ofNullable(repositorioRastreadores.buscar(dniRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
+        Rastreador rastreador = Optional.ofNullable(repositorioRastreadores.buscar(uuidRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que es un rastreador registrado
         if (rastreador.getUuid().equals(uuidRastreador)) {
             positivos = this.repositorioUsuarios.positivos15Dias();
@@ -259,7 +253,6 @@ public class ServicioUjaVid {
      * @param uuidUsuario UUID del usuario a comprobar
      * @return El número de contagiados que ha (generado) el usuario
      */
-    @Transactional
     private int contagiadosUsuario(UUID uuidUsuario) {
         int contagiados = 0;
         // Obtenemos al usuario
@@ -294,13 +287,12 @@ public class ServicioUjaVid {
     /**
      * Método para obtener uns estadística de contagiados / usuarios positivos
      *
-     * @param dniRastreador DNI del rastreador
      * @param uuidRastreador UUID del rastreador obtenido en el login
      * @return La estadistica de contagiados por usuarios positivos
      */
     @Transactional
-    public double contagiadosXusuario(String dniRastreador, UUID uuidRastreador) {
-        Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(dniRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
+    public double contagiadosXusuario(UUID uuidRastreador) {
+        Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(uuidRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
 
         //  Comprobamos que es un rastreador registrado
         if (rastreador.getUuid().equals(uuidRastreador)) {
@@ -327,12 +319,11 @@ public class ServicioUjaVid {
     /**
      * Método pata obtener los positivos notificados por un rastreador
      *
-     * @param dniRastreador DNI del rastreador
      * @param uuidRastreador UUID del rastreador obtenido en el login
      * @return El nº de positivos notificados por el rastreador
      */
-    public int positivosRastreador(String dniRastreador, UUID uuidRastreador) {
-        Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(dniRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
+    public int positivosRastreador(UUID uuidRastreador) {
+        Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(uuidRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
         if (rastreador.getUuid().equals(uuidRastreador)) {
             return rastreador.getNumTotalNotificados();
         }
@@ -342,13 +333,12 @@ public class ServicioUjaVid {
     /**
      * Método para obtener un usuario completo
      *
-     * @param dni DNI del rastreador
      * @param uuidRastreador UUID del rastreador
      * @param uuidUsuario UUID del usuario
      * @return Usuario
      */
-    public Optional<Usuario> devuelveUsuario(String dni, UUID uuidRastreador, UUID uuidUsuario) {
-        Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(dni).get()).orElseThrow(RastreadorNoRegistrado::new);
+    public Optional<Usuario> devuelveUsuario(UUID uuidRastreador, UUID uuidUsuario) {
+        Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(uuidRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
         if (!rastreador.getUuid().equals(uuidRastreador)) {
             throw new RastreadorNoRegistrado();
         }
@@ -359,15 +349,14 @@ public class ServicioUjaVid {
     /**
      * Método para obtener un Rastreador dado un dni
      *
-     * @param dni DNI del rastreador
      * @param uuidRastreador UUID del rastreador
      * @return Rastreador
      */
-    public Optional<Rastreador> devuelveRastreador(String dni, UUID uuidRastreador) {
-        Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(dni).get()).orElseThrow(RastreadorNoRegistrado::new);
+    public Optional<Rastreador> devuelveRastreador(UUID uuidRastreador) {
+        Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(uuidRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
         if (!rastreador.getUuid().equals(uuidRastreador)) {
             throw new RastreadorNoRegistrado();
         }
-        return repositorioRastreadores.buscar(dni);
+        return repositorioRastreadores.buscar(uuidRastreador);
     }
 }

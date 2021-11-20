@@ -8,6 +8,7 @@ import es.ujaen.dae.ujavid.util.CodificadorMd5;
 import es.ujaen.dae.ujavid.util.ExprReg;
 import java.io.Serializable;
 import java.util.UUID;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
@@ -16,7 +17,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
- * Clase qu representa un Rstreador
+ * Clase que representa un Rastreador
  *
  * @author admin
  */
@@ -31,12 +32,13 @@ public class Rastreador implements Serializable {
     /**
      * UUID del rastreador
      */
+    @Id
     private UUID uuid;
 
     /**
      * Dni del rastreador
      */
-    @Id
+    @Column(unique=true)
     @NotNull
     @Size(min = 9, max = 9)
     @Pattern(regexp = ExprReg.DNI)

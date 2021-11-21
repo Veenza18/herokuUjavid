@@ -542,7 +542,7 @@ public class ServicioUjaVidTest {
         servicioUjaVid.notificarCuracion(usuario4.getUuid(), uuid_rastreador);
         servicioUjaVid.contagiadosXusuario(uuid_rastreador);
 
-//        Assertions.assertThat(servicioUjaVid.contagiadosXusuario(rastreador.getDni(), uuid_rastreador)).isEqualTo(214);
+ //       Assertions.assertThat(servicioUjaVid.contagiadosXusuario(rastreador.getDni(), uuid_rastreador)).isEqualTo(214);
     }
 
     /**
@@ -578,6 +578,9 @@ public class ServicioUjaVidTest {
         Usuario usuario4 = new Usuario(
                 "660376093",
                 "efrerfree");
+         Usuario usuario5 = new Usuario(
+                "660376092",
+                "efrerfreasdadsasd");
 
         servicioUjaVid.altaRastreador(rastreador);
         UUID uuid_rastreador = servicioUjaVid.loginRastreador(rastreador.getDni(), contrasena);
@@ -585,6 +588,8 @@ public class ServicioUjaVidTest {
         servicioUjaVid.altaUsuario(usuario2);
         servicioUjaVid.altaUsuario(usuario3);
         servicioUjaVid.altaUsuario(usuario4);
+ 
+        servicioUjaVid.altaUsuario(usuario5);
 
         // Comprobamos que ahora mismo no la lista de conatctos cercanos está vacia 
         Assertions.assertThat(servicioUjaVid.verContactosCercanos(usuario1.getUuid(), rastreador.getUuid()).size()).isEqualTo(0);
@@ -604,6 +609,8 @@ public class ServicioUjaVidTest {
         contactos.add(contacto2);
 
         servicioUjaVid.addContactoCercano(contactos, usuario1.getUuid());
+        //He metio un usuario nuevo para comprobar que al hacer la consulta jpql de verContactos nos devuelve los usuarios con cierto uuid, no toda la tabla
+        servicioUjaVid.addContactoCercano(contactos, usuario5.getUuid());
 
         Assertions.assertThat(servicioUjaVid.verContactosCercanos(usuario1.getUuid(), uuid_rastreador).size()).isEqualTo(2);
     }

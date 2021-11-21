@@ -147,8 +147,9 @@ public class ServicioUjaVid {
         if (!rastreador.getUuid().equals(uuidRastreador)) {
             throw new RastreadorNoRegistrado();
         }
-        Usuario usuario = repositorioUsuarios.buscar(uuid).orElseThrow(UsuarioNoRegistrado::new);
-        return usuario.verContactosCercanos();
+        return repositorioUsuarios.verContactos(uuid);
+       // Usuario usuario = repositorioUsuarios.buscar(uuid).orElseThrow(UsuarioNoRegistrado::new);
+       // return usuario.verContactosCercanos();
     }
 
     /**
@@ -252,7 +253,7 @@ public class ServicioUjaVid {
         // Obtenemos al usuario
         Usuario usuario = Optional.ofNullable(repositorioUsuarios.buscar(uuidUsuario).get()).orElseThrow(UsuarioNoRegistrado::new);
         // Obtenemos sus contactos cercanos
-        List<ContactoCercano> contactos = usuario.verContactosCercanos();
+        List<ContactoCercano> contactos = repositorioUsuarios.verContactos(uuidUsuario);
         // Obtenemos la fecha del positivo del usuario y la pasamos a LocalDate
         LocalDate fechaPositivo = usuario.getfPositivo().minusDays(15).toLocalDate();
         // Obtenemos la fecha de curacion
@@ -332,10 +333,8 @@ public class ServicioUjaVid {
      * @return Usuario
      */
     public Optional<Usuario> devuelveUsuario(UUID uuidRastreador, UUID uuidUsuario) {
-        Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).get();
-        if (!rastreador.getUuid().equals(uuidRastreador)) {
-            throw new RastreadorNoRegistrado();
-        }
+        Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(uuidRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
+        
         return repositorioUsuarios.buscar(uuidUsuario);
 
     }
@@ -348,9 +347,7 @@ public class ServicioUjaVid {
      */
     public Optional<Rastreador> devuelveRastreador(UUID uuidRastreador) {
         Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).get();
-        if (!rastreador.getUuid().equals(uuidRastreador)) {
-            throw new RastreadorNoRegistrado();
-        }
+        
         return Optional.ofNullable(rastreador);
     }
 }

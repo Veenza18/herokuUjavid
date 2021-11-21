@@ -6,6 +6,7 @@ package es.ujaen.dae.ujavid.repositorios;
 
 import es.ujaen.dae.ujavid.entidades.ContactoCercano;
 import es.ujaen.dae.ujavid.entidades.Usuario;
+import static es.ujaen.dae.ujavid.entidades.Usuario.DIAS_TRANSCURRIDOS;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -115,5 +116,10 @@ public class RepositorioUsuarios {
         List<Usuario> lista = em.createQuery("SELECT u FROM Usuario u WHERE u.positivo IS NOT NULL  ", Usuario.class).getResultList();
         return lista;
     }
-
+    
+    public List<ContactoCercano> verContactos(UUID uuid){
+         LocalDateTime fecha2Semanas = LocalDateTime.now().minusDays(14);
+        List<ContactoCercano> lista = em.createQuery("SELECT c FROM Usuario u JOIN u.listadoContactos c WHERE c.fechaContacto  >= ?1 AND u.uuid = ?2 ORDER BY c.riesgo DESC",ContactoCercano.class ).setParameter(1,fecha2Semanas).setParameter(2,uuid).getResultList();
+        return lista;
+    }
 }

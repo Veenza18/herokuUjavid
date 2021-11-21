@@ -130,7 +130,6 @@ public class ServicioUjaVid {
 
             }
         }
-        repositorioUsuarios.actualizar(usuario);
     }
 
     /**
@@ -173,8 +172,6 @@ public class ServicioUjaVid {
             usuario.setfPositivo(f_positivo);
             usuario.calcularRiesgoContactos();
             numTotalInf++;
-            repositorioUsuarios.actualizar(usuario);
-            repositorioRastreadores.actualizar(rastreador);
         }
 
     }

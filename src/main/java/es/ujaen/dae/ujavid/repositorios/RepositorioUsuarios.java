@@ -29,47 +29,88 @@ public class RepositorioUsuarios {
     @PersistenceContext
     EntityManager em;
 
+     /**
+     * Método para obtener el usuario deseado en la persistencia
+     *
+     * @param uuid UUID del usuario usuario
+     * @return Optional del usuario encontrado
+     */
     public Optional<Usuario> buscar(UUID uuid) {
         return Optional.ofNullable(em.find(Usuario.class, uuid));
     }
 
+        /**
+     * Método para guardar el usuario deseado en la persistencia
+     *
+     * @param usuario Usuario deseado
+     */
     public void guardar(Usuario usuario) {
         em.persist(usuario);
     }
 
+    /**
+     * Método para actualizar el usuario deseado en la persistencia
+     *
+     * @param usuario Usuario deseado
+     */
     public void actualizar(Usuario usuario) {
         em.merge(usuario);
     }
 
+        /**
+     * Método para borrar el usuario deseado en la persistencia
+     *
+     * @param usuario Usuario deseado
+     */
     public void borrar(Usuario usuario) {
         em.remove(em.merge(usuario));
     }
 
+     /**
+     * Método para añadir a un usuario, un contacto cercano en la persistencia
+     *
+     * @param contacto ContactoCercano que guarda la información sobre un contacto con otro usuario
+     */
     public void addContactoCercano(ContactoCercano contacto) {
         em.persist(contacto);
     }
 
+    /**
+     * Método para obtener todos los usuarios de la persistencia
+     */
     public List<Usuario> obtenerUsuarios() {
         List<Usuario> lista = em.createQuery("SELECT u FROM Usuario u", Usuario.class).getResultList();
         return lista;
     }
     
+     /**
+     * Método para obtener todos los usuarios que hayan sido almenos positivos una vez de la persistencia
+     */
     public List<Usuario> obtenerUsuariosPositivos() {
         List<Usuario> lista = em.createQuery("SELECT u FROM Usuario u WHERE u.fPositivo IS NOT NULL ", Usuario.class).getResultList();
         return lista;
     }
 
+     /**
+     * Método para obtener todos los usuarios que hayan sido positivos en los últimos 15 días de la persistencia
+     */
     public int positivos15Dias() {
         LocalDateTime fecha15dias = LocalDateTime.now().minusDays(15);
         Long positivos = em.createQuery("SELECT COUNT(u) FROM Usuario u WHERE u.positivo = TRUE AND u.fPositivo >= ?1 ", Long.class).setParameter(1, fecha15dias).getSingleResult();
         return positivos.intValue();
     }
 
+     /**
+     * Método para obtener todos los usuarios contagiados actualmente de la persistencia
+     */
     public int positivosActual() {
         Long positivos = em.createQuery("SELECT COUNT(u) FROM Usuario u WHERE u.positivo = TRUE  ", Long.class).getSingleResult();
         return positivos.intValue();
     }
 
+    /**
+     * Método para obtener todos los usuarios los cuales hayan tenido una modificación en su atributo positivo
+     */
     public List<Usuario> positivosHistorial() {
         List<Usuario> lista = em.createQuery("SELECT u FROM Usuario u WHERE u.positivo IS NOT NULL  ", Usuario.class).getResultList();
         return lista;

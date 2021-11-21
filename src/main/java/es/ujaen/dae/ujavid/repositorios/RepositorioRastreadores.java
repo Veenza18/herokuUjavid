@@ -26,6 +26,12 @@ public class RepositorioRastreadores {
     @PersistenceContext
     EntityManager em;
 
+    /**
+     * Método para obtener el rastreador deseado en la persistencia
+     *
+     * @param dni Dni del rastreador deseado
+     * @return Optional del rastreador encontrado
+     */
     public Optional<Rastreador> buscar(String dni) {
         List<Rastreador> lista = em.createQuery("SELECT r FROM Rastreador r WHERE r.dni=?1", Rastreador.class).setParameter(1, dni).getResultList();
         Rastreador r = null;
@@ -35,18 +41,39 @@ public class RepositorioRastreadores {
         return Optional.ofNullable(r);
     }
 
+    /**
+     * Método para obtener el rastreador deseado en la persistencia
+     *
+     * @param uuidRastreador UUID del rastreador deseado
+     * @return Optional del rastreador encontrado
+     */
     public Optional<Rastreador> buscar(UUID uuidRastreador) {
         return Optional.ofNullable(em.find(Rastreador.class, uuidRastreador));
     }
 
+    /**
+     * Método para guardar el rastreador deseado en la persistencia
+     *
+     * @param rastreador Rastreador deseado
+     */
     public void guardar(Rastreador rastreador) {
         em.persist(rastreador);
     }
 
+     /**
+     * Método para actualizar el rastreador deseado en la persistencia
+     *
+     * @param rastreador Rastreador deseado
+     */
     public void actualizar(Rastreador rastreador) {
         em.merge(rastreador);
     }
-
+    
+    /**
+     * Método para borrar el rastreador deseado en la persistencia
+     *
+     * @param rastreador Rastreador deseado
+     */
     public void borrar(Rastreador rastreador) {
         em.remove(em.merge(rastreador));
     }

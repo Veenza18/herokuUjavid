@@ -100,16 +100,13 @@ public class ServicioUjaVid {
      * @param clave la clave de acceso
      * @return el objeto de la clase Rastreador asociado
      */
-    @Transactional
     public UUID loginRastreador(String dni, String clave) {
+         Rastreador rastreadorLogin = repositorioRastreadores.buscar(dni)
+                .filter((rastreadores) -> rastreadores.passwordValida(clave))
+                .orElseThrow(RastreadorNoRegistrado::new);
 
-        Optional<Rastreador> rastreadorLogin = repositorioRastreadores.buscar(dni)
-                .filter((rastreadores) -> rastreadores.passwordValida(clave));
-
-        if (rastreadorLogin.isEmpty()) {
-            throw new RastreadorNoRegistrado();
-        }
-        return rastreadorLogin.get().getUuid();
+        
+        return rastreadorLogin.getUuid();
     }
 
     /**

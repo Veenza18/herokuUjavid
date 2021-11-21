@@ -338,7 +338,7 @@ public class ServicioUjaVid {
      * @return Usuario
      */
     public Optional<Usuario> devuelveUsuario(UUID uuidRastreador, UUID uuidUsuario) {
-        Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(uuidRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
+        Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).get();
         if (!rastreador.getUuid().equals(uuidRastreador)) {
             throw new RastreadorNoRegistrado();
         }
@@ -353,10 +353,10 @@ public class ServicioUjaVid {
      * @return Rastreador
      */
     public Optional<Rastreador> devuelveRastreador(UUID uuidRastreador) {
-        Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(uuidRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
+        Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).get();
         if (!rastreador.getUuid().equals(uuidRastreador)) {
             throw new RastreadorNoRegistrado();
         }
-        return repositorioRastreadores.buscar(uuidRastreador);
+        return Optional.ofNullable(rastreador);
     }
 }

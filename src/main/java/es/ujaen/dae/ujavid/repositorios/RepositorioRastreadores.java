@@ -27,14 +27,10 @@ public class RepositorioRastreadores {
     EntityManager em;
 
     public Optional<Rastreador> buscar(String dni) {
-        List<Rastreador> lista = em.createQuery("SELECT r FROM Rastreador r", Rastreador.class).getResultList();
+        List<Rastreador> lista = em.createQuery("SELECT r FROM Rastreador r WHERE r.dni=?1", Rastreador.class).setParameter(1, dni).getResultList();
         Rastreador r = null;
         if(!lista.isEmpty()){
-            for(Rastreador r1 : lista){
-                if(r1.getDni().equals(dni)){
-                    r = r1;
-                }
-            }
+        r=lista.get(0);
         }
         return Optional.ofNullable(r);
     }

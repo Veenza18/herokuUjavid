@@ -60,13 +60,11 @@ public class Usuario implements Serializable {
     /**
      * Fecha de curación
      */
-    @PastOrPresent
     private LocalDate fCuracion;
 
     /**
      * Fecha de positivo
      */
-    @PastOrPresent
     private LocalDateTime fPositivo;
 
     /**

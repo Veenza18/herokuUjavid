@@ -36,7 +36,6 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
     /**
      * Fecha y Hora en ka que se produjo el contacto
      */
-    @PastOrPresent
     private LocalDateTime fechaContacto;
 
     /**

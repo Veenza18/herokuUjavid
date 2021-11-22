@@ -101,11 +101,10 @@ public class ServicioUjaVid {
      * @return el objeto de la clase Rastreador asociado
      */
     public UUID loginRastreador(String dni, String clave) {
-         Rastreador rastreadorLogin = repositorioRastreadores.buscar(dni)
+        Rastreador rastreadorLogin = repositorioRastreadores.buscar(dni)
                 .filter((rastreadores) -> rastreadores.passwordValida(clave))
                 .orElseThrow(RastreadorNoRegistrado::new);
 
-        
         return rastreadorLogin.getUuid();
     }
 
@@ -143,13 +142,10 @@ public class ServicioUjaVid {
     public List<ContactoCercano> verContactosCercanos(UUID uuid, UUID uuidRastreador) {
         // Obtenemos el Rastreador
         Rastreador rastreador = repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
-        // Comprobamos que el rastreador está registrado
-        if (!rastreador.getUuid().equals(uuidRastreador)) {
-            throw new RastreadorNoRegistrado();
-        }
+
         return repositorioUsuarios.verContactos(uuid);
-       // Usuario usuario = repositorioUsuarios.buscar(uuid).orElseThrow(UsuarioNoRegistrado::new);
-       // return usuario.verContactosCercanos();
+        // Usuario usuario = repositorioUsuarios.buscar(uuid).orElseThrow(UsuarioNoRegistrado::new);
+        // return usuario.verContactosCercanos();
     }
 
     /**
@@ -164,16 +160,15 @@ public class ServicioUjaVid {
         // Obtenemos el Rastreador
         Rastreador rastreador = repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que es un rastreador registrado
-        if (rastreador.getUuid().equals(uuidRastreador)) {
-            // Obtenemos el usuario
-            Usuario usuario = repositorioUsuarios.buscar(uuid).orElseThrow(UsuarioNoRegistrado::new);
-            // Realizamos las operaciones
-            rastreador.aumentarNotificados();
-            usuario.setPositivo(true);
-            usuario.setfPositivo(f_positivo);
-            usuario.calcularRiesgoContactos();
-            numTotalInf++;
-        }
+
+        // Obtenemos el usuario
+        Usuario usuario = repositorioUsuarios.buscar(uuid).orElseThrow(UsuarioNoRegistrado::new);
+        // Realizamos las operaciones
+        rastreador.aumentarNotificados();
+        usuario.setPositivo(true);
+        usuario.setfPositivo(f_positivo);
+        usuario.calcularRiesgoContactos();
+        numTotalInf++;
 
     }
 
@@ -186,12 +181,12 @@ public class ServicioUjaVid {
     public void notificarCuracion(UUID uuid, UUID uuidRastreador) {
         Rastreador rastreador = repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que es un rastreador registrado
-        if (rastreador.getUuid().equals(uuidRastreador)) {
-            Usuario usuario = repositorioUsuarios.buscar(uuid).orElseThrow(UsuarioNoRegistrado::new);
-            usuario.setPositivo(false);
-            usuario.setfCuracion(LocalDate.now());
-            repositorioUsuarios.actualizar(usuario);
-        }
+
+        Usuario usuario = repositorioUsuarios.buscar(uuid).orElseThrow(UsuarioNoRegistrado::new);
+        usuario.setPositivo(false);
+        usuario.setfCuracion(LocalDate.now());
+        repositorioUsuarios.actualizar(usuario);
+
     }
 
     /**
@@ -202,10 +197,7 @@ public class ServicioUjaVid {
      */
     public int totalInfectados(UUID uuidRastreador) {
         Rastreador rastreador = repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
-        // Comprobamos que es un rastreador registrado
-        if (!rastreador.getUuid().equals(uuidRastreador)) {
-            throw new RastreadorNoRegistrado();
-        }
+
         return numTotalInf;
     }
 
@@ -219,9 +211,8 @@ public class ServicioUjaVid {
         int positivos = 0;
         Rastreador rastreador = repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que es un rastreador registrado
-        if (rastreador.getUuid().equals(uuidRastreador)) {
-            positivos = repositorioUsuarios.positivosActual();
-        }
+
+        positivos = repositorioUsuarios.positivosActual();
 
         return positivos;
     }
@@ -236,9 +227,9 @@ public class ServicioUjaVid {
         int positivos = 0;
         Rastreador rastreador = Optional.ofNullable(repositorioRastreadores.buscar(uuidRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que es un rastreador registrado
-        if (rastreador.getUuid().equals(uuidRastreador)) {
-            positivos = this.repositorioUsuarios.positivos15Dias();
-        }
+
+        positivos = this.repositorioUsuarios.positivos15Dias();
+
         return positivos;
     }
 
@@ -290,24 +281,23 @@ public class ServicioUjaVid {
         Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(uuidRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
 
         //  Comprobamos que es un rastreador registrado
-        if (rastreador.getUuid().equals(uuidRastreador)) {
-            double n_positivos_total = 0;
-            double contagiados_total = 0;
+        double n_positivos_total = 0;
+        double contagiados_total = 0;
 
-            // Obtenemos los usuarios que alguna vez han dado positivo
-            List<Usuario> lista = this.repositorioUsuarios.positivosHistorial();
-            n_positivos_total = lista.size();
+        // Obtenemos los usuarios que alguna vez han dado positivo
+        List<Usuario> lista = this.repositorioUsuarios.positivosHistorial();
+        n_positivos_total = lista.size();
 
-            // Recorremos todos los usuarios  que alguna vez han dado positivo
-            for (Usuario u : lista) {
-                contagiados_total += this.contagiadosUsuario(u.getUuid());
-            }
-
-            // Comprobamos que hay almenos una persona que es positivo
-            if (n_positivos_total > 0) {
-                return contagiados_total / n_positivos_total;
-            }
+        // Recorremos todos los usuarios  que alguna vez han dado positivo
+        for (Usuario u : lista) {
+            contagiados_total += this.contagiadosUsuario(u.getUuid());
         }
+
+        // Comprobamos que hay almenos una persona que es positivo
+        if (n_positivos_total > 0) {
+            return contagiados_total / n_positivos_total;
+        }
+
         return 0;
     }
 
@@ -319,10 +309,10 @@ public class ServicioUjaVid {
      */
     public int positivosRastreador(UUID uuidRastreador) {
         Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(uuidRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
-        if (rastreador.getUuid().equals(uuidRastreador)) {
-            return rastreador.getNumTotalNotificados();
-        }
-        return 0;
+
+        return rastreador.getNumTotalNotificados();
+
+ 
     }
 
     /**
@@ -334,7 +324,7 @@ public class ServicioUjaVid {
      */
     public Optional<Usuario> devuelveUsuario(UUID uuidRastreador, UUID uuidUsuario) {
         Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(uuidRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
-        
+
         return repositorioUsuarios.buscar(uuidUsuario);
 
     }
@@ -347,7 +337,7 @@ public class ServicioUjaVid {
      */
     public Optional<Rastreador> devuelveRastreador(UUID uuidRastreador) {
         Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).get();
-        
+
         return Optional.ofNullable(rastreador);
     }
 }

@@ -5,7 +5,7 @@
 package es.ujaen.dae.ujavid.servicios;
 
 import es.ujaen.dae.ujavid.entidades.ContactoCercano;
-import es.ujaen.dae.ujavid.entidades.DTO.DTOContactoCercano;
+import es.ujaen.dae.ujavid.controladoresREST.DTO.DTOContactoCercano;
 import es.ujaen.dae.ujavid.entidades.Rastreador;
 import es.ujaen.dae.ujavid.entidades.Usuario;
 import es.ujaen.dae.ujavid.excepciones.RastreadorYaRegistrado;

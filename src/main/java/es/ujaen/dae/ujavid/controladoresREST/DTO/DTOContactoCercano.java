@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package es.ujaen.dae.ujavid.entidades.DTO;
+package es.ujaen.dae.ujavid.controladoresREST.DTO;
 
 import es.ujaen.dae.ujavid.entidades.Usuario;
 import java.io.Serializable;
@@ -13,7 +13,7 @@ import java.util.UUID;
  *
  * @author Venza
  */
-public class DTOContactoCercano implements Serializable{
+public class DTOContactoCercano{
     private UUID uuid1;
     private UUID uuid2;
     private LocalDateTime fechaContacto;

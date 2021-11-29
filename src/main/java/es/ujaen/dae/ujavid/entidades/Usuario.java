@@ -113,6 +113,18 @@ public class Usuario implements Serializable {
         this.listadoContactos = new ArrayList<>();
     }
 
+    public Usuario(UUID uuid, String numTelefono, LocalDate fCuracion, LocalDateTime fPositivo, boolean positivo, String password, LocalDate fAlta) {
+        this.uuid = uuid;
+        this.numTelefono = numTelefono;
+        this.fCuracion = fCuracion;
+        this.fPositivo = fPositivo;
+        this.positivo = positivo;
+        this.password = password;
+        this.fAlta = fAlta;
+        
+         this.listadoContactos = new ArrayList<>();
+    }
+
     /**
      * Método para obtener el UUID del usuario
      *

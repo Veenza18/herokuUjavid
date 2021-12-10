@@ -2,7 +2,7 @@
 ---
 ## Fichero de configuración para UjaVid
 
-spring.datasource.url: jdbc:mysql://localhost:33060/ujavid
+spring.datasource.url: jdbc:h2:mem:ujavid;MODE=MYSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
 spring.datasource.username: ujavid
 spring.datasource.password: secret
 

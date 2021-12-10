@@ -225,7 +225,7 @@ public class ServicioUjaVid {
      */
     public int positivos15Dias(UUID uuidRastreador) {
         int positivos = 0;
-        Rastreador rastreador = Optional.ofNullable(repositorioRastreadores.buscar(uuidRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
+        Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que es un rastreador registrado
 
         positivos = this.repositorioUsuarios.positivos15Dias();
@@ -242,7 +242,7 @@ public class ServicioUjaVid {
     private int contagiadosUsuario(UUID uuidUsuario) {
         int contagiados = 0;
         // Obtenemos al usuario
-        Usuario usuario = Optional.ofNullable(repositorioUsuarios.buscar(uuidUsuario).get()).orElseThrow(UsuarioNoRegistrado::new);
+        Usuario usuario = repositorioUsuarios.buscar(uuidUsuario).orElseThrow(UsuarioNoRegistrado::new);
         // Obtenemos sus contactos cercanos
         List<ContactoCercano> contactos = repositorioUsuarios.verContactos(uuidUsuario);
         // Obtenemos la fecha del positivo del usuario y la pasamos a LocalDate
@@ -278,7 +278,7 @@ public class ServicioUjaVid {
      */
     @Transactional
     public double contagiadosXusuario(UUID uuidRastreador) {
-        Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(uuidRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
+        Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
 
         //  Comprobamos que es un rastreador registrado
         double n_positivos_total = 0;
@@ -308,7 +308,7 @@ public class ServicioUjaVid {
      * @return El nº de positivos notificados por el rastreador
      */
     public int positivosRastreador(UUID uuidRastreador) {
-        Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(uuidRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
+        Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
 
         return rastreador.getNumTotalNotificados();
 
@@ -323,7 +323,7 @@ public class ServicioUjaVid {
      * @return Usuario
      */
     public Optional<Usuario> devuelveUsuario(UUID uuidRastreador, UUID uuidUsuario) {
-        Rastreador rastreador = Optional.ofNullable(this.repositorioRastreadores.buscar(uuidRastreador).get()).orElseThrow(RastreadorNoRegistrado::new);
+        Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
 
         return repositorioUsuarios.buscar(uuidUsuario);
 

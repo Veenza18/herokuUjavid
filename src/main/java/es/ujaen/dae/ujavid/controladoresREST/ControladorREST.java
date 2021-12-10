@@ -3,9 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package es.ujaen.dae.ujavid.controladoresREST;
+import es.ujaen.dae.ujavid.controladoresREST.DTO.DTOContactoCercano;
+import es.ujaen.dae.ujavid.controladoresREST.DTO.DTORastreador;
 import es.ujaen.dae.ujavid.controladoresREST.DTO.DTOUsuario;
 import es.ujaen.dae.ujavid.entidades.Usuario;
+import es.ujaen.dae.ujavid.entidades.Rastreador;
+import es.ujaen.dae.ujavid.entidades.ContactoCercano;
+import es.ujaen.dae.ujavid.excepciones.RastreadorNoRegistrado;
 import es.ujaen.dae.ujavid.excepciones.UsuarioNoRegistrado;
+import es.ujaen.dae.ujavid.excepciones.ContactosNoAnadidos;
 import es.ujaen.dae.ujavid.servicios.ServicioUjaVid;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -61,5 +67,43 @@ public class ControladorREST {
         }
     }
 
+   /**Creacion de Rastreadores */
+    @PostMapping("/rastreadores")
+    ResponseEntity<UUID> altaRastreador(@RequestBody DTORastreador rastreador) {
+        try {
+            Rastreador rastreadorAux = servicios.altaRastreador(rastreador.aRastreador());
+            return ResponseEntity.status(HttpStatus.CREATED).body(rastreadorAux.getUuid());
+        }
+        catch(RastreadorNoRegistrado e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
     
+    /** Registrar contactos */
+    @PostMapping("/usuarios/{uuidUsuario}/contactos")
+    ResponseEntity<Void> realizarContacto(@PathVariable UUID uuidUsuario, @RequestBody List<DTOContactoCercano> contactos) {
+        try {
+            servicios.addContactoCercano(contactos, uuidUsuario);
+            
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+        catch(ContactosNoAnadidos e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+
+    /** Listar coontactos */
+    @GetMapping("/usuarios/{uuidUsuario}/contactos")
+    @ResponseStatus(HttpStatus.OK)
+    List<DTOContactoCercano> verContactos(@PathVariable UUID uuidUsuario,@RequestBody UUID uuidRastreador) {
+        return servicios.verContactosCercanos(uuidUsuario, uuidRastreador).stream()
+                .map(t-> new DTOContactoCercano(t.getFechaContacto(),t.getContacto().getUuid(),t.getDistancia(),t.getDuracion())).collect(Collectors.toList());
+       
+    }
+
+
 }
+
+
+    
+ 

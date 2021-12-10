@@ -4,6 +4,7 @@
  */
 package es.ujaen.dae.ujavid.controladoresREST.DTO;
 
+import es.ujaen.dae.ujavid.entidades.ContactoCercano;
 import es.ujaen.dae.ujavid.entidades.Usuario;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -75,6 +76,6 @@ public class DTOContactoCercano{
     public void setRiesgo(double riesgo) {
         this.riesgo = riesgo;
     }
-    
+
     
 }

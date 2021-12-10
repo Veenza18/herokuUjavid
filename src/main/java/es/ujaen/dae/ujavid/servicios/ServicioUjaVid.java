@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -340,4 +341,15 @@ public class ServicioUjaVid {
 
         return Optional.ofNullable(rastreador);
     }
+    
+     @Transactional
+    public Optional<Rastreador> verRastreador(@NotBlank String dni) {
+        Optional<Rastreador> rastreadorLogin = repositorioRastreadores.buscar(dni);
+ 
+        // Asegurarnos de que se devuelve el cliente con los datos precargados
+       
+        return rastreadorLogin;
+    }    
+
+    
 }

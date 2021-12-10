@@ -4,6 +4,7 @@
  */
 package es.ujaen.dae.ujavid.controladoresREST.DTO;
 
+import es.ujaen.dae.ujavid.entidades.Rastreador;
 import java.util.UUID;
 
 /**
@@ -96,5 +97,9 @@ public class DTORastreador {
         this.numTelefono = numTelefono;
         this.password = password;
     }
+     public Rastreador aRastreador() {
+        return new Rastreador(dni, nombre, apellido1, apellido2, numTelefono,password);
+    }
+
     
 }

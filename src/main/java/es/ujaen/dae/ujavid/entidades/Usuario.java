@@ -4,7 +4,7 @@
  */
 package es.ujaen.dae.ujavid.entidades;
 
-import es.ujaen.dae.ujavid.util.CodificadorMd5;
+import es.ujaen.dae.ujavid.util.CodificadorPassword;
 import es.ujaen.dae.ujavid.util.ExprReg;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -104,7 +104,7 @@ public class Usuario implements Serializable {
      */
     public Usuario(String numTelefono, String password) {
         this.uuid = UUID.randomUUID();
-        this.password = CodificadorMd5.codificar(password);
+        this.password = (password != null ? CodificadorPassword.codificar(password) : null);
         this.numTelefono = numTelefono;
         this.fCuracion = null;
         this.fPositivo = null;
@@ -287,6 +287,6 @@ public class Usuario implements Serializable {
      * @return True si las contrasñeas son iguales o False si son distintas
      */
     public boolean passwordValida(String password) {
-        return this.password.equals(CodificadorMd5.codificar(password));
+         return CodificadorPassword.igual(password, this.password);
     }
 }

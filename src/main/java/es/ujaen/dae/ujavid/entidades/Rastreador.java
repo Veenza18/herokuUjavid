@@ -4,7 +4,7 @@
  */
 package es.ujaen.dae.ujavid.entidades;
 
-import es.ujaen.dae.ujavid.util.CodificadorMd5;
+import es.ujaen.dae.ujavid.util.CodificadorPassword;
 import es.ujaen.dae.ujavid.util.ExprReg;
 import java.io.Serializable;
 import java.util.UUID;
@@ -93,7 +93,7 @@ public class Rastreador implements Serializable {
         this.apellido1 = apellido1;
         this.apellido2 = apellido2;
         this.numTelefono = numTelefono;
-        this.password = CodificadorMd5.codificar(password);
+        this.password = (password != null ? CodificadorPassword.codificar(password) : null);
         this.numTotalNotificados = 0;
     }
 
@@ -175,6 +175,7 @@ public class Rastreador implements Serializable {
      * @return True si las contrasñeas son iguales o False si son distintas
      */
     public boolean passwordValida(String password) {
-        return this.password.equals(CodificadorMd5.codificar(password));
+        return CodificadorPassword.igual(password, this.password);
+        //return this.password.equals(CodificadorPassword.codificar(password));
     }
 }

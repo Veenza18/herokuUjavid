@@ -5,7 +5,7 @@
 package es.ujaen.dae.ujavid.controladoresREST.DTO;
 
 import es.ujaen.dae.ujavid.entidades.Usuario;
-import es.ujaen.dae.ujavid.util.CodificadorMd5;
+import es.ujaen.dae.ujavid.util.CodificadorPassword;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -55,7 +55,7 @@ public class DTOUsuario {
         this.fCuracion = fCuracion;
         this.fPositivo = fPositivo;
         this.positivo = positivo;
-        this.password = CodificadorMd5.codificar(password);
+        this.password = CodificadorPassword.codificar(password);
         this.fAlta = fAlta;
     }
 

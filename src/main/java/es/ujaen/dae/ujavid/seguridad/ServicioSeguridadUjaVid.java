@@ -37,7 +37,7 @@ public class ServicioSeguridadUjaVid extends WebSecurityConfigurerAdapter {
         httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST, "/ujavid/rastreador").anonymous();
       
         
-        httpSecurity.authorizeRequests().antMatchers("/ujacoin/rastreador/{dni}/**")
+        httpSecurity.authorizeRequests().antMatchers("/ujavid/rastreador/{dni}/**")
                 .access("hasRole('RASTREADOR') and #dni == principal.username");
     }
 

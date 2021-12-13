@@ -55,7 +55,7 @@ public class DTOUsuario {
         this.fCuracion = fCuracion;
         this.fPositivo = fPositivo;
         this.positivo = positivo;
-        this.password = CodificadorPassword.codificar(password);
+        this.password = password;
         this.fAlta = fAlta;
     }
 

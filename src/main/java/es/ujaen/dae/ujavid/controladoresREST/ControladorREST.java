@@ -12,6 +12,7 @@ import es.ujaen.dae.ujavid.entidades.ContactoCercano;
 import es.ujaen.dae.ujavid.excepciones.RastreadorNoRegistrado;
 import es.ujaen.dae.ujavid.excepciones.UsuarioNoRegistrado;
 import es.ujaen.dae.ujavid.excepciones.ContactosNoAnadidos;
+import es.ujaen.dae.ujavid.excepciones.UsuarioYaRegistrado;
 import es.ujaen.dae.ujavid.servicios.ServicioUjaVid;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author admin
  */
 @RestController
+@RequestMapping("/ujavid")
 public class ControladorREST {
     @Autowired
     ServicioUjaVid servicios;
@@ -52,7 +54,7 @@ public class ControladorREST {
  /** Handler para excepciones de accesos de usuarios no registrados */
     @ExceptionHandler(UsuarioNoRegistrado.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public void handlerClienteNoRegistrado(UsuarioNoRegistrado e) {
+    public void handlerUsuarioNoRegistrado(UsuarioNoRegistrado e) {
     }
 
     /** Creación de usuarios */
@@ -62,7 +64,7 @@ public class ControladorREST {
             UUID uuid = servicios.altaUsuario(usuario.aUsuario());
             return ResponseEntity.status(HttpStatus.CREATED).body(uuid);
         }
-        catch(UsuarioNoRegistrado e) {
+        catch(UsuarioYaRegistrado e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }

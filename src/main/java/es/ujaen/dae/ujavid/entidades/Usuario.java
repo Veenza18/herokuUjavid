@@ -22,9 +22,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
 /**
  * Clase que representa un Usuario
@@ -54,6 +52,7 @@ public class Usuario implements Serializable {
     /**
      * Número de teléfono
      */
+    //@Column(unique = true)
     @Pattern(regexp = ExprReg.TLF)
     private String numTelefono;
 

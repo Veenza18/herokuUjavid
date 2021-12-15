@@ -20,6 +20,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 /**
@@ -53,9 +54,10 @@ public class controladoresRESTTest {
      * Intento de creación de un cliente inválido
      */
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testAltaUsuario() {
         // Usuario con Nº de teléfono mal
-        DTOUsuario usuario = new DTOUsuario("656749","adrian123");
+        DTOUsuario usuario = new DTOUsuario("656749", "adrian123");
 
         ResponseEntity<UUID> respuesta = restTemplate.postForEntity(
                 "/usuarios",
@@ -64,9 +66,9 @@ public class controladoresRESTTest {
         );
 
         Assertions.assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        
+
         // Usuario correcto
-        DTOUsuario usuario2 = new DTOUsuario("655151515","adrian123");
+        DTOUsuario usuario2 = new DTOUsuario("655151515", "adrian123");
 
         ResponseEntity<UUID> respuesta2 = restTemplate.postForEntity(
                 "/usuarios",
@@ -75,11 +77,22 @@ public class controladoresRESTTest {
         );
 
         Assertions.assertThat(respuesta2.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        // Usuario Repetido
+        ResponseEntity<UUID> respuesta3 = restTemplate.postForEntity(
+                "/usuarios",
+                usuario2,
+                UUID.class
+        );
+
+        Assertions.assertThat(respuesta3.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
+
     /**
      * Intento de creación de un rastreador inválido
      */
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testAltaRastreadorInvalido() {
         // Rstreador con DNI mal
         DTORastreador rastreador = new DTORastreador("27656A", "Adrian", "Perez", "Sanchez", "655656565", "jaen");
@@ -91,7 +104,7 @@ public class controladoresRESTTest {
         );
 
         Assertions.assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        
+
         // Rstreador CORRECTO
         DTORastreador rastreador2 = new DTORastreador("27878765G", "Adrian", "Perez", "Sanchez", "655656565", "jaen");
 
@@ -103,16 +116,17 @@ public class controladoresRESTTest {
 
         Assertions.assertThat(respuesta2.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
-    
-     /**
+
+    /**
      * test de alta y login de un rastreador
      */
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testAltaYAccesoDatosRastreador() {
         // El DTO creado no tendrá la contraseña cifrada cuando hagas el post
         DTORastreador rastreador = new DTORastreador("27090987G", "Adrian", "Perez", "Sanchez", "655656565", "secret");
 
-         ResponseEntity<UUID> respuestaAlta = restTemplate.postForEntity(
+        ResponseEntity<UUID> respuestaAlta = restTemplate.postForEntity(
                 "/rastreadores",
                 rastreador,
                 UUID.class
@@ -133,9 +147,39 @@ public class controladoresRESTTest {
         DTORastreador clienteLogin = respuestaLogin.getBody();
         Assertions.assertThat(clienteLogin.getDni()).isEqualTo(rastreador.getDni());
     }
-    
-//     @Test
-//    public void testRealizarContacto() {
-//        
-//    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void testRealizarContacto() {
+        // Añadimos los distintos Usuarios al sistema
+        DTOUsuario usuario1 = new DTOUsuario("655151515", "adrian123");
+
+        ResponseEntity<UUID> respuesta1 = restTemplate.postForEntity(
+                "/usuarios",
+                usuario1,
+                UUID.class
+        );
+
+        DTOUsuario usuario2 = new DTOUsuario("600987656", "secret2");
+
+        ResponseEntity<UUID> respuesta2 = restTemplate.postForEntity(
+                "/usuarios",
+                usuario2,
+                UUID.class
+        );
+
+        DTOUsuario usuario3 = new DTOUsuario("687394093", "secret5");
+
+        ResponseEntity<UUID> respuesta3 = restTemplate.postForEntity(
+                "/usuarios",
+                usuario3,
+                UUID.class
+        );
+
+        Assertions.assertThat(respuesta1.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        Assertions.assertThat(respuesta2.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        Assertions.assertThat(respuesta3.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        // Añadimos el Rastreador
+    }
 }

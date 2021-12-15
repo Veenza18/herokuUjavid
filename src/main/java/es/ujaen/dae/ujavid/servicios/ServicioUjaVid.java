@@ -69,7 +69,7 @@ public class ServicioUjaVid {
      * @throws UsuarioYaRegistrado en caso de que esté el Usuario registrado
      */
     public UUID altaUsuario(@NotNull @Valid Usuario usuario) {
-        if (repositorioUsuarios.buscar(usuario.getUuid()).isPresent()) {
+        if (repositorioUsuarios.buscar(usuario.getUuid()).isPresent()|| repositorioUsuarios.buscar(usuario.getNumTelefono()).isPresent()) {
             throw new UsuarioYaRegistrado();
         }
 

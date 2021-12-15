@@ -474,11 +474,11 @@ public class ServicioUjaVidTest {
                 "nurfrerfeve");
 
         Usuario usuario4 = new Usuario(
-                "670670670",
+                "670679670",
                 "nurfrerfeve");
 
         Usuario usuario5 = new Usuario(
-                "670670670",
+                "680670670",
                 "nurfrerfeve");
 
         servicioUjaVid.altaRastreador(rastreador);

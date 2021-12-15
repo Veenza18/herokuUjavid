@@ -38,9 +38,10 @@ public class ServicioSeguridadUjaVid extends WebSecurityConfigurerAdapter {
         // Activamos la autenticación básica
         httpSecurity.httpBasic();
 
-         httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST).permitAll();
+         httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST,"/ujavid/usuarios").permitAll();
+         httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST,"/ujavid/rastreadores").permitAll();
 
-//        httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST, "/ujavid/rastreador").anonymous();
+        httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST, "/ujavid/usuarios/*").hasRole("USUARIO");
 //
 //        httpSecurity.authorizeRequests().antMatchers("/ujavid/**").hasRole("RASTREADOR");
 //        httpSecurity.authorizeRequests().antMatchers("/ujavid/usuarios/*").hasRole("USUARIO");

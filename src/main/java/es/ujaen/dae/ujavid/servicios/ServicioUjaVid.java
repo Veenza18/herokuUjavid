@@ -16,9 +16,7 @@ import es.ujaen.dae.ujavid.repositorios.RepositorioRastreadores;
 import es.ujaen.dae.ujavid.repositorios.RepositorioUsuarios;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import javax.validation.Valid;
@@ -71,7 +69,7 @@ public class ServicioUjaVid {
      * @throws UsuarioYaRegistrado en caso de que esté el Usuario registrado
      */
     public UUID altaUsuario(@NotNull @Valid Usuario usuario) {
-        if (repositorioUsuarios.buscar(usuario.getUuid()).isPresent()) {
+        if (repositorioUsuarios.buscar(usuario.getUuid()).isPresent()|| repositorioUsuarios.buscar(usuario.getNumTelefono()).isPresent()) {
             throw new UsuarioYaRegistrado();
         }
 

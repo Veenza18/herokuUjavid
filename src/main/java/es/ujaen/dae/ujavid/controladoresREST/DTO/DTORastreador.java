@@ -53,10 +53,12 @@ public class DTORastreador {
      */
     private String password;
 
+    /**
+     * Constructor por defecto de la clase DTORastreador
+     */
     public DTORastreador() {
     }
 
-    
     /**
      * Constructor para realizar un POST
      * 
@@ -78,6 +80,22 @@ public class DTORastreador {
         this.numTotalNotificados = 0;
     }
 
+    /**
+     * Constructor para realizar un GET
+     * 
+     * @param rastreador Rastreador a convertir
+     */
+    public DTORastreador(Rastreador rastreador) {
+        this.numTotalNotificados = rastreador.getNumTotalNotificados();
+        this.uuid = rastreador.getUuid();
+        this.dni = rastreador.getDni();
+        this.nombre = rastreador.getNombre();
+        this.apellido1 = rastreador.getApellido1();
+        this.apellido2 = rastreador.getApellido2();
+        this.numTelefono = rastreador.getApellido2();
+        this.password = rastreador.getPassword();
+    }
+    
     /**
      * Constructor para realizar un GET
      * 

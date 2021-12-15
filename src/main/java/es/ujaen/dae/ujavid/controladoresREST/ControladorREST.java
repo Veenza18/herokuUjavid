@@ -13,7 +13,9 @@ import es.ujaen.dae.ujavid.excepciones.UsuarioNoRegistrado;
 import es.ujaen.dae.ujavid.excepciones.ContactosNoAnadidos;
 import es.ujaen.dae.ujavid.excepciones.UsuarioYaRegistrado;
 import es.ujaen.dae.ujavid.servicios.ServicioUjaVid;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.ConstraintViolationException;
@@ -62,7 +64,6 @@ public class ControladorREST {
      */
     @PostMapping("/usuarios")
     ResponseEntity<UUID> altausuario(@RequestBody DTOUsuario usuario) {
-        System.out.println("Entrada en altaUsuario");
         try {
             UUID uuid = servicios.altaUsuario(usuario.aUsuario());
             return ResponseEntity.status(HttpStatus.CREATED).body(uuid);
@@ -84,11 +85,19 @@ public class ControladorREST {
         }
     }
 
+    /** Login de RASTREADORES (temporal hasta incluir autenticación mediante Spring Security?????? */
+    @GetMapping("/rastreadores/{dni}")
+    ResponseEntity<DTORastreador> verRastreador(@PathVariable String dni) {
+        Optional<Rastreador> rastreador = servicios.verRastreador(dni);
+        return rastreador
+                .map(c -> ResponseEntity.ok(new DTORastreador(c)))
+                .orElse(ResponseEntity.notFound().build());
+    }
     /**
      * Registrar contactos
      */
     @PostMapping("/usuarios/{uuidUsuario}/contactos")
-    ResponseEntity<Void> realizarContacto(@PathVariable UUID uuidUsuario, @RequestBody List<DTOContactoCercano> contactos) {
+    ResponseEntity<Void> realizarContacto(@RequestBody UUID uuidUsuario, @RequestBody List<DTOContactoCercano> contactos) {
         try {
             servicios.addContactoCercano(contactos, uuidUsuario);
 
@@ -108,5 +117,6 @@ public class ControladorREST {
                 .map(t -> new DTOContactoCercano(t.getFechaContacto(), t.getContacto().getUuid(), t.getDistancia(), t.getDuracion())).collect(Collectors.toList());
 
     }
+     
 
 }

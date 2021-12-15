@@ -40,6 +40,20 @@ public class RepositorioUsuarios {
         return Optional.ofNullable(em.find(Usuario.class, uuid));
     }
 
+    /**
+     * Método para obtener el usuario deseado en la persistencia
+     *
+     * @param telefono Teléfono del Usuario
+     * @return Optional del usuario encontrado
+     */
+    public Optional<Usuario> buscar(String telefono) {
+        List<Usuario> lista = em.createQuery("SELECT u FROM Usuario u WHERE ?1 = u.numTelefono", Usuario.class).setParameter(1,telefono).getResultList();
+        Usuario u = null;
+        if (!lista.isEmpty()) {
+            u = lista.get(0);
+        }
+        return Optional.ofNullable(u);
+    }
         /**
      * Método para guardar el usuario deseado en la persistencia
      *

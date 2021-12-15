@@ -35,8 +35,8 @@ public class RepositorioRastreadores {
     public Optional<Rastreador> buscar(String dni) {
         List<Rastreador> lista = em.createQuery("SELECT r FROM Rastreador r WHERE r.dni=?1", Rastreador.class).setParameter(1, dni).getResultList();
         Rastreador r = null;
-        if(!lista.isEmpty()){
-        r=lista.get(0);
+        if (!lista.isEmpty()) {
+            r = lista.get(0);
         }
         return Optional.ofNullable(r);
     }
@@ -60,7 +60,7 @@ public class RepositorioRastreadores {
         em.persist(rastreador);
     }
 
-     /**
+    /**
      * Método para actualizar el rastreador deseado en la persistencia
      *
      * @param rastreador Rastreador deseado
@@ -68,7 +68,7 @@ public class RepositorioRastreadores {
     public void actualizar(Rastreador rastreador) {
         em.merge(rastreador);
     }
-    
+
     /**
      * Método para borrar el rastreador deseado en la persistencia
      *

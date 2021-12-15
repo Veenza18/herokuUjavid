@@ -313,7 +313,6 @@ public class ServicioUjaVid {
 
         return rastreador.getNumTotalNotificados();
 
- 
     }
 
     /**
@@ -341,15 +340,13 @@ public class ServicioUjaVid {
 
         return Optional.ofNullable(rastreador);
     }
-    
-     @Transactional
+
+    @Transactional
     public Optional<Rastreador> verRastreador(@NotBlank String dni) {
         Optional<Rastreador> rastreadorLogin = repositorioRastreadores.buscar(dni);
- 
-        // Asegurarnos de que se devuelve el cliente con los datos precargados
-       
-        return rastreadorLogin;
-    }    
 
-    
+        // Asegurarnos de que se devuelve el cliente con los datos precargados
+        return rastreadorLogin;
+    }
+
 }

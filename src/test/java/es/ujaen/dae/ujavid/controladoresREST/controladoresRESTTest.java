@@ -5,9 +5,8 @@
  */
 package es.ujaen.dae.ujavid.controladoresREST;
 
+import es.ujaen.dae.ujavid.controladoresREST.DTO.DTORastreador;
 import es.ujaen.dae.ujavid.controladoresREST.DTO.DTOUsuario;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.PostConstruct;
@@ -30,7 +29,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(classes = es.ujaen.dae.ujavid.app.UjaVidApp.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = {"test"})
 public class controladoresRESTTest {
-    
+
     @LocalServerPort
     int localPort;
 
@@ -39,8 +38,7 @@ public class controladoresRESTTest {
 
     TestRestTemplate restTemplate;
 
-    
-     /**
+    /**
      * Crear un TestRestTemplate para las pruebas
      */
     @PostConstruct
@@ -48,33 +46,43 @@ public class controladoresRESTTest {
         RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder()
                 .rootUri("http://localhost:" + localPort + "/ujavid")
                 .additionalMessageConverters(List.of(springBootJacksonConverter));
-        
-        restTemplate = new TestRestTemplate(restTemplateBuilder);        
+        restTemplate = new TestRestTemplate(restTemplateBuilder);
     }
 
-    
     /**
      * Intento de creación de un cliente inválido
      */
     @Test
     public void testAltaUsuarioInvalido() {
-        // Cliente con e-mail incorrecto!!!
-        
-        DTOUsuario usuario = new DTOUsuario(UUID.randomUUID(),
-                "656764549",
-                LocalDate.now().minusDays(1),
-                LocalDateTime.now().minusDays(4),
-                true,
-                "adrian123",
-                LocalDate.now().minusMonths(2));
+        // Usuario con Nº de teléfono mal
+
+        DTOUsuario usuario = new DTOUsuario("656749","adrian123");
 
         ResponseEntity<UUID> respuesta = restTemplate.postForEntity(
                 "/usuarios",
                 usuario,
-               UUID.class
+                UUID.class
+        );
+        System.out.println("----------------------------- " + restTemplate.getRootUri());
+        Assertions.assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+    /**
+     * Intento de creación de un rastreador inválido
+     */
+    @Test
+    public void testAltaRsstreadorInvalido() {
+        // Usuario con Nº de teléfono mal
+
+        DTORastreador rastreador = new DTORastreador("27656A", "Adrian", "Perez", "Sanchez", "655656565", "jaen");
+
+        //this.restTemplateBuilder.basicAuthentication(usuario.getNumTelefono(), usuario.getPassword());
+
+        ResponseEntity<UUID> respuesta = restTemplate.postForEntity(
+                "/rastreadores",
+                rastreador,
+                UUID.class
         );
 
         Assertions.assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
-
 }

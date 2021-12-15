@@ -113,6 +113,17 @@ public class Usuario implements Serializable {
         this.listadoContactos = new ArrayList<>();
     }
 
+    /**
+     * Constructor parametrizado de la clase Usuario
+     * 
+     * @param uuid UUID del Usuario
+     * @param numTelefono Nº de teléfono del Usuario
+     * @param fCuracion Última Fecha Curación del Uusuario
+     * @param fPositivo Última fecha de positivo del Usuario
+     * @param positivo Si es positivo el Usuario
+     * @param password Contraseña(codificada) del usuario
+     * @param fAlta Fecha en la que se dió de alta el usuario en el sistema
+     */
     public Usuario(UUID uuid, String numTelefono, LocalDate fCuracion, LocalDateTime fPositivo, boolean positivo, String password, LocalDate fAlta) {
         this.uuid = uuid;
         this.numTelefono = numTelefono;

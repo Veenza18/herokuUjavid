@@ -8,4 +8,6 @@ spring.datasource.password: secret
 
 spring.jpa.properties.javax.persistence.schema-generation.database.action: drop-and-create
 
+spring.data.jpa.repositories.bootstrap-mode: default
+
 

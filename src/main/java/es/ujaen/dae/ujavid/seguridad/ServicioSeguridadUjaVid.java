@@ -5,6 +5,7 @@
 package es.ujaen.dae.ujavid.seguridad;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,32 +14,39 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * Proveedor de datos de seguridad de UJaVid
+ *
  * @author Venza
  */
+@Configuration
 public class ServicioSeguridadUjaVid extends WebSecurityConfigurerAdapter {
-     @Autowired
+
+    @Autowired
     ServicioDatosRastreador servicioDatosRastreador;
-     
- @Override
+
+    @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(servicioDatosRastreador)
-            .passwordEncoder(new BCryptPasswordEncoder());
-        
-        //auth.inMemoryAuthentication()
-        //        .withUser("ujacoin").roles("CLIENTE").password("{noop}secret");
+                .passwordEncoder(new BCryptPasswordEncoder());
+
+//        auth.inMemoryAuthentication()
+//                .withUser("ujavid").roles("RASTREADOR").password("{noop}secret");
     }
 
-       @Override
+    @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable();
-        
+        // Activamos la autenticación básica
         httpSecurity.httpBasic();
-        
-        httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST, "/ujavid/rastreador").anonymous();
-      
-        
-        httpSecurity.authorizeRequests().antMatchers("/ujavid/rastreador/{dni}/**")
-                .access("hasRole('RASTREADOR') and #dni == principal.username");
+
+         httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST).permitAll();
+
+//        httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST, "/ujavid/rastreador").anonymous();
+//
+//        httpSecurity.authorizeRequests().antMatchers("/ujavid/**").hasRole("RASTREADOR");
+//        httpSecurity.authorizeRequests().antMatchers("/ujavid/usuarios/*").hasRole("USUARIO");
+//
+//        httpSecurity.authorizeRequests().antMatchers("/ujavid/rastreador/{dni}/**")
+//                .access("hasRole('RASTREADOR') and #dni == principal.username");
     }
 
 }

@@ -30,9 +30,9 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
      * Identificador único de cada usuario
      */
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-    
+
     /**
      * Fecha y Hora en ka que se produjo el contacto
      */
@@ -70,7 +70,6 @@ public class ContactoCercano implements Comparable<ContactoCercano> {
     public ContactoCercano() {
     }
 
-    
     /**
      * Constructor de la clase ContactoCercano
      *

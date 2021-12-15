@@ -72,6 +72,9 @@ public class Rastreador implements Serializable {
      */
     private String password;
 
+    /**
+     * Constructor por defecto del rastreador
+     */
     public Rastreador() {
 
     }
@@ -160,10 +163,18 @@ public class Rastreador implements Serializable {
         return password;
     }
 
+    /**
+     * Método para obtener el nº total de notificados por el rastreador
+     * 
+     * @return Nº total de notificados
+     */
     public int getNumTotalNotificados() {
         return numTotalNotificados;
     }
 
+    /**
+     * Método para aumentar el nº total de notificados
+     */
     public void aumentarNotificados() {
         numTotalNotificados++;
     }

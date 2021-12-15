@@ -4,9 +4,6 @@
  */
 package es.ujaen.dae.ujavid.controladoresREST.DTO;
 
-import es.ujaen.dae.ujavid.entidades.ContactoCercano;
-import es.ujaen.dae.ujavid.entidades.Usuario;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -14,7 +11,8 @@ import java.util.UUID;
  *
  * @author Venza
  */
-public class DTOContactoCercano{
+public class DTOContactoCercano {
+
     private UUID uuid1;
     private UUID uuid2;
     private LocalDateTime fechaContacto;
@@ -22,6 +20,10 @@ public class DTOContactoCercano{
     private int duracion;
     private double riesgo;
 
+    public DTOContactoCercano() {
+    }
+
+    
     public DTOContactoCercano(LocalDateTime fechaContacto, UUID uuidUsuario, double distancia, int duracion) {
         this.fechaContacto = fechaContacto;
         this.uuid2 = uuidUsuario;
@@ -29,6 +31,7 @@ public class DTOContactoCercano{
         this.duracion = duracion;
         this.riesgo = 0;
     }
+
     public UUID getUuid1() {
         return uuid1;
     }
@@ -77,5 +80,4 @@ public class DTOContactoCercano{
         this.riesgo = riesgo;
     }
 
-    
 }

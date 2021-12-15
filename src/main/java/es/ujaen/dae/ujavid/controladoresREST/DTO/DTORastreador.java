@@ -12,7 +12,8 @@ import java.util.UUID;
  * @author admin
  */
 public class DTORastreador {
-      /**
+
+    /**
      * Nº total de infectados
      */
     private int numTotalNotificados;
@@ -24,19 +25,17 @@ public class DTORastreador {
     /**
      * Dni del rastreador
      */
-  
+
     private String dni;
 
     /**
      * Nombre del rastreador
      */
-
     private String nombre;
 
     /**
      * Primer apellido del rastreador
      */
-    
     private String apellido1;
 
     /**
@@ -47,13 +46,60 @@ public class DTORastreador {
     /**
      * Número de teléfono del rastreador
      */
-    
     private String numTelefono;
 
     /**
      * Contraseña del rastreador
      */
     private String password;
+
+    public DTORastreador() {
+    }
+
+    
+    /**
+     * Constructor para realizar un POST
+     * 
+     * @param dni DNI del Rastrador
+     * @param nombre Nombre del Rastreador
+     * @param apellido1 Apellido 1 del Rastreador
+     * @param apellido2 Apellido 2 del Rastreador
+     * @param numTelefono Nº de teléfono de rastreador
+     * @param password Contraseña del rastreador(sin codificar)
+     */
+    public DTORastreador(String dni, String nombre, String apellido1, String apellido2, String numTelefono, String password) {
+        this.dni = dni;
+        this.nombre = nombre;
+        this.apellido1 = apellido1;
+        this.apellido2 = apellido2;
+        this.numTelefono = numTelefono;
+        this.password = password;
+        this.uuid = null;
+        this.numTotalNotificados = 0;
+    }
+
+    /**
+     * Constructor para realizar un GET
+     * 
+     * @param numTotalNotificados Nº total de notificados
+     * @param uuid UUID del Rastreado
+     * @param dni DNI del Rastreador
+     * @param nombre Nombre del Rastreador
+     * @param apellido1 Apellido 1 del Rastreador
+     * @param apellido2 Apellido 2 del Rastreador
+     * @param numTelefono Nº de teléfono del Rastreador
+     * @param password Contraseña del Rastreador
+     */
+    public DTORastreador(int numTotalNotificados, UUID uuid, String dni, String nombre, String apellido1, String apellido2, String numTelefono, String password) {
+        this.numTotalNotificados = numTotalNotificados;
+        this.uuid = uuid;
+        this.dni = dni;
+        this.nombre = nombre;
+        this.apellido1 = apellido1;
+        this.apellido2 = apellido2;
+        this.numTelefono = numTelefono;
+        this.password = password;
+    }
 
     public int getNumTotalNotificados() {
         return numTotalNotificados;
@@ -87,19 +133,12 @@ public class DTORastreador {
         return password;
     }
 
-    public DTORastreador(int numTotalNotificados, UUID uuid, String dni, String nombre, String apellido1, String apellido2, String numTelefono, String password) {
-        this.numTotalNotificados = numTotalNotificados;
-        this.uuid = uuid;
-        this.dni = dni;
-        this.nombre = nombre;
-        this.apellido1 = apellido1;
-        this.apellido2 = apellido2;
-        this.numTelefono = numTelefono;
-        this.password = password;
-    }
-     public Rastreador aRastreador() {
-        return new Rastreador(dni, nombre, apellido1, apellido2, numTelefono,password);
+    /**
+     * Método para pasar de DTO a Rastreador
+     * @return 
+     */
+    public Rastreador aRastreador() {
+        return new Rastreador(dni, nombre, apellido1, apellido2, numTelefono, password);
     }
 
-    
 }

@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package es.ujaen.dae.ujavid.seguridad;
+
 import es.ujaen.dae.ujavid.entidades.Rastreador;
 import es.ujaen.dae.ujavid.entidades.Usuario;
 import es.ujaen.dae.ujavid.servicios.ServicioUjaVid;
@@ -17,33 +18,34 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
- * Servicio que proporciona los datos del usuario
+ * Servicio que proporciona los datos del Rastreador
+ *
  * @author Venza
  */
 @Service
 public class ServicioDatosRastreador implements UserDetailsService {
+
     @Autowired
     ServicioUjaVid servicioUjaVid;
-    
-    
+
     PasswordEncoder encoder;
 
-     public ServicioDatosRastreador() {
+    public ServicioDatosRastreador() {
         encoder = new BCryptPasswordEncoder();
     }
+
     PasswordEncoder getEncoder() {
         return encoder;
     }
+
     @Override
     public UserDetails loadUserByUsername(String dni) throws UsernameNotFoundException {
         Rastreador rastreador = servicioUjaVid.verRastreador(dni)
                 .orElseThrow(() -> new UsernameNotFoundException(""));
-        
+
         return User.withUsername(rastreador.getDni())
                 .roles("RASTREADOR").password(rastreador.getPassword())
                 .build();
     }
-
-
 
 }

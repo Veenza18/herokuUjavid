@@ -148,6 +148,46 @@ public class controladoresRESTTest {
         Assertions.assertThat(clienteLogin.getDni()).isEqualTo(rastreador.getDni());
     }
 
+    
+    /**
+     * test de alta y login de un rastreador
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void AccesoDatosRastreadorDistinto() {
+        
+        // Creamos el primer rastreador
+       DTORastreador rastreador = new DTORastreador("27090987G", "Adrian", "Perez", "Sanchez", "655656565", "secret");
+
+       restTemplate.postForEntity(
+                "/rastreadores",
+                rastreador,
+                UUID.class
+        );
+
+      DTORastreador rastreador2 = new DTORastreador("26523700P", "Juan José", "Peiró", "Sanchez", "653653653", "password");
+
+      // Creamos el segundo rastreador
+       restTemplate.postForEntity(
+                "/rastreadores",
+                rastreador2,
+                UUID.class
+        );
+       
+       //Intentamos acceder a las credenciales del segundo rastreador
+       //estando logueados como el primer rastreador
+        ResponseEntity<DTORastreador> respuestaLogin = this.restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword())
+                .getForEntity(
+                        "/rastreadores/{dni}",
+                        DTORastreador.class,
+                        rastreador2.getDni()
+                );
+
+        Assertions.assertThat(respuestaLogin.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+
+
+    }
+    
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testRealizarContacto() {

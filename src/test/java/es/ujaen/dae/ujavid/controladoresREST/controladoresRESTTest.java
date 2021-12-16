@@ -103,6 +103,7 @@ public class controladoresRESTTest {
                 UUID.class
         );
 
+        
         Assertions.assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
         // Rstreador CORRECTO
@@ -222,4 +223,40 @@ public class controladoresRESTTest {
 
         // Añadimos el Rastreador
     }
+    
+      @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void testNotificarCuracion() {
+       // Creamos el primer rastreador
+       DTORastreador rastreador = new DTORastreador("27090987G", "Adrian", "Perez", "Sanchez", "655656565", "secret");
+
+       restTemplate.postForEntity(
+                "/rastreadores",
+                rastreador,
+                UUID.class
+        );
+    
+    
+      this.restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword())
+                .getForEntity(
+                        "/rastreadores/{dni}",
+                        DTORastreador.class,
+                        rastreador.getDni()
+                );
+     
+        DTOUsuario usuario2 = new DTOUsuario("655151515", "adrian123");
+
+        restTemplate.postForEntity(
+                "/usuarios",
+                usuario2,
+                UUID.class
+        );
+        
+       ResponseEntity<DTORastreador> respuesta = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).postForEntity("/usuarios/{uuidUsuario}/notificacion",
+                rastreador, DTORastreador.class,usuario2.getUuid());
+       
+       Assertions.assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+   
+    
 }

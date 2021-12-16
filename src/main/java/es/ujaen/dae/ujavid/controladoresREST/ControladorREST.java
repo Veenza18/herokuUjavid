@@ -119,4 +119,11 @@ public class ControladorREST {
     }
      
 
+    @PostMapping("/usuarios/{uuidUsuario}/notificacion")
+    ResponseEntity<Void> registrarCuracion(@PathVariable UUID uuidUsuario,@RequestBody DTORastreador rastreador) {
+        servicios.notificarCuracion(uuidUsuario, rastreador.getUuid());
+        
+          return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
 }

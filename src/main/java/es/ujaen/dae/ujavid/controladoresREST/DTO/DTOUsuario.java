@@ -54,10 +54,9 @@ public class DTOUsuario {
     public DTOUsuario() {
     }
 
-    
     /**
      * Constructor para realizar un POST
-     * 
+     *
      * @param numTelefono Nº de teléfono del Usuario
      * @param password Contraseña del Usuario
      */
@@ -73,13 +72,13 @@ public class DTOUsuario {
 
     /**
      * Constructor para realizar un GET
-     * 
+     *
      * @param uuid UUID del Usuario
      * @param numTelefono Nº de teléfono del Usuario
      * @param fCuracion Fecha en la que se curó el Usuario
      * @param fPositivo Última fecha en la que dió positivo
      * @param positivo Si el Usuario es positivo o no
-     * @param password Cotraseña(codificada) del Usuario 
+     * @param password Cotraseña(codificada) del Usuario
      * @param fAlta Fecha en la que se dió de alta
      */
     public DTOUsuario(UUID uuid, String numTelefono, LocalDate fCuracion, LocalDateTime fPositivo, boolean positivo, String password, LocalDate fAlta) {
@@ -90,6 +89,16 @@ public class DTOUsuario {
         this.positivo = positivo;
         this.password = password;
         this.fAlta = fAlta;
+    }
+
+    public DTOUsuario(Usuario u) {
+        this.uuid = u.getUuid();
+        this.numTelefono = u.getNumTelefono();
+        this.fCuracion = u.getfCuracion();
+        this.fPositivo = u.getfPositivo();
+        this.positivo = u.isPositivo();
+        this.password = null;
+        this.fAlta = u.getfAlta();
     }
 
     public UUID getUuid() {
@@ -122,7 +131,8 @@ public class DTOUsuario {
 
     /**
      * Método para pasar de DTO a Usuario
-     * @return 
+     *
+     * @return
      */
     public Usuario aUsuario() {
         return new Usuario(numTelefono, password);

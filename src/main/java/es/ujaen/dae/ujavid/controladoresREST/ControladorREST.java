@@ -8,9 +8,11 @@ import es.ujaen.dae.ujavid.controladoresREST.DTO.DTOContactoCercano;
 import es.ujaen.dae.ujavid.controladoresREST.DTO.DTORastreador;
 import es.ujaen.dae.ujavid.controladoresREST.DTO.DTOUsuario;
 import es.ujaen.dae.ujavid.entidades.Rastreador;
-import es.ujaen.dae.ujavid.excepciones.RastreadorNoRegistrado;
+import es.ujaen.dae.ujavid.entidades.Usuario;
 import es.ujaen.dae.ujavid.excepciones.UsuarioNoRegistrado;
 import es.ujaen.dae.ujavid.excepciones.ContactosNoAnadidos;
+import es.ujaen.dae.ujavid.excepciones.RastreadorNoRegistrado;
+import es.ujaen.dae.ujavid.excepciones.RastreadorYaRegistrado;
 import es.ujaen.dae.ujavid.excepciones.UsuarioYaRegistrado;
 import es.ujaen.dae.ujavid.servicios.ServicioUjaVid;
 import java.time.LocalDateTime;
@@ -60,10 +62,18 @@ public class ControladorREST {
     }
 
     /**
+     * Handler para excepciones de accesos de usuarios no registrados
+     */
+    @ExceptionHandler(RastreadorNoRegistrado.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public void handlerRastreadorNoRegistrado(RastreadorNoRegistrado e) {
+    }
+
+    /**
      * Creación de usuarios
      */
     @PostMapping("/usuarios")
-    ResponseEntity<UUID> altausuario(@RequestBody DTOUsuario usuario) {
+    ResponseEntity<UUID> altaUsuario(@RequestBody DTOUsuario usuario) {
         try {
             UUID uuid = servicios.altaUsuario(usuario.aUsuario());
             return ResponseEntity.status(HttpStatus.CREATED).body(uuid);
@@ -80,12 +90,15 @@ public class ControladorREST {
         try {
             Rastreador rastreadorAux = servicios.altaRastreador(rastreador.aRastreador());
             return ResponseEntity.status(HttpStatus.CREATED).body(rastreadorAux.getUuid());
-        } catch (RastreadorNoRegistrado e) {
+        } catch (RastreadorYaRegistrado e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
-    /** Login de RASTREADORES (temporal hasta incluir autenticación mediante Spring Security?????? */
+    /**
+     * Login de RASTREADORES (temporal hasta incluir autenticación mediante
+     * Spring Security??????
+     */
     @GetMapping("/rastreadores/{dni}")
     ResponseEntity<DTORastreador> verRastreador(@PathVariable String dni) {
         Optional<Rastreador> rastreador = servicios.verRastreador(dni);
@@ -93,10 +106,11 @@ public class ControladorREST {
                 .map(c -> ResponseEntity.ok(new DTORastreador(c)))
                 .orElse(ResponseEntity.notFound().build());
     }
+
     /**
      * Registrar contactos
      */
-    @PostMapping("/usuarios/{uuidUsuario}/contactos")
+    @PostMapping("/usuarios/{numTelefono}/contactos")
     ResponseEntity<Void> realizarContacto(@RequestBody UUID uuidUsuario, @RequestBody List<DTOContactoCercano> contactos) {
         try {
             servicios.addContactoCercano(contactos, uuidUsuario);
@@ -117,6 +131,39 @@ public class ControladorREST {
                 .map(t -> new DTOContactoCercano(t.getFechaContacto(), t.getContacto().getUuid(), t.getDistancia(), t.getDuracion())).collect(Collectors.toList());
 
     }
-     
+
+    /**
+     * Método para resgistrar un Positivo
+     *
+     * @param numTelefono Nº de teléfono del usuario
+     * @param uuidRastreador UUID del rastreador
+     * @return DTO del usuario que se le ha notificado el positivo
+     */
+    @PostMapping("/usuarios/{numTelefono}/notificacionPos")
+    ResponseEntity<DTOUsuario> registrarPositivo(@PathVariable String numTelefono, @RequestBody UUID uuidRastreador) {
+        System.out.println("----------------------------------Registrar Positivo");
+        Optional<Usuario> u = servicios.devuelveUsuario(uuidRastreador, numTelefono);
+        servicios.notificarPos(u.get().getUuid(), LocalDateTime.now(), uuidRastreador);
+        DTOUsuario dtoUsuario = new DTOUsuario(servicios.devuelveUsuario(uuidRastreador, numTelefono).get());
+
+        return ResponseEntity.status(HttpStatus.OK).body(dtoUsuario);
+    }
+
+    /**
+     * Método para resgistrar un Positivo
+     *
+     * @param numTelefono Nº de teléfono del usuario
+     * @param uuidRastreador UUID del rastreador
+     * @return DTO del usuario que se le ha notificado la curación
+     */
+    @PostMapping("/usuarios/{numTelefono}/notificacionCur")
+    ResponseEntity<DTOUsuario> registrarCuracion(@PathVariable String numTelefono, @RequestBody UUID uuidRastreador) {
+        System.out.println("-------------------------------Registrar curacion");
+        Optional<Usuario> u = servicios.devuelveUsuario(uuidRastreador, numTelefono);
+        servicios.notificarCuracion(u.get().getUuid(), uuidRastreador);
+        DTOUsuario dtoUsuario = new DTOUsuario(servicios.devuelveUsuario(uuidRastreador, numTelefono).get());
+
+        return ResponseEntity.status(HttpStatus.OK).body(dtoUsuario);
+    }
 
 }

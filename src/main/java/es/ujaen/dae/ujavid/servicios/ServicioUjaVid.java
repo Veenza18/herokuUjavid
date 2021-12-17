@@ -326,6 +326,20 @@ public class ServicioUjaVid {
         return repositorioUsuarios.buscar(uuidUsuario);
 
     }
+    
+    /**
+     * Método para obtener un usuario completo
+     *
+     * @param uuidRastreador UUID del rastreador
+     * @param uuidUsuario UUID del usuario
+     * @return Usuario
+     */
+    public Optional<Usuario> devuelveUsuario(UUID uuidRastreador,String numTelefono) {
+        Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
+
+        return repositorioUsuarios.buscar(numTelefono);
+
+    }
 
     /**
      * Método para obtener un Rastreador dado un dni

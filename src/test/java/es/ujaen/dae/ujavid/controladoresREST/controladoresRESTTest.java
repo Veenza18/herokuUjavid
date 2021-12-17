@@ -93,7 +93,7 @@ public class controladoresRESTTest {
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    public void testAltaRastreadorInvalido() {
+    public void testAltaRastreador() {
         // Rstreador con DNI mal
         DTORastreador rastreador = new DTORastreador("27656A", "Adrian", "Perez", "Sanchez", "655656565", "jaen");
 
@@ -103,7 +103,6 @@ public class controladoresRESTTest {
                 UUID.class
         );
 
-        
         Assertions.assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
         // Rstreador CORRECTO
@@ -116,6 +115,16 @@ public class controladoresRESTTest {
         );
 
         Assertions.assertThat(respuesta2.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        // Rastreador Repetido
+        ResponseEntity<UUID> respuesta3 = restTemplate.postForEntity(
+                "/rastreadores",
+                rastreador2,
+                UUID.class
+        );
+
+        Assertions.assertThat(respuesta3.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+
     }
 
     /**
@@ -149,34 +158,33 @@ public class controladoresRESTTest {
         Assertions.assertThat(clienteLogin.getDni()).isEqualTo(rastreador.getDni());
     }
 
-    
     /**
      * test de alta y login de un rastreador
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void AccesoDatosRastreadorDistinto() {
-        
-        // Creamos el primer rastreador
-       DTORastreador rastreador = new DTORastreador("27090987G", "Adrian", "Perez", "Sanchez", "655656565", "secret");
 
-       restTemplate.postForEntity(
+        // Creamos el primer rastreador
+        DTORastreador rastreador = new DTORastreador("27090987G", "Adrian", "Perez", "Sanchez", "655656565", "secret");
+
+        restTemplate.postForEntity(
                 "/rastreadores",
                 rastreador,
                 UUID.class
         );
 
-      DTORastreador rastreador2 = new DTORastreador("26523700P", "Juan José", "Peiró", "Sanchez", "653653653", "password");
+        DTORastreador rastreador2 = new DTORastreador("26523700P", "Juan José", "Peiró", "Sanchez", "653653653", "password");
 
-      // Creamos el segundo rastreador
-       restTemplate.postForEntity(
+        // Creamos el segundo rastreador
+        restTemplate.postForEntity(
                 "/rastreadores",
                 rastreador2,
                 UUID.class
         );
-       
-       //Intentamos acceder a las credenciales del segundo rastreador
-       //estando logueados como el primer rastreador
+
+        //Intentamos acceder a las credenciales del segundo rastreador
+        //estando logueados como el primer rastreador
         ResponseEntity<DTORastreador> respuestaLogin = this.restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword())
                 .getForEntity(
                         "/rastreadores/{dni}",
@@ -186,9 +194,8 @@ public class controladoresRESTTest {
 
         Assertions.assertThat(respuestaLogin.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
 
-
     }
-    
+
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testRealizarContacto() {
@@ -223,40 +230,60 @@ public class controladoresRESTTest {
 
         // Añadimos el Rastreador
     }
-    
-      @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    public void testNotificarCuracion() {
-       // Creamos el primer rastreador
-       DTORastreador rastreador = new DTORastreador("27090987G", "Adrian", "Perez", "Sanchez", "655656565", "secret");
 
-       restTemplate.postForEntity(
+    /**
+     * Método para resgistrar un positivo y su curacion
+     */
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void testNotificarPositivoCuracion() {
+        // Creamos el rastreador
+        DTORastreador rastreador = new DTORastreador("27090987G", "Adrian", "Perez", "Sanchez", "655656565", "secret");
+
+        ResponseEntity<UUID> respuestaRastreador = restTemplate.postForEntity(
                 "/rastreadores",
                 rastreador,
                 UUID.class
         );
-    
-    
-      this.restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword())
-                .getForEntity(
-                        "/rastreadores/{dni}",
-                        DTORastreador.class,
-                        rastreador.getDni()
-                );
-     
+        Assertions.assertThat(respuestaRastreador.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        // Creamos el Usuario 
         DTOUsuario usuario2 = new DTOUsuario("655151515", "adrian123");
 
-        restTemplate.postForEntity(
+        ResponseEntity<UUID> respuestaUsuario = restTemplate.postForEntity(
                 "/usuarios",
                 usuario2,
                 UUID.class
         );
+
+        Assertions.assertThat(respuestaUsuario.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        Assertions.assertThat(respuestaUsuario.getBody()).isNotNull();
+
+        // Notificamos el positivo
+        ResponseEntity<DTOUsuario> respuesta5 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+                postForEntity("/usuarios/{numTelefono}/notificacionPos",
+                        respuestaRastreador.getBody(),
+                        DTOUsuario.class,
+                        usuario2.getNumTelefono()
+                        );
         
-       ResponseEntity<DTORastreador> respuesta = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).postForEntity("/usuarios/{uuidUsuario}/notificacion",
-                rastreador, DTORastreador.class,usuario2.getUuid());
-       
-       Assertions.assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.OK);
+        // Comprobamos que se devuelve un usuario positivo
+        Assertions.assertThat(respuesta5.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(respuesta5.getBody().isPositivo()).isEqualTo(true);
+        Assertions.assertThat(respuesta5.getBody().getNumTelefono()).isEqualTo(usuario2.getNumTelefono());
+        
+        // Notificamos la curación
+        ResponseEntity<DTOUsuario> respuesta3 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+                postForEntity("/usuarios/{numTelefono}/notificacionCur",
+                        respuestaRastreador.getBody(),
+                        DTOUsuario.class,
+                        usuario2.getNumTelefono()
+                        );
+
+        // Comprobamos que se devuelve un usuario curado
+        Assertions.assertThat(respuesta3.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(respuesta3.getBody().isPositivo()).isEqualTo(false);
+        Assertions.assertThat(respuesta3.getBody().getNumTelefono()).isEqualTo(usuario2.getNumTelefono());
     }
-   
-    
+
 }

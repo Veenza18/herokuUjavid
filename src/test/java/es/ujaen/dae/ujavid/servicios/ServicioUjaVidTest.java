@@ -300,9 +300,9 @@ public class ServicioUjaVidTest {
         servicioUjaVid.notificarPos(usuario2.getUuid(), LocalDateTime.now(), uuid_rastreador);
         servicioUjaVid.notificarPos(usuario3.getUuid(), LocalDateTime.now(), uuid_rastreador);
 
-        Assertions.assertThat(servicioUjaVid.positivosActual(uuid_rastreador)).isEqualTo(3);
+        Assertions.assertThat(servicioUjaVid.positivosActual()).isEqualTo(3);
         servicioUjaVid.notificarCuracion(usuario1.getUuid(), uuid_rastreador);
-        Assertions.assertThat(servicioUjaVid.positivosActual(uuid_rastreador)).isEqualTo(2);
+        Assertions.assertThat(servicioUjaVid.positivosActual()).isEqualTo(2);
     }
 
     /**
@@ -345,7 +345,7 @@ public class ServicioUjaVidTest {
         servicioUjaVid.notificarPos(usuario2.getUuid(), LocalDateTime.now().minusDays(40), uuid_rastreador);
         servicioUjaVid.notificarPos(usuario3.getUuid(), LocalDateTime.now().minusDays(60), uuid_rastreador);
 
-        Assertions.assertThat(servicioUjaVid.positivos15Dias(uuid_rastreador)).isEqualTo(1);
+        Assertions.assertThat(servicioUjaVid.positivos15Dias()).isEqualTo(1);
     }
 
     /**
@@ -439,7 +439,7 @@ public class ServicioUjaVidTest {
 
         Assertions.assertThat(servicioUjaVid.positivosRastreador(uuid_rastreador1)).isEqualTo(3);
         Assertions.assertThat(servicioUjaVid.positivosRastreador(uuid_rastreador2)).isEqualTo(2);
-        Assertions.assertThat(servicioUjaVid.totalInfectados(uuid_rastreador1)).isEqualTo(5);
+        Assertions.assertThat(servicioUjaVid.totalInfectados()).isEqualTo(5);
     }
 
     /**
@@ -540,7 +540,7 @@ public class ServicioUjaVidTest {
         servicioUjaVid.notificarPos(usuario5.getUuid(), LocalDateTime.now(), uuid_rastreador);
 
         servicioUjaVid.notificarCuracion(usuario4.getUuid(), uuid_rastreador);
-        servicioUjaVid.contagiadosXusuario(uuid_rastreador);
+        servicioUjaVid.contagiadosXusuario();
 
  //       Assertions.assertThat(servicioUjaVid.contagiadosXusuario(rastreador.getDni(), uuid_rastreador)).isEqualTo(214);
     }

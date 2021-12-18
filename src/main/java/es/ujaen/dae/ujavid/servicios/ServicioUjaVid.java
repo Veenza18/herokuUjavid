@@ -194,8 +194,8 @@ public class ServicioUjaVid {
      * @param uuidRastreador UUID del rastreador obtenido en el login
      * @return Nº total de infectados
      */
-    public int totalInfectados(UUID uuidRastreador) {
-        Rastreador rastreador = repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
+    public int totalInfectados() {
+        //Rastreador rastreador = repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
 
         return numTotalInf;
     }
@@ -206,9 +206,9 @@ public class ServicioUjaVid {
      * @param uuidRastreador UUID del rastreador obtenido en el login
      * @return Nº de positivos actualmente
      */
-    public int positivosActual(UUID uuidRastreador) {
+    public int positivosActual() {
         int positivos = 0;
-        Rastreador rastreador = repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
+        //Rastreador rastreador = repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que es un rastreador registrado
 
         positivos = repositorioUsuarios.positivosActual();
@@ -222,9 +222,9 @@ public class ServicioUjaVid {
      * @param uuidRastreador UUID del rastreador obtenido en el login
      * @return Nº de positivos
      */
-    public int positivos15Dias(UUID uuidRastreador) {
+    public int positivos15Dias() {
         int positivos = 0;
-        Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
+       // Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que es un rastreador registrado
 
         positivos = this.repositorioUsuarios.positivos15Dias();
@@ -276,8 +276,8 @@ public class ServicioUjaVid {
      * @return La estadistica de contagiados por usuarios positivos
      */
     @Transactional
-    public double contagiadosXusuario(UUID uuidRastreador) {
-        Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
+    public double contagiadosXusuario() {
+       // Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
 
         //  Comprobamos que es un rastreador registrado
         double n_positivos_total = 0;
@@ -297,6 +297,7 @@ public class ServicioUjaVid {
             return contagiados_total / n_positivos_total;
         }
 
+       
         return 0;
     }
 

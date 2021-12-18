@@ -100,8 +100,8 @@ public class ControladorREST {
      * Spring Security??????
      */
     @GetMapping("/rastreadores/{dni}")
-    ResponseEntity<DTORastreador> verRastreador(@PathVariable UUID uuid) {
-        Optional<Rastreador> rastreador = servicios.devuelveRastreador(uuid);
+    ResponseEntity<DTORastreador> verRastreador(@PathVariable String dni) {
+        Optional<Rastreador> rastreador = servicios.verRastreador(dni);
         return rastreador
                 .map(c -> ResponseEntity.ok(new DTORastreador(c)))
                 .orElse(ResponseEntity.notFound().build());
@@ -170,5 +170,7 @@ public class ControladorREST {
     ResponseEntity<Integer> obtenerTotalNotificados(@PathVariable UUID uuid){
         return ResponseEntity.status(HttpStatus.OK).body(servicios.totalInfectados(uuid));
     }
+    
+    
 
 }

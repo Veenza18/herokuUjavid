@@ -275,6 +275,16 @@ public class controladoresRESTTest {
                 );
 
         Assertions.assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        
+        // Obtenemos la lista de contactos del usuario 1
+        ResponseEntity<DTOContactoCercano[]> respuestaListadoContactos = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+                getForEntity("/usuarios/{uuid}/contactos",
+                        DTOContactoCercano[].class,
+                        respuestaUsuario1.getBody(),
+                        respuestaRastreador.getBody()
+                );
+        
+        Assertions.assertThat(respuestaListadoContactos.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     /**

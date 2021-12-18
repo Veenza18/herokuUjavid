@@ -155,7 +155,7 @@ public class Rastreador implements Serializable {
     }
 
     /**
-     * Método para obtener la contraseño del rastreador
+     * Método para obtener la contraseña del rastreador
      *
      * @return Contraseña del rastreador
      */

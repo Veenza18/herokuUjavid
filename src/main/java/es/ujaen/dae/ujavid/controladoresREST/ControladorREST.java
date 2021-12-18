@@ -16,6 +16,7 @@ import es.ujaen.dae.ujavid.excepciones.RastreadorYaRegistrado;
 import es.ujaen.dae.ujavid.excepciones.UsuarioYaRegistrado;
 import es.ujaen.dae.ujavid.servicios.ServicioUjaVid;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -63,7 +64,7 @@ public class ControladorREST {
     }
 
     /**
-     * Handler para excepciones de accesos de usuarios no registrados
+     * Handler para excepciones de accesos de rastreadores no registrados
      */
     @ExceptionHandler(RastreadorNoRegistrado.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -117,7 +118,7 @@ public class ControladorREST {
             servicios.addContactoCercano(contactos, uuid);
 
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (ContactosNoAnadidos e) {
+        } catch (UsuarioNoRegistrado e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
@@ -126,12 +127,14 @@ public class ControladorREST {
     /**
      * Listar coontactos
      */
-    @GetMapping("/usuarios/{uuid}/contactosUsuario")
+    @GetMapping("/usuarios/{uuid}/contactos")
     @ResponseStatus(HttpStatus.OK)
-    List<DTOContactoCercano> verContactos(@PathVariable UUID uuidUsuario, @RequestBody UUID uuidRastreador) {
-        return servicios.verContactosCercanos(uuidUsuario, uuidRastreador).stream()
-                .map(t -> new DTOContactoCercano(t.getFechaContacto(), t.getContacto().getUuid(), t.getDistancia(), t.getDuracion())).collect(Collectors.toList());
+    List<DTOContactoCercano> verContactos(@PathVariable UUID uuid, @PathVariable UUID uuidRastreador) {
+        List<DTOContactoCercano> lista = new ArrayList<>();
 
+//        return servicios.verContactosCercanos(uuid, uuidRastreador).stream()
+//                .map(t -> new DTOContactoCercano(t.getFechaContacto(), t.getContacto().getUuid(), t.getDistancia(), t.getDuracion())).collect(Collectors.toList());
+        return lista;
     }
 
     /**

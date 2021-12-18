@@ -119,8 +119,8 @@ public class ServicioUjaVid {
         Usuario usuario = repositorioUsuarios.buscar(uuidUsuario).orElseThrow(UsuarioNoRegistrado::new);
 
         for (DTOContactoCercano contacto : contactos) {
-            if (!usuario.getUuid().equals(contacto.getUuid2())) {
-                Usuario usuarioContacto = repositorioUsuarios.buscar(contacto.getUuid2()).orElseThrow(UsuarioNoRegistrado::new);
+            if (!usuario.getUuid().equals(contacto.getUuid())) {
+                Usuario usuarioContacto = repositorioUsuarios.buscar(contacto.getUuid()).orElseThrow(UsuarioNoRegistrado::new);
                 ContactoCercano c1 = new ContactoCercano(contacto.getFechaContacto(), usuarioContacto, contacto.getDistancia(), contacto.getDuracion());
                 usuario.addContactoCercano(c1);
                 //Hay que crear el repositorio para hacer esto
@@ -139,11 +139,13 @@ public class ServicioUjaVid {
      */
     @Transactional
     public List<ContactoCercano> verContactosCercanos(UUID uuid, UUID uuidRastreador) {
-        // Obtenemos el Rastreador
-        Rastreador rastreador = repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
-
+        // Comprobamos que es un  rastreador válido
+        repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
+        
+        // Comprobamos que es un usuario registrado
+        repositorioUsuarios.buscar(uuid).orElseThrow(UsuarioNoRegistrado::new);
         return repositorioUsuarios.verContactos(uuid);
-        // Usuario usuario = repositorioUsuarios.buscar(uuid).orElseThrow(UsuarioNoRegistrado::new);
+        
         // return usuario.verContactosCercanos();
     }
 

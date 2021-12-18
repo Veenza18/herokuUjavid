@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
+ * Clase que representa un DTO de Usuario
  *
  * @author admin
  */
@@ -130,9 +131,9 @@ public class DTOUsuario {
     }
 
     /**
-     * Método para pasar de DTO a Usuario
+     * Método para crear un Usuario a partir de un DTO
      *
-     * @return
+     * @return El usuario creado
      */
     public Usuario aUsuario() {
         return new Usuario(numTelefono, password);

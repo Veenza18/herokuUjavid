@@ -40,7 +40,7 @@ public class ServicioSeguridadUjaVid extends WebSecurityConfigurerAdapter {
 
          httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST,"/ujavid/usuarios").permitAll();
          httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST,"/ujavid/rastreadores").permitAll();
-         httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST,"/ujavid/usuarios/{uuid}/*").hasRole("RASTREADOR");
+         httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST,"/ujavid/usuarios/{uuid}/*").permitAll();
          
          
 

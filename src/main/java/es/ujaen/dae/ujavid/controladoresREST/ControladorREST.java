@@ -112,7 +112,7 @@ public class ControladorREST {
      * Registrar contactos
      */
     @PostMapping("/usuarios/{uuid}/contactos")
-    ResponseEntity<Void> realizarContacto(@RequestBody UUID uuidUsuario, @RequestBody List<DTOContactoCercano> contactos) {
+    ResponseEntity<Void> realizarContacto(@PathVariable UUID uuidUsuario, @RequestBody List<DTOContactoCercano> contactos) {
         try {
             servicios.addContactoCercano(contactos, uuidUsuario);
 
@@ -181,7 +181,7 @@ public class ControladorREST {
         return ResponseEntity.status(HttpStatus.OK).body(servicios.positivos15Dias());
     }
     
-    @GetMapping("/estadisticas/contagiados/media")
+    @GetMapping("/estadisticas/infectados/media")
     ResponseEntity<Double> obtenerContagiadosUsuario(){
         return ResponseEntity.status(HttpStatus.OK).body(servicios.contagiadosXusuario());
     }

@@ -297,6 +297,7 @@ public class ServicioUjaVid {
             return contagiados_total / n_positivos_total;
         }
 
+       
         return 0;
     }
 

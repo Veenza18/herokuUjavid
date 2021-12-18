@@ -5,8 +5,11 @@
  */
 package es.ujaen.dae.ujavid.controladoresREST;
 
+import es.ujaen.dae.ujavid.controladoresREST.DTO.DTOContactoCercano;
 import es.ujaen.dae.ujavid.controladoresREST.DTO.DTORastreador;
 import es.ujaen.dae.ujavid.controladoresREST.DTO.DTOUsuario;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.PostConstruct;
@@ -229,6 +232,34 @@ public class controladoresRESTTest {
         Assertions.assertThat(respuesta3.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         // Añadimos el Rastreador
+        DTORastreador rastreador = new DTORastreador("27656A", "Adrian", "Perez", "Sanchez", "655656565", "jaen");
+
+         restTemplate.postForEntity(
+                "/rastreadores",
+                rastreador,
+                UUID.class
+        );
+
+        //Creamos los contactos
+        DTOContactoCercano contacto0 = new DTOContactoCercano(LocalDateTime.now().minusDays(10),
+                usuario2.getUuid(), 4, 2);
+        DTOContactoCercano contacto1 = new DTOContactoCercano(LocalDateTime.now().minusDays(10),
+                usuario3.getUuid(), 4, 2);
+        
+        //Creamos la lista de los contactos
+        List<DTOContactoCercano> lista1 = new ArrayList<>();
+        lista1.add(contacto1);
+        lista1.add(contacto0);
+        
+         ResponseEntity<Void> respuesta = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).postForEntity(
+                "/usuarios/{uuid}/contactos",
+                lista1,
+                Void.class,
+                respuesta1.getBody()
+        );
+
+         
+        Assertions.assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
     /**
@@ -335,22 +366,203 @@ public class controladoresRESTTest {
                 postForEntity("/usuarios/{uuid}/notificaciones/positivo",
                         respuestaRastreador.getBody(),
                         DTOUsuario.class,
-                        respuestaUsuario1.getBody()
+                        respuestaUsuario2.getBody()
                 );
         Assertions.assertThat(respuesta3.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(respuesta3.getBody().isPositivo()).isEqualTo(true);
         Assertions.assertThat(respuesta4.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(respuesta4.getBody().isPositivo()).isEqualTo(true);
 
-        // Obtenemos el número de ifectados totales
+        // Obtenemos el número de infectados totales
         ResponseEntity<Integer> respuesta5 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
                 getForEntity(
                         "/estadisticas/infectados/total",
                         Integer.class
-                        
                 );
         Assertions.assertThat(respuesta5.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(respuesta5.getBody()).isEqualTo(2);
 
     }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void testTotalInfectadosActual() {
+        // Creamos el rastreador
+        DTORastreador rastreador = new DTORastreador("27090987G", "Adrian", "Perez", "Sanchez", "655656565", "secret");
+
+        ResponseEntity<UUID> respuestaRastreador = restTemplate.postForEntity(
+                "/rastreadores",
+                rastreador,
+                UUID.class
+        );
+        Assertions.assertThat(respuestaRastreador.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        // Creamos los Usuarios 
+        DTOUsuario usuario1 = new DTOUsuario("655151515", "adrian123");
+
+        ResponseEntity<UUID> respuestaUsuario1 = restTemplate.postForEntity(
+                "/usuarios",
+                usuario1,
+                UUID.class
+        );
+
+        Assertions.assertThat(respuestaUsuario1.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        Assertions.assertThat(respuestaUsuario1.getBody()).isNotNull();
+
+        // Creamos los Usuarios 
+        DTOUsuario usuario2 = new DTOUsuario("688546701", "adrian123");
+
+        ResponseEntity<UUID> respuestaUsuario2 = restTemplate.postForEntity(
+                "/usuarios",
+                usuario2,
+                UUID.class
+        );
+
+        Assertions.assertThat(respuestaUsuario2.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        Assertions.assertThat(respuestaUsuario2.getBody()).isNotNull();
+
+        // Notificamos los positivos
+        ResponseEntity<DTOUsuario> respuesta3 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+                postForEntity("/usuarios/{uuid}/notificaciones/positivo",
+                        respuestaRastreador.getBody(),
+                        DTOUsuario.class,
+                        respuestaUsuario1.getBody()
+                );
+
+        ResponseEntity<DTOUsuario> respuesta4 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+                postForEntity("/usuarios/{uuid}/notificaciones/positivo",
+                        respuestaRastreador.getBody(),
+                        DTOUsuario.class,
+                        respuestaUsuario2.getBody()
+                );
+
+        ResponseEntity<DTOUsuario> respuesta5 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+                postForEntity("/usuarios/{uuid}/notificaciones/curacion",
+                        respuestaRastreador.getBody(),
+                        DTOUsuario.class,
+                        respuestaUsuario1.getBody()
+                );
+
+        ResponseEntity<DTOUsuario> respuesta6 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+                postForEntity("/usuarios/{uuid}/notificaciones/curacion",
+                        respuestaRastreador.getBody(),
+                        DTOUsuario.class,
+                        respuestaUsuario2.getBody()
+                );
+
+        Assertions.assertThat(respuesta5.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(respuesta5.getBody().isPositivo()).isEqualTo(false);
+        Assertions.assertThat(respuesta6.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(respuesta6.getBody().isPositivo()).isEqualTo(false);
+
+        // Obtenemos el número de infectados actualmente
+        ResponseEntity<Integer> respuesta7 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+                getForEntity(
+                        "/estadisticas/infectados/actual",
+                        Integer.class
+                );
+        Assertions.assertThat(respuesta7.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(respuesta7.getBody()).isEqualTo(0);
+
+    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void testInfectados15Dias() {
+        // Creamos el rastreador
+        DTORastreador rastreador = new DTORastreador("27090987G", "Adrian", "Perez", "Sanchez", "655656565", "secret");
+
+        ResponseEntity<UUID> respuestaRastreador = restTemplate.postForEntity(
+                "/rastreadores",
+                rastreador,
+                UUID.class
+        );
+        Assertions.assertThat(respuestaRastreador.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        // Creamos los Usuarios 
+        DTOUsuario usuario1 = new DTOUsuario("655151515", "adrian123");
+
+        ResponseEntity<UUID> respuestaUsuario1 = restTemplate.postForEntity(
+                "/usuarios",
+                usuario1,
+                UUID.class
+        );
+
+        Assertions.assertThat(respuestaUsuario1.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        Assertions.assertThat(respuestaUsuario1.getBody()).isNotNull();
+
+        DTOUsuario usuario2 = new DTOUsuario("688546701", "adrian123");
+
+        ResponseEntity<UUID> respuestaUsuario2 = restTemplate.postForEntity(
+                "/usuarios",
+                usuario2,
+                UUID.class
+        );
+
+        Assertions.assertThat(respuestaUsuario2.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        Assertions.assertThat(respuestaUsuario2.getBody()).isNotNull();
+
+        DTOUsuario usuario2a = new DTOUsuario("687546701", "juan");
+
+        ResponseEntity<UUID> respuestaUsuario2a = restTemplate.postForEntity(
+                "/usuarios",
+                usuario2a,
+                UUID.class
+        );
+
+        Assertions.assertThat(respuestaUsuario2a.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        Assertions.assertThat(respuestaUsuario2a.getBody()).isNotNull();
+
+        // Notificamos los positivos
+        ResponseEntity<DTOUsuario> respuesta3 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+                postForEntity("/usuarios/{uuid}/notificaciones/positivo",
+                        respuestaRastreador.getBody(),
+                        DTOUsuario.class,
+                        respuestaUsuario1.getBody()
+                );
+
+        ResponseEntity<DTOUsuario> respuesta4 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+                postForEntity("/usuarios/{uuid}/notificaciones/positivo",
+                        respuestaRastreador.getBody(),
+                        DTOUsuario.class,
+                        respuestaUsuario2.getBody()
+                );
+
+        ResponseEntity<DTOUsuario> respuesta4b = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+                postForEntity("/usuarios/{uuid}/notificaciones/positivo",
+                        respuestaRastreador.getBody(),
+                        DTOUsuario.class,
+                        respuestaUsuario2.getBody()
+                );
+
+        Assertions.assertThat(respuesta3.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(respuesta3.getBody().isPositivo()).isEqualTo(true);
+        Assertions.assertThat(respuesta4.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(respuesta4.getBody().isPositivo()).isEqualTo(true);
+        Assertions.assertThat(respuesta4b.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(respuesta4b.getBody().isPositivo()).isEqualTo(true);
+
+        // Obtenemos el número de infectados en las últimas dos semanas
+        ResponseEntity<Integer> respuesta5 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+                getForEntity(
+                        "/estadisticas/infectados/dosSemanas",
+                        Integer.class
+                );
+
+        Assertions.assertThat(respuesta5.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(respuesta5.getBody()).isEqualTo(2);
+
+//        
+//         // Obtenemos el número de infectados contagiados por usuario
+//        ResponseEntity<Double> respuesta6 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+//                getForEntity(
+//                        "/estadisticas/infectados/media",
+//                        Double.class
+//                        
+//                );
+//        
+//        Assertions.assertThat(respuesta6.getStatusCode()).isEqualTo(HttpStatus.OK);
+//        Assertions.assertThat(respuesta6.getBody()).isEqualTo(0);
+    }
+
 }

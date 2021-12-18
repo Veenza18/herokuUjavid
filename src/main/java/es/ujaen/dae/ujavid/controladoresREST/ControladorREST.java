@@ -114,18 +114,32 @@ public class ControladorREST {
     @PostMapping("/usuarios/{uuid}/contactos")
     ResponseEntity<Void> realizarContacto(@PathVariable UUID uuidUsuario, @RequestBody List<DTOContactoCercano> contactos) {
         try {
-            servicios.addContactoCercano(contactos, uuidUsuario);
+           // servicios.addContactoCercano(contactos, uuidUsuario);
 
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (ContactosNoAnadidos e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-    }
 
+    }
+    
+    
+     @PostMapping("/usuarios/{uuid}/notificaciones/positivo2")
+    ResponseEntity<Void> prueba2realizarContacto(@PathVariable UUID uuid, @RequestBody List<DTOContactoCercano> contactos) {
+         try {
+        servicios.addContactoCercano(contactos, uuid);
+        return ResponseEntity.status(HttpStatus.OK).build();
+          } catch (ContactosNoAnadidos e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+    
+    
+    
     /**
      * Listar coontactos
      */
-    @GetMapping("/usuarios/{uuid}/contactos")
+    @GetMapping("/usuarios/{uuid}/contactosUsuario")
     @ResponseStatus(HttpStatus.OK)
     List<DTOContactoCercano> verContactos(@PathVariable UUID uuidUsuario, @RequestBody UUID uuidRastreador) {
         return servicios.verContactosCercanos(uuidUsuario, uuidRastreador).stream()
@@ -188,7 +202,7 @@ public class ControladorREST {
     
     
     @GetMapping("/rastreadores/{dni}/estadisticas/positivos")
-    ResponseEntity<Integer> obtenerTotalPositivosRastreador(@PathVariable String dni){
+    ResponseEntity<Integer> obtenerTotalPositivosRastreador(@PathVariable String dni){ 
         return ResponseEntity.status(HttpStatus.OK).body(servicios.positivosRastreador(servicios.verRastreador(dni).get().getUuid()));
     }
     

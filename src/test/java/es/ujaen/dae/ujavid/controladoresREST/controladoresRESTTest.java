@@ -342,12 +342,12 @@ public class controladoresRESTTest {
         Assertions.assertThat(respuesta4.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(respuesta4.getBody().isPositivo()).isEqualTo(true);
 
-        // Obtenemos el número de ifectados notificados por el rastreador
+        // Obtenemos el número de ifectados totales
         ResponseEntity<Integer> respuesta5 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
                 getForEntity(
-                        "/rastreadores/{uuid}/totalInfectados",
-                        Integer.class,
-                        respuestaRastreador.getBody()
+                        "/estadisticas/infectados/total",
+                        Integer.class
+                        
                 );
         Assertions.assertThat(respuesta5.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(respuesta5.getBody()).isEqualTo(2);

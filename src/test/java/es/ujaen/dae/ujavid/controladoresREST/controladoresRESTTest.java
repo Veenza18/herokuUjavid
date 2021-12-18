@@ -54,7 +54,7 @@ public class controladoresRESTTest {
     }
 
     /**
-     * Intento de creación de un cliente inválido
+     * Test para dar de alta un Usuario
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
@@ -92,7 +92,7 @@ public class controladoresRESTTest {
     }
 
     /**
-     * Intento de creación de un rastreador inválido
+     * Test para dar de alta un rastreador
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
@@ -131,7 +131,7 @@ public class controladoresRESTTest {
     }
 
     /**
-     * test de alta y login de un rastreador
+     * Test de alta y obtención de un rastreador
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
@@ -162,7 +162,7 @@ public class controladoresRESTTest {
     }
 
     /**
-     * test de alta y login de un rastreador
+     * Test de alta y acceso a los datos de un rastreador distintos
      */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
@@ -199,10 +199,14 @@ public class controladoresRESTTest {
 
     }
 
+    /**
+     * Test para añadir los contactos de un Usuario
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void contactoTest() {
-    
+
+        // Creamos los Usuarios
         DTOUsuario usuario1 = new DTOUsuario("655151513", "adrian123");
         DTOUsuario usuario2 = new DTOUsuario("654116512", "juanjose123");
         DTOUsuario usuario3 = new DTOUsuario("656651515", "op1123");
@@ -213,62 +217,66 @@ public class controladoresRESTTest {
                 usuario1,
                 UUID.class
         );
-        
-         ResponseEntity<UUID> respuestaUsuario2 = restTemplate.postForEntity(
+
+        ResponseEntity<UUID> respuestaUsuario2 = restTemplate.postForEntity(
                 "/usuarios",
                 usuario2,
                 UUID.class
         );
-          
-         ResponseEntity<UUID> respuestaUsuario3 = restTemplate.postForEntity(
+
+        ResponseEntity<UUID> respuestaUsuario3 = restTemplate.postForEntity(
                 "/usuarios",
                 usuario3,
                 UUID.class
         );
-         
-           ResponseEntity<UUID> respuestaUsuario4 = restTemplate.postForEntity(
+
+        ResponseEntity<UUID> respuestaUsuario4 = restTemplate.postForEntity(
                 "/usuarios",
                 usuario4,
                 UUID.class
         );
-       
+
         Assertions.assertThat(respuestaUsuario1.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Assertions.assertThat(respuestaUsuario2.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Assertions.assertThat(respuestaUsuario3.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Assertions.assertThat(respuestaUsuario4.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        
-       DTORastreador rastreador = new DTORastreador("27090987G", "Adrian", "Perez", "Sanchez", "655656565", "secret");
+
+        // Creamos el rastreador
+        DTORastreador rastreador = new DTORastreador("27090987G", "Adrian", "Perez", "Sanchez", "655656565", "secret");
 
         ResponseEntity<UUID> respuestaRastreador = restTemplate.postForEntity(
                 "/rastreadores",
                 rastreador,
                 UUID.class
         );
-        
-        
+
         Assertions.assertThat(respuestaRastreador.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        
-        DTOContactoCercano contacto0 = new DTOContactoCercano(LocalDateTime.now().minusDays(10),
-                usuario2.getUuid(), 4, 2);
-        DTOContactoCercano contacto1 = new DTOContactoCercano(LocalDateTime.now().minusDays(10),
-                usuario3.getUuid(), 4, 2);
-        
+
         //Creamos la lista de los contactos
-        List<DTOContactoCercano> lista1 = new ArrayList<>();
-        lista1.add(contacto1);
-        lista1.add(contacto0);
+        DTOContactoCercano contacto0 = new DTOContactoCercano(LocalDateTime.now().minusDays(10),
+                respuestaUsuario2.getBody(), 4, 2);
+        DTOContactoCercano contacto1 = new DTOContactoCercano(LocalDateTime.now().minusDays(10),
+                respuestaUsuario3.getBody(), 4, 2);
+        DTOContactoCercano contacto2 = new DTOContactoCercano(LocalDateTime.now().minusDays(10),
+                respuestaUsuario4.getBody(), 4, 2);
+
         
+        List<DTOContactoCercano> lista1 = new ArrayList<>();
+        lista1.add(contacto0);
+        lista1.add(contacto1);
+        lista1.add(contacto2);
+
+        // Realizamos la insercción de los contactos al usuario 1
         ResponseEntity<Void> respuesta = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
-              postForEntity("/usuarios/{uuid}/notificaciones/positivo2",
+                postForEntity("/usuarios/{uuid}/contactos",
                         lista1,
                         Void.class,
                         respuestaUsuario1.getBody()
-      );
-        
-         Assertions.assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.OK);
+                );
+
+        Assertions.assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
-    
-    
+
     /**
      * Método para resgistrar un positivo y su curacion
      */
@@ -324,6 +332,9 @@ public class controladoresRESTTest {
         Assertions.assertThat(respuesta3.getBody().getNumTelefono()).isEqualTo(usuario2.getNumTelefono());
     }
 
+    /**
+     * Test para obtener el número total de infectados
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testTotalInfectados() {
@@ -337,7 +348,7 @@ public class controladoresRESTTest {
         );
         Assertions.assertThat(respuestaRastreador.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-        // Creamos los Usuarios 
+        // Creamos el Usuario 1
         DTOUsuario usuario1 = new DTOUsuario("655151515", "adrian123");
 
         ResponseEntity<UUID> respuestaUsuario1 = restTemplate.postForEntity(
@@ -349,7 +360,7 @@ public class controladoresRESTTest {
         Assertions.assertThat(respuestaUsuario1.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Assertions.assertThat(respuestaUsuario1.getBody()).isNotNull();
 
-        // Creamos los Usuarios 
+        // Creamos el Usuario 2
         DTOUsuario usuario2 = new DTOUsuario("688546701", "adrian123");
 
         ResponseEntity<UUID> respuestaUsuario2 = restTemplate.postForEntity(
@@ -391,6 +402,9 @@ public class controladoresRESTTest {
 
     }
 
+    /**
+     * Test para obtener el número de infectados actuales
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testTotalInfectadosActual() {
@@ -404,7 +418,7 @@ public class controladoresRESTTest {
         );
         Assertions.assertThat(respuestaRastreador.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-        // Creamos los Usuarios 
+        // Creamos el usuario 1
         DTOUsuario usuario1 = new DTOUsuario("655151515", "adrian123");
 
         ResponseEntity<UUID> respuestaUsuario1 = restTemplate.postForEntity(
@@ -416,7 +430,7 @@ public class controladoresRESTTest {
         Assertions.assertThat(respuestaUsuario1.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Assertions.assertThat(respuestaUsuario1.getBody()).isNotNull();
 
-        // Creamos los Usuarios 
+        // Creamos el usuario 2
         DTOUsuario usuario2 = new DTOUsuario("688546701", "adrian123");
 
         ResponseEntity<UUID> respuestaUsuario2 = restTemplate.postForEntity(
@@ -463,7 +477,7 @@ public class controladoresRESTTest {
         Assertions.assertThat(respuesta6.getBody().isPositivo()).isEqualTo(false);
 
         // Obtenemos el número de infectados actualmente
-        ResponseEntity<Integer> respuesta7 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+        ResponseEntity<Integer> respuesta7 = restTemplate.
                 getForEntity(
                         "/estadisticas/infectados/actual",
                         Integer.class
@@ -473,6 +487,9 @@ public class controladoresRESTTest {
 
     }
 
+    /**
+     * Test para obtener los positivos de los últimos 15 días
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testInfectados15Dias() {
@@ -550,7 +567,7 @@ public class controladoresRESTTest {
         Assertions.assertThat(respuesta4b.getBody().isPositivo()).isEqualTo(true);
 
         // Obtenemos el número de infectados en las últimas dos semanas
-        ResponseEntity<Integer> respuesta5 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+        ResponseEntity<Integer> respuesta5 = restTemplate.
                 getForEntity(
                         "/estadisticas/infectados/dosSemanas",
                         Integer.class
@@ -572,6 +589,9 @@ public class controladoresRESTTest {
 //        Assertions.assertThat(respuesta6.getBody()).isEqualTo(0);
     }
 
+    /**
+     * Test para obtener el número de infectados notificados por un rastreador
+     */
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void testInfectadosRastreador() {
@@ -585,12 +605,12 @@ public class controladoresRESTTest {
                 UUID.class
         );
 
-         ResponseEntity<UUID> respuestaRastreador2 = restTemplate.postForEntity(
+        ResponseEntity<UUID> respuestaRastreador2 = restTemplate.postForEntity(
                 "/rastreadores",
                 rastreador2,
                 UUID.class
         );
-      
+
         DTOUsuario usuario1 = new DTOUsuario("655151513", "adrian123");
         DTOUsuario usuario2 = new DTOUsuario("654116512", "juanjose123");
         DTOUsuario usuario3 = new DTOUsuario("656651515", "op1123");
@@ -601,72 +621,72 @@ public class controladoresRESTTest {
                 usuario1,
                 UUID.class
         );
-        
-         ResponseEntity<UUID> respuestaUsuario2 = restTemplate.postForEntity(
+
+        ResponseEntity<UUID> respuestaUsuario2 = restTemplate.postForEntity(
                 "/usuarios",
                 usuario2,
                 UUID.class
         );
-          
-         ResponseEntity<UUID> respuestaUsuario3 = restTemplate.postForEntity(
+
+        ResponseEntity<UUID> respuestaUsuario3 = restTemplate.postForEntity(
                 "/usuarios",
                 usuario3,
                 UUID.class
         );
-         
-           ResponseEntity<UUID> respuestaUsuario4 = restTemplate.postForEntity(
+
+        ResponseEntity<UUID> respuestaUsuario4 = restTemplate.postForEntity(
                 "/usuarios",
                 usuario4,
                 UUID.class
         );
-       
-           restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+
+        restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
                 postForEntity("/usuarios/{uuid}/notificaciones/positivo",
                         respuestaRastreador.getBody(),
                         DTOUsuario.class,
                         respuestaUsuario1.getBody()
                 );
-           
-           restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+
+        restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
                 postForEntity("/usuarios/{uuid}/notificaciones/positivo",
                         respuestaRastreador.getBody(),
                         DTOUsuario.class,
                         respuestaUsuario2.getBody()
                 );
-           
-           restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+
+        restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
                 postForEntity("/usuarios/{uuid}/notificaciones/positivo",
                         respuestaRastreador.getBody(),
                         DTOUsuario.class,
                         respuestaUsuario3.getBody()
                 );
-           
-           restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+
+        restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
                 postForEntity("/usuarios/{uuid}/notificaciones/positivo",
                         respuestaRastreador2.getBody(),
                         DTOUsuario.class,
                         respuestaUsuario4.getBody()
                 );
-           
+
         ResponseEntity<Integer> respuestaTest1 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
                 getForEntity(
                         "/rastreadores/{dni}/estadisticas/positivos",
                         Integer.class,
                         rastreador.getDni()
                 );
-         
-         ResponseEntity<Integer> respuestaTest2 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+
+        ResponseEntity<Integer> respuestaTest2 = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
                 getForEntity(
                         "/rastreadores/{dni}/estadisticas/positivos",
                         Integer.class,
                         rastreador2.getDni()
                 );
-         
+
         Assertions.assertThat(respuestaTest1.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(respuestaTest1.getBody()).isEqualTo(3);
         Assertions.assertThat(respuestaTest2.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(respuestaTest2.getBody()).isEqualTo(1);
-        
+
     }
-    
+
 }

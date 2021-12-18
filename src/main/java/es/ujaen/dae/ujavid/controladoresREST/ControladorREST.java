@@ -112,9 +112,9 @@ public class ControladorREST {
      * Registrar contactos
      */
     @PostMapping("/usuarios/{uuid}/contactos")
-    ResponseEntity<Void> realizarContacto(@PathVariable UUID uuidUsuario, @RequestBody List<DTOContactoCercano> contactos) {
+    ResponseEntity<Void> realizarContacto(@PathVariable UUID uuid, @RequestBody List<DTOContactoCercano> contactos) {
         try {
-           // servicios.addContactoCercano(contactos, uuidUsuario);
+            servicios.addContactoCercano(contactos, uuid);
 
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (ContactosNoAnadidos e) {
@@ -122,20 +122,7 @@ public class ControladorREST {
         }
 
     }
-    
-    
-     @PostMapping("/usuarios/{uuid}/notificaciones/positivo2")
-    ResponseEntity<Void> prueba2realizarContacto(@PathVariable UUID uuid, @RequestBody List<DTOContactoCercano> contactos) {
-         try {
-        servicios.addContactoCercano(contactos, uuid);
-        return ResponseEntity.status(HttpStatus.OK).build();
-          } catch (ContactosNoAnadidos e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-    }
-    
-    
-    
+
     /**
      * Listar coontactos
      */
@@ -180,31 +167,31 @@ public class ControladorREST {
 
         return ResponseEntity.status(HttpStatus.OK).body(dtoUsuario);
     }
-    
+
     //Hacer TEST
     @GetMapping("/estadisticas/infectados/total")
-    ResponseEntity<Integer> obtenerTotalInfectados(){
+    ResponseEntity<Integer> obtenerTotalInfectados() {
         return ResponseEntity.status(HttpStatus.OK).body(servicios.totalInfectados());
     }
+
     @GetMapping("/estadisticas/infectados/actual")
-    ResponseEntity<Integer> obtenerTotalInfectadosActual(){
+    ResponseEntity<Integer> obtenerTotalInfectadosActual() {
         return ResponseEntity.status(HttpStatus.OK).body(servicios.positivosActual());
     }
+
     @GetMapping("/estadisticas/infectados/dosSemanas")
-    ResponseEntity<Integer> obtenerTotalInfectados15Dias(){
+    ResponseEntity<Integer> obtenerTotalInfectados15Dias() {
         return ResponseEntity.status(HttpStatus.OK).body(servicios.positivos15Dias());
     }
-    
+
     @GetMapping("/estadisticas/infectados/media")
-    ResponseEntity<Double> obtenerContagiadosUsuario(){
+    ResponseEntity<Double> obtenerContagiadosUsuario() {
         return ResponseEntity.status(HttpStatus.OK).body(servicios.contagiadosXusuario());
     }
-    
-    
+
     @GetMapping("/rastreadores/{dni}/estadisticas/positivos")
-    ResponseEntity<Integer> obtenerTotalPositivosRastreador(@PathVariable String dni){ 
+    ResponseEntity<Integer> obtenerTotalPositivosRastreador(@PathVariable String dni) {
         return ResponseEntity.status(HttpStatus.OK).body(servicios.positivosRastreador(servicios.verRastreador(dni).get().getUuid()));
     }
-    
 
 }

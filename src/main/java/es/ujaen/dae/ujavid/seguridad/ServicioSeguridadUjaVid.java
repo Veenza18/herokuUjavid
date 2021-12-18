@@ -51,9 +51,6 @@ public class ServicioSeguridadUjaVid extends WebSecurityConfigurerAdapter {
 //
         httpSecurity.authorizeRequests().antMatchers("/ujavid/rastreadores/{dni}")
                 .access("hasRole('RASTREADOR') and #dni == principal.username");
-        httpSecurity.authorizeRequests().antMatchers("/ujavid/rastreadores/{dni}")
-                .access("hasRole('RASTREADOR') and #dni == principal.username");
-                //("hasRole('USUARIO') and #dni == principal.username");
     }
 
 }

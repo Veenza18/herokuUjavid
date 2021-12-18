@@ -30,7 +30,7 @@ public class RepositorioUsuarios {
     @PersistenceContext
     EntityManager em;
 
-     /**
+    /**
      * Método para obtener el usuario deseado en la persistencia
      *
      * @param uuid UUID del usuario usuario
@@ -47,14 +47,15 @@ public class RepositorioUsuarios {
      * @return Optional del usuario encontrado
      */
     public Optional<Usuario> buscar(String telefono) {
-        List<Usuario> lista = em.createQuery("SELECT u FROM Usuario u WHERE ?1 = u.numTelefono", Usuario.class).setParameter(1,telefono).getResultList();
+        List<Usuario> lista = em.createQuery("SELECT u FROM Usuario u WHERE ?1 = u.numTelefono", Usuario.class).setParameter(1, telefono).getResultList();
         Usuario u = null;
         if (!lista.isEmpty()) {
             u = lista.get(0);
         }
         return Optional.ofNullable(u);
     }
-        /**
+
+    /**
      * Método para guardar el usuario deseado en la persistencia
      *
      * @param usuario Usuario deseado
@@ -72,7 +73,7 @@ public class RepositorioUsuarios {
         em.merge(usuario);
     }
 
-        /**
+    /**
      * Método para borrar el usuario deseado en la persistencia
      *
      * @param usuario Usuario deseado
@@ -81,10 +82,11 @@ public class RepositorioUsuarios {
         em.remove(em.merge(usuario));
     }
 
-     /**
+    /**
      * Método para añadir a un usuario, un contacto cercano en la persistencia
      *
-     * @param contacto ContactoCercano que guarda la información sobre un contacto con otro usuario
+     * @param contacto ContactoCercano que guarda la información sobre un
+     * contacto con otro usuario
      */
     public void addContactoCercano(ContactoCercano contacto) {
         em.persist(contacto);
@@ -92,22 +94,30 @@ public class RepositorioUsuarios {
 
     /**
      * Método para obtener todos los usuarios de la persistencia
+     * 
+     * @return Método para obtener todos los usuarios del sistema
      */
     public List<Usuario> obtenerUsuarios() {
         List<Usuario> lista = em.createQuery("SELECT u FROM Usuario u", Usuario.class).getResultList();
         return lista;
     }
-    
-     /**
-     * Método para obtener todos los usuarios que hayan sido almenos positivos una vez de la persistencia
+
+    /**
+     * Método para obtener todos los usuarios que hayan sido almenos positivos
+     * una vez de la persistencia
+     * 
+     * @return Lista de usuarios que son positivos al menos una vez
      */
     public List<Usuario> obtenerUsuariosPositivos() {
         List<Usuario> lista = em.createQuery("SELECT u FROM Usuario u WHERE u.fPositivo IS NOT NULL ", Usuario.class).getResultList();
         return lista;
     }
 
-     /**
-     * Método para obtener todos los usuarios que hayan sido positivos en los últimos 15 días de la persistencia
+    /**
+     * Método para obtener todos los usuarios que hayan sido positivos en los
+     * últimos 15 días de la persistencia
+     * 
+     * @return Nº de positivos en los últimos 15 días
      */
     public int positivos15Dias() {
         LocalDateTime fecha15dias = LocalDateTime.now().minusDays(15);
@@ -115,8 +125,11 @@ public class RepositorioUsuarios {
         return positivos.intValue();
     }
 
-     /**
-     * Método para obtener todos los usuarios contagiados actualmente de la persistencia
+    /**
+     * Método para obtener todos los usuarios contagiados actualmente de la
+     * persistencia
+     * 
+     * @return Nº de positivos actualmente
      */
     public int positivosActual() {
         Long positivos = em.createQuery("SELECT COUNT(u) FROM Usuario u WHERE u.positivo = TRUE  ", Long.class).getSingleResult();
@@ -124,16 +137,25 @@ public class RepositorioUsuarios {
     }
 
     /**
-     * Método para obtener todos los usuarios los cuales hayan tenido una modificación en su atributo positivo
+     * Método para obtener todos los usuarios los cuales hayan tenido una
+     * modificación en su atributo positivo
+     * 
+     * @return Nº de usuarios que han dado positivo
      */
     public List<Usuario> positivosHistorial() {
         List<Usuario> lista = em.createQuery("SELECT u FROM Usuario u WHERE u.positivo IS NOT NULL  ", Usuario.class).getResultList();
         return lista;
     }
-    
-    public List<ContactoCercano> verContactos(UUID uuid){
-         LocalDateTime fecha2Semanas = LocalDateTime.now().minusDays(14);
-        List<ContactoCercano> lista = em.createQuery("SELECT c FROM Usuario u JOIN u.listadoContactos c WHERE c.fechaContacto  >= ?1 AND u.uuid = ?2 ORDER BY c.riesgo DESC",ContactoCercano.class ).setParameter(1,fecha2Semanas).setParameter(2,uuid).getResultList();
+
+    /**
+     * Método para obtener los contactos de un Usuario
+     * 
+     * @param uuid UUID del Usuario a ver sus contactos
+     * @return Lista de los contactos del Usuario
+     */
+    public List<ContactoCercano> verContactos(UUID uuid) {
+        LocalDateTime fecha2Semanas = LocalDateTime.now().minusDays(14);
+        List<ContactoCercano> lista = em.createQuery("SELECT c FROM Usuario u JOIN u.listadoContactos c WHERE c.fechaContacto  >= ?1 AND u.uuid = ?2 ORDER BY c.riesgo DESC", ContactoCercano.class).setParameter(1, fecha2Semanas).setParameter(2, uuid).getResultList();
         return lista;
     }
 }

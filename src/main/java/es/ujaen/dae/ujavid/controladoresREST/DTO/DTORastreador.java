@@ -8,6 +8,7 @@ import es.ujaen.dae.ujavid.entidades.Rastreador;
 import java.util.UUID;
 
 /**
+ * Clase que representa un DTO de Rastreador
  *
  * @author admin
  */
@@ -61,7 +62,7 @@ public class DTORastreador {
 
     /**
      * Constructor para realizar un POST
-     * 
+     *
      * @param dni DNI del Rastrador
      * @param nombre Nombre del Rastreador
      * @param apellido1 Apellido 1 del Rastreador
@@ -82,7 +83,7 @@ public class DTORastreador {
 
     /**
      * Constructor para realizar un GET
-     * 
+     *
      * @param rastreador Rastreador a convertir
      */
     public DTORastreador(Rastreador rastreador) {
@@ -95,10 +96,10 @@ public class DTORastreador {
         this.numTelefono = rastreador.getApellido2();
         this.password = rastreador.getPassword();
     }
-    
+
     /**
      * Constructor para realizar un GET
-     * 
+     *
      * @param numTotalNotificados Nº total de notificados
      * @param uuid UUID del Rastreado
      * @param dni DNI del Rastreador
@@ -152,8 +153,9 @@ public class DTORastreador {
     }
 
     /**
-     * Método para pasar de DTO a Rastreador
-     * @return 
+     * Método para crear un Rastreador a partir de un DTO
+     *
+     * @return Rastreador creado
      */
     public Rastreador aRastreador() {
         return new Rastreador(dni, nombre, apellido1, apellido2, numTelefono, password);

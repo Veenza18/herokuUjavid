@@ -100,8 +100,8 @@ public class ControladorREST {
      * Spring Security??????
      */
     @GetMapping("/rastreadores/{dni}")
-    ResponseEntity<DTORastreador> verRastreador(@PathVariable String dni) {
-        Optional<Rastreador> rastreador = servicios.verRastreador(dni);
+    ResponseEntity<DTORastreador> verRastreador(@PathVariable UUID uuid) {
+        Optional<Rastreador> rastreador = servicios.devuelveRastreador(uuid);
         return rastreador
                 .map(c -> ResponseEntity.ok(new DTORastreador(c)))
                 .orElse(ResponseEntity.notFound().build());
@@ -110,7 +110,7 @@ public class ControladorREST {
     /**
      * Registrar contactos
      */
-    @PostMapping("/usuarios/{numTelefono}/contactos")
+    @PostMapping("/usuarios/{uuid}/contactos")
     ResponseEntity<Void> realizarContacto(@RequestBody UUID uuidUsuario, @RequestBody List<DTOContactoCercano> contactos) {
         try {
             servicios.addContactoCercano(contactos, uuidUsuario);
@@ -124,7 +124,7 @@ public class ControladorREST {
     /**
      * Listar coontactos
      */
-    @GetMapping("/usuarios/{uuidUsuario}/contactos")
+    @GetMapping("/usuarios/{uuid}/contactos")
     @ResponseStatus(HttpStatus.OK)
     List<DTOContactoCercano> verContactos(@PathVariable UUID uuidUsuario, @RequestBody UUID uuidRastreador) {
         return servicios.verContactosCercanos(uuidUsuario, uuidRastreador).stream()
@@ -139,31 +139,36 @@ public class ControladorREST {
      * @param uuidRastreador UUID del rastreador
      * @return DTO del usuario que se le ha notificado el positivo
      */
-    @PostMapping("/usuarios/{numTelefono}/notificacionPos")
-    ResponseEntity<DTOUsuario> registrarPositivo(@PathVariable String numTelefono, @RequestBody UUID uuidRastreador) {
+    @PostMapping("/usuarios/{uuid}/notificaciones/positivo")
+    ResponseEntity<DTOUsuario> registrarPositivo(@PathVariable UUID uuid, @RequestBody UUID uuidRastreador) {
         System.out.println("----------------------------------Registrar Positivo");
-        Optional<Usuario> u = servicios.devuelveUsuario(uuidRastreador, numTelefono);
+        Optional<Usuario> u = servicios.devuelveUsuario(uuidRastreador, uuid);
         servicios.notificarPos(u.get().getUuid(), LocalDateTime.now(), uuidRastreador);
-        DTOUsuario dtoUsuario = new DTOUsuario(servicios.devuelveUsuario(uuidRastreador, numTelefono).get());
+        DTOUsuario dtoUsuario = new DTOUsuario(servicios.devuelveUsuario(uuidRastreador, uuid).get());
 
         return ResponseEntity.status(HttpStatus.OK).body(dtoUsuario);
     }
 
     /**
-     * Método para resgistrar un Positivo
+     * Método para resgistrar una curación de un positivo
      *
      * @param numTelefono Nº de teléfono del usuario
      * @param uuidRastreador UUID del rastreador
      * @return DTO del usuario que se le ha notificado la curación
      */
-    @PostMapping("/usuarios/{numTelefono}/notificacionCur")
-    ResponseEntity<DTOUsuario> registrarCuracion(@PathVariable String numTelefono, @RequestBody UUID uuidRastreador) {
+    @PostMapping("/usuarios/{uuid}/notificaciones/curacion")
+    ResponseEntity<DTOUsuario> registrarCuracion(@PathVariable UUID uuid, @RequestBody UUID uuidRastreador) {
         System.out.println("-------------------------------Registrar curacion");
-        Optional<Usuario> u = servicios.devuelveUsuario(uuidRastreador, numTelefono);
+        Optional<Usuario> u = servicios.devuelveUsuario(uuidRastreador, uuid);
         servicios.notificarCuracion(u.get().getUuid(), uuidRastreador);
-        DTOUsuario dtoUsuario = new DTOUsuario(servicios.devuelveUsuario(uuidRastreador, numTelefono).get());
+        DTOUsuario dtoUsuario = new DTOUsuario(servicios.devuelveUsuario(uuidRastreador, uuid).get());
 
         return ResponseEntity.status(HttpStatus.OK).body(dtoUsuario);
+    }
+    
+    @GetMapping("/rastreadores/{uuid}/totalInfectados")
+    ResponseEntity<Integer> obtenerTotalNotificados(@PathVariable UUID uuid){
+        return ResponseEntity.status(HttpStatus.OK).body(servicios.totalInfectados(uuid));
     }
 
 }

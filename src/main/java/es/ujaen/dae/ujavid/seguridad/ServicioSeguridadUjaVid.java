@@ -40,7 +40,7 @@ public class ServicioSeguridadUjaVid extends WebSecurityConfigurerAdapter {
 
          httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST,"/ujavid/usuarios").permitAll();
          httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST,"/ujavid/rastreadores").permitAll();
-         httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST,"/ujavid/usuarios/{numTelefono}/*").hasRole("RASTREADOR");
+         httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST,"/ujavid/usuarios/{uuid}/*").hasRole("RASTREADOR");
          
          
 
@@ -49,6 +49,8 @@ public class ServicioSeguridadUjaVid extends WebSecurityConfigurerAdapter {
 //        httpSecurity.authorizeRequests().antMatchers("/ujavid/**").hasRole("RASTREADOR");
 //        httpSecurity.authorizeRequests().antMatchers("/ujavid/usuarios/*").hasRole("USUARIO");
 //
+        httpSecurity.authorizeRequests().antMatchers("/ujavid/rastreadores/{dni}")
+                .access("hasRole('RASTREADOR') and #dni == principal.username");
         httpSecurity.authorizeRequests().antMatchers("/ujavid/rastreadores/{dni}")
                 .access("hasRole('RASTREADOR') and #dni == principal.username");
                 //("hasRole('USUARIO') and #dni == principal.username");

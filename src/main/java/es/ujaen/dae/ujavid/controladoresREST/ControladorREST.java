@@ -18,6 +18,7 @@ import es.ujaen.dae.ujavid.servicios.ServicioUjaVid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -127,14 +129,12 @@ public class ControladorREST {
     /**
      * Listar coontactos
      */
-    @GetMapping("/usuarios/{uuid}/contactos")
+    @GetMapping("/usuarios/{uuid}/contactos/{uuidRastreador}")
     @ResponseStatus(HttpStatus.OK)
-    List<DTOContactoCercano> verContactos(@PathVariable UUID uuid, @PathVariable UUID uuidRastreador) {
-        List<DTOContactoCercano> lista = new ArrayList<>();
-
-//        return servicios.verContactosCercanos(uuid, uuidRastreador).stream()
-//                .map(t -> new DTOContactoCercano(t.getFechaContacto(), t.getContacto().getUuid(), t.getDistancia(), t.getDuracion())).collect(Collectors.toList());
-        return lista;
+    List<DTOContactoCercano> verContactos(@PathVariable UUID uuid,@PathVariable UUID uuidRastreador) {
+        return servicios.verContactosCercanos(uuid,uuidRastreador).stream()
+                .map(t -> new DTOContactoCercano(t.getFechaContacto(), t.getContacto().getUuid(), t.getDistancia(), t.getDuracion())).collect(Collectors.toList());
+      
     }
 
     /**
@@ -171,27 +171,52 @@ public class ControladorREST {
         return ResponseEntity.status(HttpStatus.OK).body(dtoUsuario);
     }
 
-    //Hacer TEST
+    /**
+     * Método para obtener el Nº total de infectados
+     * 
+     * @return Nº total de infectados 
+     */
     @GetMapping("/estadisticas/infectados/total")
     ResponseEntity<Integer> obtenerTotalInfectados() {
         return ResponseEntity.status(HttpStatus.OK).body(servicios.totalInfectados());
     }
 
+    /**
+     * Método para obtener el Nº de infectados actual
+     * 
+     * @return Nº toal de infectados actual
+     */
     @GetMapping("/estadisticas/infectados/actual")
-    ResponseEntity<Integer> obtenerTotalInfectadosActual() {
+    ResponseEntity<Integer> obtenerTotalPositivosActual() {
         return ResponseEntity.status(HttpStatus.OK).body(servicios.positivosActual());
     }
 
+    /**
+     * Método para obtener el Nº de positivos de los últimos 15 días
+     * 
+     * @return Nº de positivos en los últimos 15 días
+     */
     @GetMapping("/estadisticas/infectados/dosSemanas")
-    ResponseEntity<Integer> obtenerTotalInfectados15Dias() {
+    ResponseEntity<Integer> obtenerTotalPositivos15Dias() {
         return ResponseEntity.status(HttpStatus.OK).body(servicios.positivos15Dias());
     }
 
-    @GetMapping("/estadisticas/infectados/media")
+    /**
+     * Método para obtener la incidencia de contagiados x usuario
+     * 
+     * @return Incidencia de contagiados por usuario 
+     */
+    @GetMapping("/estadisticas/infectados/incidencia")
     ResponseEntity<Double> obtenerContagiadosUsuario() {
         return ResponseEntity.status(HttpStatus.OK).body(servicios.contagiadosXusuario());
     }
 
+    /**
+     * Método para obtener el Nº total de personas que ha notificado un rastreador
+     * 
+     * @param dni DNI del rastreador a obtener su estadística
+     * @return Personas notificadas por el rastreador
+     */
     @GetMapping("/rastreadores/{dni}/estadisticas/positivos")
     ResponseEntity<Integer> obtenerTotalPositivosRastreador(@PathVariable String dni) {
         return ResponseEntity.status(HttpStatus.OK).body(servicios.positivosRastreador(servicios.verRastreador(dni).get().getUuid()));

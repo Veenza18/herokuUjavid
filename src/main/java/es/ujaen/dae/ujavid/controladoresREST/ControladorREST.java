@@ -74,7 +74,10 @@ public class ControladorREST {
     }
 
     /**
-     * Creación de usuarios
+     * Creacion de Usuarios
+     * @param usuario DTO del usuario
+     * 
+     * @return UUID del usuario
      */
     @PostMapping("/usuarios")
     ResponseEntity<UUID> altaUsuario(@RequestBody DTOUsuario usuario) {
@@ -88,6 +91,9 @@ public class ControladorREST {
 
     /**
      * Creacion de Rastreadores
+     * @param rastreador DTO del rastreador
+     * 
+     * @return UUID del rastreador
      */
     @PostMapping("/rastreadores")
     ResponseEntity<UUID> altaRastreador(@RequestBody DTORastreador rastreador) {
@@ -100,8 +106,10 @@ public class ControladorREST {
     }
 
     /**
-     * Login de RASTREADORES (temporal hasta incluir autenticación mediante
-     * Spring Security??????
+     * Mostrar el rastreador
+     * @param dni dni del rastreador
+     * 
+     * @return DTO del rastreador escogido
      */
     @GetMapping("/rastreadores/{dni}")
     ResponseEntity<DTORastreador> verRastreador(@PathVariable String dni) {
@@ -113,6 +121,8 @@ public class ControladorREST {
 
     /**
      * Registrar contactos
+     * @param uuid UUID del usuario
+     * @param contactos Lista de contactos cercanos a añadir a nuestro usuario
      */
     @PostMapping("/usuarios/{uuid}/contactos")
     ResponseEntity<Void> realizarContacto(@PathVariable UUID uuid, @RequestBody List<DTOContactoCercano> contactos) {
@@ -128,6 +138,10 @@ public class ControladorREST {
 
     /**
      * Listar coontactos
+     * @param uuid UUID del usuario
+     * @param uuidRastreador UUID del rastreador
+     * 
+     * @return ListaDTO con los contactos del determinado usuario
      */
     @GetMapping("/usuarios/{uuid}/contactos/{uuidRastreador}")
     @ResponseStatus(HttpStatus.OK)

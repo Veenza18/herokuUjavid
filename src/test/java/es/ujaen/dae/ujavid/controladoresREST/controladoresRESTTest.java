@@ -10,7 +10,9 @@ import es.ujaen.dae.ujavid.controladoresREST.DTO.DTORastreador;
 import es.ujaen.dae.ujavid.controladoresREST.DTO.DTOUsuario;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.annotation.PostConstruct;
 import org.assertj.core.api.Assertions;
@@ -251,16 +253,16 @@ public class controladoresRESTTest {
         );
 
         Assertions.assertThat(respuestaRastreador.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        Assertions.assertThat(respuestaRastreador.getBody()).isNotNull();
 
         //Creamos la lista de los contactos
-        DTOContactoCercano contacto0 = new DTOContactoCercano(LocalDateTime.now().minusDays(10),
-                respuestaUsuario2.getBody(), 4, 2);
-        DTOContactoCercano contacto1 = new DTOContactoCercano(LocalDateTime.now().minusDays(10),
-                respuestaUsuario3.getBody(), 4, 2);
-        DTOContactoCercano contacto2 = new DTOContactoCercano(LocalDateTime.now().minusDays(10),
-                respuestaUsuario4.getBody(), 4, 2);
+        DTOContactoCercano contacto0 = new DTOContactoCercano(LocalDateTime.now().minusDays(1),
+                respuestaUsuario2.getBody(), 2.8, 3);
+        DTOContactoCercano contacto1 = new DTOContactoCercano(LocalDateTime.now().minusDays(1),
+                respuestaUsuario3.getBody(), 1.6, 2);
+        DTOContactoCercano contacto2 = new DTOContactoCercano(LocalDateTime.now().minusDays(1),
+                respuestaUsuario4.getBody(), 1.2, 10);
 
-        
         List<DTOContactoCercano> lista1 = new ArrayList<>();
         lista1.add(contacto0);
         lista1.add(contacto1);
@@ -275,16 +277,59 @@ public class controladoresRESTTest {
                 );
 
         Assertions.assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        
+
         // Obtenemos la lista de contactos del usuario 1
         ResponseEntity<DTOContactoCercano[]> respuestaListadoContactos = restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
-                getForEntity("/usuarios/{uuid}/contactos",
+                getForEntity("/usuarios/{uuid}/contactos/{uuidRastreador}",
                         DTOContactoCercano[].class,
                         respuestaUsuario1.getBody(),
                         respuestaRastreador.getBody()
                 );
-        
+
         Assertions.assertThat(respuestaListadoContactos.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(respuestaListadoContactos.getBody().length).isEqualTo(3);
+        DTOContactoCercano[] listaContactos = respuestaListadoContactos.getBody();
+        // Comprobamos que los contactos están ordenados
+        for (int i = 0; i < listaContactos.length - 1; i++) {
+            Assertions.assertThat(listaContactos[i].getRiesgo()).isGreaterThanOrEqualTo(listaContactos[i + 1].getRiesgo());
+
+        }
+
+        // Notificamos el positivo del usuario 1 y de los contactos
+        restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+                postForEntity("/usuarios/{uuid}/notificaciones/positivo",
+                        respuestaRastreador.getBody(),
+                        DTOUsuario.class,
+                        respuestaUsuario1.getBody()
+                );
+        restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+                postForEntity("/usuarios/{uuid}/notificaciones/positivo",
+                        respuestaRastreador.getBody(),
+                        DTOUsuario.class,
+                        respuestaUsuario2.getBody()
+                );
+        restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+                postForEntity("/usuarios/{uuid}/notificaciones/positivo",
+                        respuestaRastreador.getBody(),
+                        DTOUsuario.class,
+                        respuestaUsuario3.getBody()
+                );
+        restTemplate.withBasicAuth(rastreador.getDni(), rastreador.getPassword()).
+                postForEntity("/usuarios/{uuid}/notificaciones/positivo",
+                        respuestaRastreador.getBody(),
+                        DTOUsuario.class,
+                        respuestaUsuario4.getBody()
+                );
+
+        // Obtenemos la incidencia acumulada
+        ResponseEntity<Double> resouestaContagiadosXUsuario = restTemplate.
+                getForEntity("/estadisticas/infectados/incidencia",
+                        Double.class
+                );
+
+        // Comprobamos el valor de la incidencia
+        System.out.println(resouestaContagiadosXUsuario.getBody());
+        Assertions.assertThat(resouestaContagiadosXUsuario.getBody()).isGreaterThan(0);
     }
 
     /**

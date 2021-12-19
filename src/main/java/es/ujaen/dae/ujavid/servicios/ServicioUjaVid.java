@@ -69,7 +69,7 @@ public class ServicioUjaVid {
      * @throws UsuarioYaRegistrado en caso de que esté el Usuario registrado
      */
     public UUID altaUsuario(@NotNull @Valid Usuario usuario) {
-        if (repositorioUsuarios.buscar(usuario.getUuid()).isPresent()|| repositorioUsuarios.buscar(usuario.getNumTelefono()).isPresent()) {
+        if (repositorioUsuarios.buscar(usuario.getUuid()).isPresent() || repositorioUsuarios.buscar(usuario.getNumTelefono()).isPresent()) {
             throw new UsuarioYaRegistrado();
         }
 
@@ -141,11 +141,11 @@ public class ServicioUjaVid {
     public List<ContactoCercano> verContactosCercanos(UUID uuid, UUID uuidRastreador) {
         // Comprobamos que es un  rastreador válido
         repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
-        
+
         // Comprobamos que es un usuario registrado
         repositorioUsuarios.buscar(uuid).orElseThrow(UsuarioNoRegistrado::new);
         return repositorioUsuarios.verContactos(uuid);
-        
+
         // return usuario.verContactosCercanos();
     }
 
@@ -226,7 +226,7 @@ public class ServicioUjaVid {
      */
     public int positivos15Dias() {
         int positivos = 0;
-       // Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
+        // Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
         // Comprobamos que es un rastreador registrado
 
         positivos = this.repositorioUsuarios.positivos15Dias();
@@ -247,24 +247,26 @@ public class ServicioUjaVid {
         // Obtenemos sus contactos cercanos
         List<ContactoCercano> contactos = repositorioUsuarios.verContactos(uuidUsuario);
         // Obtenemos la fecha del positivo del usuario y la pasamos a LocalDate
-        LocalDate fechaPositivo = usuario.getfPositivo().minusDays(15).toLocalDate();
-        // Obtenemos la fecha de curacion
-        LocalDate fechaCuracion = usuario.getfCuracion();
-        if (fechaCuracion == null) {
-            // Como no tiene fecha de curación, contaremos los contactos pasador 15 días desde hoy
-            fechaCuracion = LocalDate.now();
-        }
-        // Recorremos todos los contactos del usuario
-        for (int i = 0; i < contactos.size(); i++) {
-            // Comprobamos si el contacto es positivo
-            if (contactos.get(i).getContacto().isPositivo()) {
-                // Obtenemos la fecha de contacto y la pasamos a LocalDate
-                LocalDate fechaPositivoContacto = contactos.get(i).getFechaContacto().toLocalDate();
-                if (fechaPositivoContacto.isAfter(fechaPositivo) && fechaPositivoContacto.isBefore(fechaCuracion)) {
-                    contagiados++;
-                }
+        if (usuario.getfPositivo() != null) {
+            LocalDate fechaPositivo = usuario.getfPositivo().minusDays(15).toLocalDate();
+            // Obtenemos la fecha de curacion
+            LocalDate fechaCuracion = usuario.getfCuracion();
+            if (fechaCuracion == null) {
+                // Como no tiene fecha de curación, contaremos los contactos pasador 15 días desde hoy
+                fechaCuracion = LocalDate.now();
             }
+            // Recorremos todos los contactos del usuario
+            for (int i = 0; i < contactos.size(); i++) {
+                // Comprobamos si el contacto es positivo
+                if (contactos.get(i).getContacto().isPositivo()) {
+                    // Obtenemos la fecha de contacto y la pasamos a LocalDate
+                    LocalDate fechaPositivoContacto = contactos.get(i).getFechaContacto().toLocalDate();
+                    if (fechaPositivoContacto.isAfter(fechaPositivo) && fechaPositivoContacto.isBefore(fechaCuracion)) {
+                        contagiados++;
+                    }
+                }
 
+            }
         }
 
         return contagiados;
@@ -279,7 +281,7 @@ public class ServicioUjaVid {
      */
     @Transactional
     public double contagiadosXusuario() {
-       // Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
+        // Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
 
         //  Comprobamos que es un rastreador registrado
         double n_positivos_total = 0;
@@ -299,7 +301,6 @@ public class ServicioUjaVid {
             return contagiados_total / n_positivos_total;
         }
 
-       
         return 0;
     }
 
@@ -329,7 +330,7 @@ public class ServicioUjaVid {
         return repositorioUsuarios.buscar(uuidUsuario);
 
     }
-    
+
     /**
      * Método para obtener un usuario completo
      *
@@ -337,7 +338,7 @@ public class ServicioUjaVid {
      * @param uuidUsuario UUID del usuario
      * @return Usuario
      */
-    public Optional<Usuario> devuelveUsuario(UUID uuidRastreador,String numTelefono) {
+    public Optional<Usuario> devuelveUsuario(UUID uuidRastreador, String numTelefono) {
         Rastreador rastreador = this.repositorioRastreadores.buscar(uuidRastreador).orElseThrow(RastreadorNoRegistrado::new);
 
         return repositorioUsuarios.buscar(numTelefono);
